@@ -6,18 +6,526 @@
 </head>
 <body>
   <nav>
+    <a href="index.html" class="nav-logo"> <img src="assets/images/smolpc.png" alt="SmolPC"> </a>
     <a href="index.html">Home</a>
     <a href="requirements.html">Requirements</a>
     <a href="research.html">Research</a>
-    <a href="ui.html">UI</a>
-    <a href="system.html">System</a>
+    <a href="ui.html">UI Design</a>
+    <a href="system.html">System Design</a>
     <a href="implementation.html">Implementation</a>
     <a href="testing.html">Testing</a>
     <a href="evaluation.html">Evaluation</a>
     <a href="appendices.html">Appendices</a>
   </nav>
 
-  <!-- contents -->
+    <main>
 
+    <h1>Testing</h1>
+
+    <!-- Testing Strategy -->
+    <section id="strategy">
+      <h2>Testing Strategy</h2>
+      <p><!-- Overview of your overall testing approach and why you chose it --></p>
+
+      <div class="card">
+        <h3>Testing Approach</h3>
+        <p><!-- Describe the types of testing you conducted and the order --></p>
+      </div>
+
+      <div class="card">
+        <h3>Testing Tools</h3>
+        <p><!-- List the tools used e.g. pytest, unittest, manual testing --></p>
+      </div>
+
+    </section>
+
+    <!-- Unit Testing -->
+    <section id="unit-testing">
+      <h2>Unit Testing</h2>
+      <p><!-- Why you did unit testing and what tool you used --></p>
+
+      <h3>LibreOffice Assistant</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Test ID</th>
+            <th>Function Tested</th>
+            <th>Input</th>
+            <th>Expected Output</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>UT-LO1</td>
+            <td><!-- Function name --></td>
+            <td><!-- Input --></td>
+            <td><!-- Expected --></td>
+            <td><!-- Pass/Fail --></td>
+          </tr>
+          <tr>
+            <td>UT-LO2</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>CodeHelper</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Test ID</th>
+            <th>Function Tested</th>
+            <th>Input</th>
+            <th>Expected Output</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>UT-CH1</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>UT-CH2</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>GIMP Assistant</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Test ID</th>
+            <th>Function Tested</th>
+            <th>Input</th>
+            <th>Expected Output</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>UT-GI1</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>UT-GI2</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Blender Assistant</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Test ID</th>
+            <th>Function Tested</th>
+            <th>Input</th>
+            <th>Expected Output</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>UT-BL1</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>UT-BL2</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+    </section>
+
+    <!-- Integration Testing -->
+    <section id="integration-testing">
+      <h2>Integration Testing</h2>
+      <p><!-- Why you did integration testing, what tool you used, automated or manual --></p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Test ID</th>
+            <th>Components Tested</th>
+            <th>Description</th>
+            <th>Expected Output</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>IT1</td>
+            <td><!-- e.g. SmolPC Core + LibreOffice --></td>
+            <td><!-- Description --></td>
+            <td><!-- Expected --></td>
+            <td><!-- Pass/Fail --></td>
+          </tr>
+          <tr>
+            <td>IT2</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Automated Integration Tests</h3>
+      <p><!-- Describe your automated tests and how they were run --></p>
+      <pre><code><!-- Code snippet of automated test --></code></pre>
+
+    </section>
+
+    <!-- Prompt Testing -->
+    <section id="prompt-testing">
+      <h2>Prompt Testing</h2>
+      <p><!-- Why prompt testing is important for SmolPC and how you approached it --></p>
+
+      <h3>LibreOffice Assistant</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Test ID</th>
+            <th>Prompt</th>
+            <th>Expected Response</th>
+            <th>Actual Response</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>PT-LO1</td>
+            <td><!-- Prompt --></td>
+            <td><!-- Expected --></td>
+            <td><!-- Actual --></td>
+            <td><!-- Pass/Fail --></td>
+          </tr>
+          <tr>
+            <td>PT-LO2</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>CodeHelper</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Test ID</th>
+            <th>Prompt</th>
+            <th>Expected Response</th>
+            <th>Actual Response</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>PT-CH1</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>PT-CH2</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>GIMP Assistant</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Test ID</th>
+            <th>Prompt</th>
+            <th>Expected Response</th>
+            <th>Actual Response</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>PT-GI1</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>PT-GI2</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Blender Assistant</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Test ID</th>
+            <th>Prompt</th>
+            <th>Expected Response</th>
+            <th>Actual Response</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>PT-BL1</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>PT-BL2</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+    </section>
+
+    <!-- Compatibility Testing -->
+    <section id="compatibility-testing">
+      <h2>Compatibility Testing</h2>
+      <p><!-- Why you did compatibility testing and what you tested --></p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Platform/OS</th>
+            <th>Version</th>
+            <th>LibreOffice</th>
+            <th>CodeHelper</th>
+            <th>GIMP</th>
+            <th>Blender</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><!-- e.g. Windows --></td>
+            <td><!-- e.g. 11 --></td>
+            <td><!-- Pass/Fail --></td>
+            <td><!-- Pass/Fail --></td>
+            <td><!-- Pass/Fail --></td>
+            <td><!-- Pass/Fail --></td>
+          </tr>
+          <tr>
+            <td><!-- e.g. Ubuntu --></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><!-- e.g. macOS --></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+    </section>
+
+    <!-- Performance Testing -->
+    <section id="performance-testing">
+      <h2>Performance and Stress Testing</h2>
+      <p><!-- Why you did performance testing, what tool you used, how you conducted it --></p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Test ID</th>
+            <th>Assistant</th>
+            <th>Description</th>
+            <th>Metric</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>PF1</td>
+            <td><!-- Assistant --></td>
+            <td><!-- e.g. Response time under load --></td>
+            <td><!-- e.g. avg 2.3s --></td>
+            <td><!-- Pass/Fail --></td>
+          </tr>
+          <tr>
+            <td>PF2</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+    </section>
+
+    <!-- User Acceptance Testing -->
+    <section id="uat">
+      <h2>User Acceptance Testing</h2>
+      <p><!-- Overview of your UAT approach --></p>
+
+      <h3>Simulated Testers</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Tester</th>
+            <th>Background</th>
+            <th>Assistant Tested</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><!-- e.g. Tester 1 --></td>
+            <td><!-- e.g. Programmer --></td>
+            <td><!-- e.g. CodeHelper --></td>
+          </tr>
+          <tr>
+            <td><!-- e.g. Tester 2 --></td>
+            <td><!-- e.g. Office Worker --></td>
+            <td><!-- e.g. LibreOffice Assistant --></td>
+          </tr>
+          <tr>
+            <td><!-- e.g. Tester 3 --></td>
+            <td><!-- e.g. Designer --></td>
+            <td><!-- e.g. GIMP Assistant --></td>
+          </tr>
+          <tr>
+            <td><!-- e.g. Tester 4 --></td>
+            <td><!-- e.g. 3D Artist --></td>
+            <td><!-- e.g. Blender Assistant --></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Test Cases</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Test ID</th>
+            <th>Assistant</th>
+            <th>Description</th>
+            <th>Expected</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>UAT1</td>
+            <td><!-- Assistant --></td>
+            <td><!-- Description --></td>
+            <td><!-- Expected --></td>
+            <td><!-- Pass/Fail --></td>
+          </tr>
+          <tr>
+            <td>UAT2</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Tester Feedback</h3>
+      <div class="card">
+        <h3><!-- Tester 1 name/role --></h3>
+        <p><!-- Their feedback --></p>
+      </div>
+      <div class="card">
+        <h3><!-- Tester 2 name/role --></h3>
+        <p><!-- Their feedback --></p>
+      </div>
+      <div class="card">
+        <h3><!-- Tester 3 name/role --></h3>
+        <p><!-- Their feedback --></p>
+      </div>
+      <div class="card">
+        <h3><!-- Tester 4 name/role --></h3>
+        <p><!-- Their feedback --></p>
+      </div>
+
+      <h3>Project Partner Feedback</h3>
+      <div class="card">
+        <p><!-- Feedback from your project partner --></p>
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <footer>
+    <div class="footer-links">
+    <a href="mailto:<!-- team email -->">Email</a>
+    <a href="https://github.com/SmolPC-2-0/smolpc-codehelper" target="_blank">GitHub</a>
+  </div>
+
+  <div class="footer-logos">
+    <a href="https://www.ucl.ac.uk/" target="_blank">
+      <img src="assets/images/ucl.png" alt="University College London">
+    </a>
+    <a href="https://www.intel.com/content/www/us/en/homepage.html" target="_blank">
+      <img src="assets/images/intel.png" alt="Intel">
+    </a>
+    <a href="https://www.microsoft.com/en-gb" target="_blank">
+      <img src="assets/images/microsoft.png" alt="Microsoft">
+    </a>
+    <a href="https://www.ibm.com/uk-en" target="_blank">
+      <img src="assets/images/IBM.png" alt="IBM">
+    </a>
+    <a href="https://www.autism.org.uk/" target="_blank">
+      <img src="assets/images/nas.png" alt="National Autistic Society">
+    </a>
+  </div>
+    <p>COMP0016 Team 1 &copy; 2025</p>
+  </footer>
+
+  <script src="js/main.js"></script>
 </body>
 </html>
