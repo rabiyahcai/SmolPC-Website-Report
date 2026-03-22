@@ -26,8 +26,12 @@
     <section id="partner">
       <h2>Partner Introduction</h2>
         <h3> Intel </h3>
+        <p>Intel is a global leader in semiconductor and computing technology. SmolPC is designed to run on Intel N200-powered laptops, and Intel's support has been instrumental in ensuring our AI pipeline is optimised for low-cost, low-power hardware through OpenVino, Intel's open-source toolkit for efficient AI inference.</p>
         <h3> Microsoft </h3>
+        <p>Microsoft is one of the world's leading technology companies and a major contributor to open-source software. Microsoft's involvement has supported the development of SmolPC's accessibility features and its integration with open-source productivity tools used in educational environments</p>
         <h3> IBM </h3>
+        <p>
+IBM is a global technology and research company with a strong commitment to education and open-source innovation. IBM's expertise in AI and enterprise software has informed SmolPC's approach to building scalable, privacy-first AI tools for real-world deployment.</p>
       <p><!-- --></p>
     </section>
 
@@ -40,7 +44,13 @@
     <!-- pooject goals -->
     <section id="goals">
       <h2>Project Goals</h2>
-      <p><!-- list main goals of project --></p>
+      <p>The overarching goal of SmolPC is to deliver a free, offline, open-source AI assistant suite that integrates directly into the software students already use: LibreOffice, CodeHelper, GIMP, and Blender, and runs on low-cost hardware such as Intel N200 laptops costing as little as £300.</p>
+      <p>Specifically, SmolPC aims to:</p>
+      <li>Enable students and teachers to control educational software through natural language, reducing the technical barrier to using complex applications.</li>
+      <li>Support coding education through an AI-powered assistant that guides students through programming concepts and helps them debug their work.</li>
+      <li>Teach image editing and 3D modelling interactively, through AI assistants embedded directly in GIMP and Blender.</li>
+      <li>Operate entirely offline using locally deployed large language models via OpenVino, ensuring data privacy and removing the dependency on internet connectivity.</li>
+      <li>Run efficiently on low-spec, affordable hardware to ensure accessibility for under-resourced schools.</li>
     </section>
 
     <!-- gathering requirements -->
@@ -52,14 +62,17 @@
     <!-- personas -->
     <section id="personas">
       <h2>Personas</h2>
+      <p>Based on the information we've collected, we constructed the following personas:</p>
 
       <div class="card">
-        <h3>persona 1</h3>
+        <h3>Persona of a Student</h3>
+        <img src="assets/images/persona1.jpg" alt="Persona 1 photo">
         <p><!-- desc --></p>
       </div>
 
       <div class="card">
-        <h3>persona 2</h3>
+        <h3>Persona of a Teacher</h3>
+        <img src="assets/images/persona2.jpg" alt="Persona 1 photo">
         <p><!-- desc --></p>
       </div>
 
@@ -109,7 +122,6 @@
     <section id="functional">
       <h2>Functional Requirements</h2>
 
-      <h3>LibreOffice Assistant</h3>
       <table>
         <thead>
           <tr>
@@ -126,75 +138,6 @@
           </tr>
           <tr>
             <td>FR-LO2</td>
-            <td></td>
-            <td>Should have</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3>CodeHelper</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Requirement</th>
-            <th>Priority</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>FR-CH1</td>
-            <td><!-- req --></td>
-            <td>Must have</td>
-          </tr>
-          <tr>
-            <td>FR-CH2</td>
-            <td></td>
-            <td>Should have</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3>GIMP Assistant</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Requirement</th>
-            <th>Priority</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>FR-GI1</td>
-            <td><!-- req --></td>
-            <td>Must have</td>
-          </tr>
-          <tr>
-            <td>FR-GI2</td>
-            <td></td>
-            <td>Should have</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3>Blender Assistant</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Requirement</th>
-            <th>Priority</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>FR-BL1</td>
-            <td><!-- req --></td>
-            <td>Must have</td>
-          </tr>
-          <tr>
-            <td>FR-BL2</td>
             <td></td>
             <td>Should have</td>
           </tr>
