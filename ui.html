@@ -40,7 +40,7 @@
       <div class="card">
         <h3>Consistency</h3>
         <p>
-          CodeHelper, LibreOffice, GIMP, and Blender all use the same core layout: shared sidebar,
+          Code, LibreOffice, GIMP, and Blender all use the same core layout: shared sidebar,
           common header controls, the same conversation view, the same composer bar, and the same setup
           and status language. This means that switching tools feels like changing context inside one
           product rather than launching a new product each time.
@@ -131,8 +131,13 @@
           </tr>
           <tr>
             <td>Composer bar</td>
-            <td>Provides a single input pattern for all text-based interactions.</td>
-            <td>Reduces cognitive load by keeping the core interaction model consistent.</td>
+            <td>Provides a single input pattern for all text-based interactions, including an optional microphone control in SmolPC 2.0&apos;s shared chat shell.</td>
+            <td>Reduces cognitive load by keeping the core interaction model consistent while still allowing low-friction dictation where supported.</td>
+          </tr>
+          <tr>
+            <td>Per-message voice controls</td>
+            <td>Allow the user to play or stop local read-aloud on assistant responses.</td>
+            <td>Supports accessibility and hands-free use without sending content to a cloud TTS service.</td>
           </tr>
           <tr>
             <td>Help drawer and overlays</td>
@@ -149,9 +154,9 @@
     </section>
 
     <section id="codehelper">
-      <h2>CodeHelper</h2>
+      <h2>Code Mode</h2>
       <p>
-        CodeHelper is the clearest and simplest mode in the current UI. It uses the shared shell without
+        Code mode is the clearest and simplest mode in the current UI. It uses the shared shell without
         needing an external host application, which makes it the easiest place to establish the product&apos;s
         overall interaction pattern.
       </p>
@@ -160,8 +165,10 @@
         <h3>Implemented UI Decisions</h3>
         <p>
           This mode emphasises a clean conversation view, clear prompt starters, visible runtime status,
-          and low-friction onboarding. The welcome state explains what CodeHelper is for and encourages
-          users to ask for code explanations, debugging help, or new code in plain language.
+          and low-friction onboarding. The welcome state explains what Code mode is for and encourages
+          users to ask for code explanations, debugging help, or new code in plain language. It is also
+          a clear example of how the optional voice controls work inside SmolPC 2.0: a microphone button
+          in the composer for local dictation and a read-aloud control on assistant messages for local playback.
         </p>
       </div>
 
@@ -169,7 +176,8 @@
         <h3>Hand-Drawn Sketches</h3>
         <p>
           To be added. Final sketches should show the empty state, an active coding conversation, loading
-          feedback, and the relationship between the sidebar, mode selector, and composer.
+          feedback, the microphone control in the composer, and the relationship between the sidebar,
+          mode selector, and per-message read-aloud actions.
         </p>
       </div>
 
@@ -177,7 +185,7 @@
         <h3>High-Fidelity Wireframe</h3>
         <p>
           To be added. The final exported wireframe or Figma link should capture the polished shared
-          shell with CodeHelper as the flagship mode.
+          shell with Code mode as the flagship workflow.
         </p>
       </div>
 
@@ -186,7 +194,7 @@
     <section id="libreoffice">
       <h2>LibreOffice Modes</h2>
       <p>
-        The LibreOffice workflows reuse the same shell as CodeHelper but place more emphasis on setup
+        The LibreOffice workflows reuse the same shell as Code mode but place more emphasis on setup
         readiness, host-application launching, and concise structured task descriptions. This lets the
         UI support document and presentation work without inventing a totally separate interaction model.
       </p>
@@ -220,7 +228,7 @@
     <section id="gimp">
       <h2>GIMP Assistant</h2>
       <p>
-        GIMP mode required a stronger emphasis on host-state awareness than CodeHelper because the
+        GIMP mode required a stronger emphasis on host-state awareness than Code mode because the
         usefulness of the assistant depends on the external editor being available and correctly prepared.
         The UI therefore gives setup, mode availability, and edit feedback a more prominent role.
       </p>
