@@ -212,6 +212,122 @@ p {
   border: 1px solid var(--border);
 }
 
+.gantt-wrapper {
+  overflow-x: auto;
+  background: #f7f8fc;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.gantt-table {
+  min-width: 860px;
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent;
+  border-radius: 0;
+  overflow: visible;
+  margin-bottom: 0;
+}
+
+.gantt-table th,
+.gantt-table td {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text);
+}
+
+.gantt-month-header th {
+  background: transparent !important;
+  color: var(--text) !important;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-align: center;
+  padding: 0.4rem 0 !important;
+  border-bottom: 2px solid var(--border);
+  letter-spacing: 0.03em;
+}
+
+.gantt-week-header th {
+  background: transparent !important;
+  color: var(--text-muted) !important;
+  font-size: 0.68rem;
+  text-align: center;
+  padding: 0.3rem 0 !important;
+  font-weight: 400;
+  border-bottom: 1px solid var(--border);
+}
+
+.gantt-task-col {
+  min-width: 180px;
+  text-align: left !important;
+  padding-right: 1rem !important;
+}
+
+.gantt-table tbody tr {
+  border-bottom: 1px dashed #dde0ea;
+}
+
+.gantt-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.gantt-table tbody td {
+  height: 44px;
+  padding: 5px 2px;
+  border-left: 1px dashed #dde0ea;
+}
+
+.gantt-table tbody td:first-child {
+  border-left: none;
+}
+
+.gantt-label {
+  font-size: 0.83rem;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  padding-right: 1.2rem !important;
+  border-left: none !important;
+}
+
+.gbar {
+  height: 26px;
+  border-radius: 20px;
+  width: 100%;
+}
+
+.gbar-purple { background: #c5bef5; }
+.gbar-blue   { background: #7fb3ef; }
+.gbar-teal   { background: #94d4c8; }
+.gbar-peach  { background: #f5c49a; }
+.gbar-green  { background: #86c9a0; }
+.gbar-navy   { background: #4a6eb5; }
+
+.gantt-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.legend-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
 /* ===== tables ===== */
 table {
   width: 100%;
