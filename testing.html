@@ -6,7 +6,7 @@
 </head>
 <body>
   <nav>
-    <a href="index.html" class="nav-logo"> <img src="assets/images/smolpc.png" alt="SmolPC"> </a>
+    <a href="index.html" class="nav-logo"> <img src="assets/images/smolpc.png" alt="SmolPC 2.0"> </a>
     <a href="index.html">Home</a>
     <a href="requirements.html">Requirements</a>
     <a href="research.html">Research</a>
@@ -161,10 +161,10 @@ cargo check -p smolpc-code-helper</code></pre>
         <tbody>
           <tr>
             <td>IT1</td>
-            <td>Shared engine + unified app shell</td>
-            <td>Start the application, query engine readiness, and surface the active runtime/model state in the UI.</td>
-            <td>The application should block or recover cleanly during startup and expose the correct local runtime information.</td>
-            <td class="yes">Automated and manual coverage</td>
+            <td><!-- e.g. SmolPC 2.0 Core + LibreOffice --></td>
+            <td><!-- Description --></td>
+            <td><!-- Expected --></td>
+            <td><!-- Pass/Fail --></td>
           </tr>
           <tr>
             <td>IT2</td>
@@ -173,6 +173,23 @@ cargo check -p smolpc-code-helper</code></pre>
             <td>Each mode should invoke the correct provider family without leaking behaviour across assistants.</td>
             <td class="yes">Covered</td>
           </tr>
+        </tbody>
+      </table>
+
+      <h3>Automated Integration Tests</h3>
+      <p><!-- Describe your automated tests and how they were run --></p>
+      <pre><code><!-- Code snippet of automated test --></code></pre>
+
+    </section>
+
+    <!-- Prompt Testing -->
+    <section id="prompt-testing">
+      <h2>Prompt Testing</h2>
+      <p><!-- Why prompt testing is important for SmolPC 2.0 and how you approached it --></p>
+
+      <h3>LibreOffice Assistant</h3>
+      <table>
+        <thead>
           <tr>
             <td>IT3</td>
             <td>GIMP bridge + tool execution</td>

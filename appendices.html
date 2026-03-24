@@ -6,7 +6,7 @@
 </head>
 <body>
   <nav>
-    <a href="index.html" class="nav-logo"> <img src="assets/images/smolpc.png" alt="SmolPC"> </a>
+    <a href="index.html" class="nav-logo"> <img src="assets/images/smolpc.png" alt="SmolPC 2.0"> </a>
     <a href="index.html">Home</a>
     <a href="requirements.html">Requirements</a>
     <a href="research.html">Research</a>
@@ -24,11 +24,18 @@
 
     <section id="user-manual">
       <h2>User Manual</h2>
-      <p>
-        This appendix explains how an end user interacts with the unified SmolPC application. The final
-        submission should include screenshots for each workflow, but the core steps are already stable
-        enough to document here.
-      </p>
+      <p><!-- how to use this manual --></p>
+
+      <h3>Installation</h3>
+      <p><!-- How to install SmolPC --></p>
+      <img src="assets/images/manual/install.png" alt="Installation screenshot">
+
+      <h3>Getting Started</h3>
+      <p><!-- How to launch SmolPC 2.0 for the first time --></p>
+      <img src="assets/images/manual/getting-started.png" alt="Getting started screenshot">
+
+      <h3>LibreOffice Assistant</h3>
+      <p><!-- How to use the LibreOffice assistant --></p>
 
       <h3>Starting SmolPC</h3>
       <ol>
@@ -189,14 +196,10 @@ cargo test -p smolpc-engine-core -p smolpc-engine-client -p smolpc-engine-host</
       <pre><code>npm run package:offline
 npm run package:offline:bundle</code></pre>
 
-      <div class="card">
-        <h3>Installer Note</h3>
-        <p>
-          The final report version of this appendix should be updated with the exact packaged deployment
-          steps that match the final submission build, including screenshots of the installer or setup
-          flow if available.
-        </p>
-      </div>
+      <h3>Step 5: Run SmolPC 2.0</h3>
+      <p><!-- How to launch the application --></p>
+      <pre><code><!-- e.g. python main.py --></code></pre>
+      <img src="assets/images/manual/deploy-run.png" alt="Running SmolPC 2.0 screenshot">
 
       <h3>Troubleshooting</h3>
       <div class="card">
@@ -232,10 +235,7 @@ npm run package:offline:bundle</code></pre>
       </p>
 
       <h3>Data Collection</h3>
-      <p>
-        The platform does not require a cloud account, paid API key, or external analytics service for
-        normal use. User prompts, assistant responses, and conversation history are handled locally.
-      </p>
+      <p><!-- What data SmolPC 2.0 collects if any --></p>
 
       <h3>Data Storage</h3>
       <p>
@@ -267,18 +267,7 @@ npm run package:offline:bundle</code></pre>
       </p>
 
       <h3>Offline Operation</h3>
-      <p>
-        Offline operation reduces exposure to third-party data transfer, account requirements, and
-        network-based privacy risks. It also makes the project more suitable for educational settings
-        where privacy and ease of deployment are both important.
-      </p>
-
-      <h3>Compliance Note</h3>
-      <p>
-        The project has been designed to reduce personal-data processing wherever possible, but a final
-        deployment should still include an appropriate privacy notice and a clear explanation of local
-        data retention behaviour for end users and schools.
-      </p>
+      <p><!-- Since SmolPC 2.0 is offline, explain the privacy benefits of this --></p>
 
     </section>
 

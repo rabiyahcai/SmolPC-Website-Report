@@ -6,7 +6,7 @@
 </head>
 <body>
   <nav>
-    <a href="index.html" class="nav-logo"> <img src="assets/images/smolpc.png" alt="SmolPC"> </a>
+    <a href="index.html" class="nav-logo"> <img src="assets/images/smolpc.png" alt="SmolPC 2.0"> </a>
     <a href="index.html">Home</a>
     <a href="requirements.html">Requirements</a>
     <a href="research.html">Research</a>
@@ -25,12 +25,14 @@
     <!-- partner intros -->
     <section id="partner">
       <h2>Partner Introduction</h2>
-        <h3>Project Partner</h3>
-        <p>SmolPC was developed under the supervision of Professor Dean Mohamedally at UCL's Department of Computer Science. He acted as the primary academic stakeholder for the project, helping define the educational problem, review major design decisions, and keep the work aligned with practical classroom use rather than a purely technical demonstration.</p>
-        <h3>Educational Stakeholders</h3>
-        <p>Requirements were also shaped by discussions with teachers and by external demonstrations of the project. These conversations consistently pushed the platform towards privacy, ease of deployment, practical classroom value, and support for everyday student workflows rather than isolated AI features.</p>
-        <h3>Software Context</h3>
-        <p>The final platform was designed around tasks students and teachers regularly perform across coding, writing, image editing, and 3D work. This is why the scope expanded beyond the original LibreOffice prototype to include CodeHelper together with assistants for LibreOffice, GIMP, and Blender inside one unified local platform.</p>
+        <h3> Intel </h3>
+        <p>Intel is a global leader in semiconductor and computing technology. SmolPC 2.0 is designed to run on Intel N200-powered laptops, and Intel's support has been instrumental in ensuring our AI pipeline is optimised for low-cost, low-power hardware through OpenVino, Intel's open-source toolkit for efficient AI inference.</p>
+        <h3> Microsoft </h3>
+        <p>Microsoft is one of the world's leading technology companies and a major contributor to open-source software. Microsoft's involvement has supported the development of SmolPC 2.0's accessibility features and its integration with open-source productivity tools used in educational environments</p>
+        <h3> IBM </h3>
+        <p>
+IBM is a global technology and research company with a strong commitment to education and open-source innovation. IBM's expertise in AI and enterprise software has informed SmolPC 2.0's approach to building scalable, privacy-first AI tools for real-world deployment.</p>
+      <p><!-- --></p>
     </section>
 
     <!-- project background -->
@@ -45,16 +47,13 @@
     <!-- project goals -->
     <section id="goals">
       <h2>Project Goals</h2>
-      <p>The overarching goal of SmolPC is to deliver a free, offline, open-source AI platform for education that makes local AI practical to deploy and use across coding, writing, image editing, and 3D design, with CodeHelper as the flagship experience inside a broader unified system.</p>
-      <p>Specifically, SmolPC aims to:</p>
-      <ul>
-        <li>Provide a unified desktop experience that brings together CodeHelper and assistants for LibreOffice, GIMP, and Blender.</li>
-        <li>Enable students and teachers to interact with software through natural language, lowering the barrier to coding, writing, editing, and creative work.</li>
-        <li>Keep prompts, generated content, and inference local to the device during normal use, supporting privacy-sensitive educational deployment.</li>
-        <li>Reduce deployment friction by avoiding workflows that require students or teachers to manage a separate model server or run ad hoc setup commands.</li>
-        <li>Use hardware-aware local inference so the platform can choose the best supported runtime path for the device it is installed on.</li>
-        <li>Maintain an extensible architecture so additional assistants or workflows can be added without rebuilding the platform from scratch.</li>
-      </ul>
+      <p>The overarching goal of SmolPC 2.0 is to deliver a free, offline, open-source AI assistant suite that integrates directly into the software students already use: LibreOffice, CodeHelper, GIMP, and Blender, and runs on low-cost hardware such as Intel N200 laptops costing as little as £300.</p>
+      <p>Specifically, SmolPC 2.0 aims to:</p>
+      <li>Enable students and teachers to control educational software through natural language, reducing the technical barrier to using complex applications.</li>
+      <li>Support coding education through an AI-powered assistant that guides students through programming concepts and helps them debug their work.</li>
+      <li>Teach image editing and 3D modelling interactively, through AI assistants embedded directly in GIMP and Blender.</li>
+      <li>Operate entirely offline using locally deployed large language models via OpenVino, ensuring data privacy and removing the dependency on internet connectivity.</li>
+      <li>Run efficiently on low-spec, affordable hardware to ensure accessibility for under-resourced schools.</li>
     </section>
 
     <!-- gathering requirements -->
@@ -169,16 +168,16 @@
       <h3>UC1 — Start SmolPC and Send a Text Request</h3>
       <table>
         <tr><td class="uc-label">Actor</td><td>Student / Teacher</td></tr>
-        <tr><td class="uc-label">Pre-condition</td><td>SmolPC is installed and the shared local engine is ready or can be started from the application.</td></tr>
+        <tr><td class="uc-label">Pre-condition</td><td>SmolPC 2.0 Home is open and a local AI model is running via Ollama.</td></tr>
         <tr>
           <td class="uc-label">Main Flow</td>
           <td class="uc-flow">
             <ol>
-              <li>User opens SmolPC and selects an assistant mode.</li>
-              <li>User types a request in the chat box.</li>
-              <li>The request is routed through the shared local engine and the tool provider for the active mode.</li>
-              <li>A loading or readiness indicator is shown while processing.</li>
-              <li>The response appears in the workspace and, where relevant, triggers the requested tool action.</li>
+              <li>User opens SmolPC 2.0 Home and selects a tool.</li>
+              <li>User types a request in the chat box, or presses the microphone button to speak.</li>
+              <li>If voice, Whisper transcribes the audio to text locally.</li>
+              <li>The text is sent to the local LLM; a loading indicator is shown while processing.</li>
+              <li>The AI response appears in the chat panel.</li>
             </ol>
           </td>
         </tr>
@@ -191,16 +190,17 @@
     <div class="uc-block">
       <h3>UC2 — Get Coding Help from CodeHelper</h3>
       <table>
-        <tr><td class="uc-label">Actor</td><td>Student</td></tr>
-        <tr><td class="uc-label">Pre-condition</td><td>Code mode is selected in SmolPC and the local model is ready.</td></tr>
+        <tr><td class="uc-label">Actor</td><td>Student / Teacher</td></tr>
+        <tr><td class="uc-label">Pre-condition</td><td>LibreOffice ≥ 7.6 is installed and the SmolPC 2.0 extension is loaded.</td></tr>
         <tr>
           <td class="uc-label">Main Flow</td>
           <td class="uc-flow">
             <ol>
-              <li>Student types a coding question or pastes code into the chat.</li>
-              <li>Student optionally uses a prompt starter or follow-up question.</li>
-              <li>CodeHelper returns an explanation, debugging help, or generated code.</li>
-              <li>Student continues the conversation until the problem is understood or solved.</li>
+              <li>User opens LibreOffice AI from SmolPC 2.0 Home.</li>
+              <li>User types or speaks a command (e.g. "Write an introduction about photosynthesis" or "Reformat this as bullet points").</li>
+              <li>The AI reads the current document context via the LibreOffice UNO API.</li>
+              <li>Generated content is previewed in the chat before being inserted into the document.</li>
+              <li>User confirms; the document is updated. Undo/redo remains available.</li>
             </ol>
           </td>
         </tr>
@@ -234,8 +234,8 @@
     <div class="uc-block">
       <h3>UC4 — Create or Edit a Presentation in Slides</h3>
       <table>
-        <tr><td class="uc-label">Actor</td><td>Teacher / Student</td></tr>
-        <tr><td class="uc-label">Pre-condition</td><td>LibreOffice is installed and Slides mode is available in SmolPC.</td></tr>
+        <tr><td class="uc-label">Actor</td><td>Student</td></tr>
+        <tr><td class="uc-label">Pre-condition</td><td>SmolPC 2.0 CodeHelper is open; a code-focused model (e.g. Llama 3.2 or DeepSeek) is loaded.</td></tr>
         <tr>
           <td class="uc-label">Main Flow</td>
           <td class="uc-flow">
@@ -255,8 +255,8 @@
     <div class="uc-block">
       <h3>UC5 — Edit an Image in GIMP</h3>
       <table>
-        <tr><td class="uc-label">Actor</td><td>Student / Teacher</td></tr>
-        <tr><td class="uc-label">Pre-condition</td><td>GIMP is installed, GIMP mode is available, and an image is open or ready to be edited.</td></tr>
+        <tr><td class="uc-label">Actor</td><td>Student</td></tr>
+        <tr><td class="uc-label">Pre-condition</td><td>GIMP or Blender is installed on the device; the corresponding SmolPC 2.0 assistant is selected.</td></tr>
         <tr>
           <td class="uc-label">Main Flow</td>
           <td class="uc-flow">
@@ -276,8 +276,8 @@
     <div class="uc-block">
       <h3>UC6 — Get Scene-Aware Help in Blender</h3>
       <table>
-        <tr><td class="uc-label">Actor</td><td>Student</td></tr>
-        <tr><td class="uc-label">Pre-condition</td><td>Blender is installed, Blender mode is available, and a Blender scene is open.</td></tr>
+        <tr><td class="uc-label">Actor</td><td>Student / Teacher</td></tr>
+        <tr><td class="uc-label">Pre-condition</td><td>User is inside any SmolPC 2.0 tool.</td></tr>
         <tr>
           <td class="uc-label">Main Flow</td>
           <td class="uc-flow">
@@ -303,10 +303,9 @@
           <td class="uc-label">Main Flow</td>
           <td class="uc-flow">
             <ol>
-              <li>User opens the mode selector or sidebar.</li>
-              <li>User switches from one workflow to another, for example from CodeHelper to Writer or Blender.</li>
-              <li>User optionally opens a previous conversation associated with that mode.</li>
-              <li>The conversation loads and the user continues from the previous state.</li>
+              <li>User opens SmolPC 2.0 and sees their chat history listed in the left sidebar.</li>
+              <li>User clicks a past conversation (e.g. "Python Function Help — Yesterday").</li>
+              <li>The full conversation loads and the user continues from where they left off.</li>
             </ol>
           </td>
         </tr>
@@ -376,12 +375,7 @@
         </tr>
         <tr>
           <td>FR-M8</td>
-          <td>User prompts, generated content, and assistant interactions shall remain on-device during normal use.</td>
-          <td><span class="badge badge-must">Must Have</span></td>
-        </tr>
-        <tr>
-          <td>FR-M9</td>
-          <td>The platform shall provide a deployment path that does not require students or teachers to manually install or operate a separate local model server.</td>
+          <td>SmolPC 2.0 Home shall provide a unified launcher for all tools without requiring the user to open separate applications.</td>
           <td><span class="badge badge-must">Must Have</span></td>
         </tr>
         <tr>
@@ -516,7 +510,7 @@
         </tr>
         <tr>
           <td>NF-S4</td>
-          <td>The architecture should make it possible to add or migrate assistant workflows without rewriting the core engine.</td>
+          <td>The architecture shall be extensible — adding a new tool shall not require changes to the core SmolPC 2.0 codebase.</td>
           <td>Maintainability</td>
           <td><span class="badge badge-should">Should Have</span></td>
         </tr>

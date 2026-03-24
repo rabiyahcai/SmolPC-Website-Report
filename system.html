@@ -6,7 +6,7 @@
 </head>
 <body>
   <nav>
-    <a href="index.html" class="nav-logo"> <img src="assets/images/smolpc.png" alt="SmolPC"> </a>
+    <a href="index.html" class="nav-logo"> <img src="assets/images/smolpc.png" alt="SmolPC 2.0"> </a>
     <a href="index.html">Home</a>
     <a href="requirements.html">Requirements</a>
     <a href="research.html">Research</a>
@@ -24,16 +24,17 @@
 
     <section id="architecture">
       <h2>System Architecture</h2>
-      <p>The final system is designed as a unified desktop application rather than a set of unrelated assistants. The current integrated app is CodeHelper, which acts as the shared shell for multiple modes. Behind that shell sits a shared SmolPC inference engine, a mode-provider layer that routes requests to the correct assistant logic, and a set of host-application bridges for tools such as GIMP, Blender, and LibreOffice. This separation is one of the most important design decisions in the project because it allows inference, UI, and host-specific integrations to evolve independently.</p>
+      <p><!-- Brief overview of how SmolPC 2.0 is structured and how the four assistants fit together --></p>
 
-      <h3>High-Level Architecture</h3>
-      <p>The high-level diagram for the final report should show five layers: the user-facing unified desktop UI, the Tauri command boundary, the mode-provider layer, the shared SmolPC engine, and the external host applications. The key point is that inference ownership belongs to the shared engine, while workflow-specific orchestration belongs to the app and its providers.</p>
+      <h3>High-Level Architecture Diagram</h3>
+      <img src="assets/images/diagrams/architecture-overview.png" alt="SmolPC 2.0 high-level system architecture diagram">
+      <p><!-- Description of each component in the diagram --></p>
 
       <h3>Core Components</h3>
 
       <div class="card">
-        <h3>Unified App Shell</h3>
-        <p>The current integrated product is implemented in <code>apps/codehelper</code>. Its Svelte frontend provides the conversation UI, mode switching, setup guidance, hardware and model panels, mode-specific help, and lightweight local persistence for user-facing state such as chats and settings. The same shell presents CodeHelper, GIMP, Blender, and LibreOffice workflows such as Writer and Slides through one interface.</p>
+        <h3>SmolPC 2.0 Core</h3>
+        <p><!-- Describe the core/shared infrastructure --></p>
       </div>
 
       <div class="card">
@@ -57,45 +58,11 @@
       </div>
     </section>
 
-    <section id="mode-topology">
-      <h2>Mode Topology</h2>
-      <p>Although the product is presented as one application, not all modes behave the same way internally. The mode map below is therefore more informative than a traditional website-style sitemap.</p>
-      <table>
-        <thead>
-          <tr>
-            <th>Mode</th>
-            <th>Provider Family</th>
-            <th>Interaction Style</th>
-            <th>Main Role</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Code</td>
-            <td>Code provider</td>
-            <td>Local text generation through the shared engine</td>
-            <td>Offline coding help inside the unified chat shell</td>
-          </tr>
-          <tr>
-            <td>GIMP</td>
-            <td>GIMP provider</td>
-            <td>Tool execution through the GIMP bridge plus local generation when needed</td>
-            <td>Plain-language image editing workflows</td>
-          </tr>
-          <tr>
-            <td>Blender</td>
-            <td>Blender provider</td>
-            <td>Hybrid scene-aware tooling and local generation</td>
-            <td>3D assistance using Blender scene context</td>
-          </tr>
-          <tr>
-            <td>LibreOffice modes</td>
-            <td>LibreOffice provider</td>
-            <td>Shared provider family with MCP-backed office tooling</td>
-            <td>Document, presentation, and related office workflows under one integration layer</td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- Site Map -->
+    <section id="sitemap">
+      <h2>Site Map</h2>
+      <p><!-- Brief description of the application's navigation structure --></p>
+      <img src="assets/images/diagrams/sitemap.png" alt="SmolPC 2.0 site map">
     </section>
 
     <section id="sequence-diagrams">

@@ -6,7 +6,7 @@
 </head>
 <body>
   <nav>    
-    <a href="index.html" class="nav-logo"> <img src="assets/images/smolpc.png" alt="SmolPC"> </a>
+    <a href="index.html" class="nav-logo"> <img src="assets/images/smolpc.png" alt="SmolPC 2.0"> </a>
     <a href="index.html">Home</a>
     <a href="requirements.html">Requirements</a>
     <a href="research.html">Research</a>
@@ -23,7 +23,22 @@
 
     <section id="related-projects">
       <h2>Related Projects Review</h2>
-      <p>We reviewed both external tools and our own predecessor prototype to understand what interaction patterns were already effective, where deployment friction came from, and which technical choices would scale from a single assistant to a unified platform. This was important because the project evolved during development from a LibreOffice-focused prototype into a broader multi-mode assistant platform with CodeHelper as the flagship experience [4], [5].</p>
+      <p>Before beginning development, we reviewed the original SmolPC project and related open-source tools to understand what had already been built, what worked well, and where the gaps were. This review directly shaped the scope, architecture, and design decisions of SmolPC 2.0.</p>
+
+      <h3>Original SmolPC (v1.5)</h3>
+      <div class="card">
+        <p>The original SmolPC was a UCL–Intel Industry Exchange Network (IXN) project developed in 2024, available at <a href="https://github.com/bthompson-dev/SmolPC" target="_blank">github.com/bthompson-dev/SmolPC</a>. It was a suite of six independently developed, locally-running AI-powered applications targeting business professionals and travellers on Intel laptops. All AI processing ran entirely on-device — no internet connection or cloud service was required.</p>
+        <p>The six applications were:</p>
+        <ul>
+          <li><strong>AI Assistant for LibreOffice</strong> — Chat interface for creating and editing documents and presentations, with Whisper voice transcription and MCP Server integration.</li>
+          <li><strong>AI Assistant for TextLocator</strong> — Natural-language semantic file search with offline keyword extraction and speech recognition.</li>
+          <li><strong>AI Assistant for Excel</strong> — Natural-language spreadsheet interaction, formula explanations, and voice input, working entirely offline.</li>
+          <li><strong>ReadinTime Voice v1.5</strong> — Text-to-speech storybook narration optimised for Intel CPUs.</li>
+          <li><strong>Speak &amp; See 3D</strong> — Generates 3D assets from spoken prompts using Whisper, Flux.1, and TripoSR.</li>
+          <li><strong>AI Assistant for TextEditor</strong> — QOwnNotes enhancement with summarisation, translation, and RAG-based Q&amp;A.</li>
+        </ul>
+        <p><strong>What we learned:</strong> The original SmolPC proved that capable, privacy-preserving AI is achievable on low-cost Intel hardware using OpenVino and locally-deployed LLMs. However, the six tools were developed independently with no unified launcher or shared interface, and the project targeted business users rather than schools. There were no educational features, no accessibility considerations, and no support for tools like GIMP or Blender. SmolPC 2.0 addresses all of these gaps: it adds a unified Home hub, pivots the focus entirely to education, and extends the suite to cover the creative and coding tools used in UK classrooms.</p>
+      </div>
 
       <h3>Previous SmolPC LibreOffice Prototype</h3>
       <div class="card">
