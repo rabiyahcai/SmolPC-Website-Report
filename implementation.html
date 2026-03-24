@@ -56,7 +56,7 @@ docs/</code></pre>
 
     <section id="unified-shell">
       <h2>Unified App Shell</h2>
-      <p>The current integrated application lives in <code>apps/codehelper</code>. Although CodeHelper is the flagship mode, the app shell now supports multiple workflows in one interface, including CodeHelper, GIMP, Blender, and LibreOffice modes such as Writer and Slides.</p>
+      <p>The current integrated application lives in <code>apps/codehelper</code>. Although Code mode is the flagship workflow, the SmolPC 2.0 app shell now supports multiple workflows in one interface, including Code, GIMP, Blender, and LibreOffice modes such as Writer and Slides.</p>
 
       <h3>Mode Configuration and Switching</h3>
       <p>Modes are configured as structured frontend objects with labels, capability flags, suggestions, and provider types. The UI does not hard-code one assistant flow; instead, it loads mode metadata and presents the appropriate controls for the selected mode. This was an important step in turning a single assistant UI into a platform shell.</p>
@@ -110,12 +110,60 @@ docs/</code></pre>
 
     <section id="codehelper">
       <h2>Code Mode and Core Chat Experience</h2>
-      <p>Code mode is the simplest implementation path and the foundation of the unified app shell. It uses the shared engine for local text generation and presents the result through the same conversation UI that the other modes reuse.</p>
+      <p>Code mode is the simplest implementation path and the foundation of the unified app shell. It uses the shared engine for local text generation and presents the result through the same conversation UI that the other modes reuse. It is also currently one of the clearest places where the platform&apos;s voice features are surfaced to the user.</p>
 
       <h3>Key Implementation Features</h3>
       <p><strong>Blocking engine startup handshake:</strong> the inference store ensures that the engine is started and ready before normal generation begins, and then refreshes backend status so the UI can show the active runtime state.</p>
       <p><strong>Streaming generation:</strong> responses are streamed token by token through the Tauri command boundary, which allows the frontend to update the active assistant message incrementally.</p>
       <p><strong>Memory and runtime awareness:</strong> the inference layer also exposes runtime mode, backend status, and memory-pressure information so the UI can react to constrained devices more gracefully.</p>
+    </section>
+
+    <section id="voice-io">
+      <h2>Voice Input and Read-Aloud</h2>
+      <p>Voice features were implemented as an extension of the existing SmolPC 2.0 chat workflow rather than as a separate subsystem from the user&apos;s perspective. In the current unified app shell, these features are exposed through an optional microphone button in the composer and a read-aloud control on assistant responses.</p>
+
+      <h3>Frameworks and Libraries</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Framework / Library</th>
+            <th>Purpose</th>
+            <th>How It Was Used</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>cpal</code></td>
+            <td>Microphone capture</td>
+            <td>Used in the Tauri layer to record audio from the user&apos;s input device at its native sample rate</td>
+          </tr>
+          <tr>
+            <td><code>rubato</code></td>
+            <td>Audio resampling</td>
+            <td>Used to convert recorded audio into the 16kHz mono format expected by the local Whisper transcription path</td>
+          </tr>
+          <tr>
+            <td>Shared engine + WhisperPipeline</td>
+            <td>Local speech-to-text</td>
+            <td>Used to transcribe microphone audio through the engine&apos;s <code>/v1/audio/transcriptions</code> endpoint</td>
+          </tr>
+          <tr>
+            <td><code>rodio</code></td>
+            <td>Audio playback</td>
+            <td>Used to play returned WAV data locally when the user requests read-aloud on an assistant message</td>
+          </tr>
+          <tr>
+            <td><code>smolpc-tts-server</code> and KittenTTS</td>
+            <td>Local text-to-speech</td>
+            <td>Used as a detached sidecar behind the engine&apos;s <code>/v1/audio/speech</code> proxy so that text-to-speech stays offline without complicating the main inference process</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Key Features Implementation</h3>
+      <p><strong>Microphone capture and transcription insertion:</strong> the app records locally, mixes and resamples the audio where needed, sends it to the engine, and inserts the resulting text back into the composer so the user can review it before sending.</p>
+      <p><strong>Per-message read-aloud:</strong> assistant responses can be synthesized on demand and played back locally, with the UI tracking loading, playing, and stop states through a dedicated voice store.</p>
+      <p><strong>Detached TTS boundary:</strong> text-to-speech is intentionally isolated behind a sidecar process and the engine API so that voice-output problems degrade to an unavailable control instead of destabilising the main chat or runtime-selection path.</p>
     </section>
 
     <section id="gimp">

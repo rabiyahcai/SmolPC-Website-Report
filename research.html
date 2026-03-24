@@ -49,7 +49,7 @@
       <h3>GitHub Copilot</h3>
       <div class="card">
         <p><strong>Main Features:</strong> Context-aware code completion, chat, editing support, and integration inside common development tools [1].</p>
-        <p><strong>What we learned:</strong> This helped us benchmark the broader expectation that AI can support coding tasks. However, our own response to that need was different: instead of deep IDE integration, CodeHelper was designed as a simple local chat-based coding assistant inside the unified SmolPC app, prioritising offline use, privacy, and low deployment friction over editor-specific features.</p>
+        <p><strong>What we learned:</strong> This helped us benchmark the broader expectation that AI can support coding tasks. However, our own response to that need was different: instead of deep IDE integration, SmolPC 2.0 includes a simple local coding mode inside the unified app, prioritising offline use, privacy, and low deployment friction over editor-specific features.</p>
       </div>
 
       <h3>GIMP MCP</h3>
@@ -189,6 +189,40 @@
         </tbody>
       </table>
 
+      <h3>Voice Interaction and Accessibility</h3>
+      <p>As the unified shell matured, voice interaction became a practical accessibility improvement for SmolPC 2.0 as a whole. The key research question was not whether speech APIs existed, but how to add dictation and read-aloud without breaking the project&apos;s offline and single-product goals. The chosen direction keeps both speech-to-text and text-to-speech local, and exposes them through the same shared engine surface as the rest of the assistant platform [13].</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Option</th>
+            <th>Pros</th>
+            <th>Cons</th>
+            <th>Chosen</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>No voice features</td>
+            <td>Simplest product surface and no extra runtime components</td>
+            <td>Misses an accessibility opportunity and keeps the local assistant entirely keyboard-driven</td>
+            <td class="no">No</td>
+          </tr>
+          <tr>
+            <td>Cloud speech-to-text and text-to-speech services</td>
+            <td>Quick to prototype and often high quality</td>
+            <td>Breaks offline use, weakens privacy guarantees, and adds service dependency</td>
+            <td class="no">No</td>
+          </tr>
+          <tr>
+            <td>Local Whisper STT plus local TTS behind the shared engine</td>
+            <td>Preserves offline operation, fits the shared-engine contract, and improves accessibility inside the existing UI [13]</td>
+            <td>Adds packaging complexity and extra local runtime resources</td>
+            <td class="yes">Yes</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>Research and implementation also ruled out a naive in-process TTS design. The final voice architecture keeps Whisper transcription inside the engine host, but isolates TTS in a separate sidecar because that was the safest way to avoid runtime conflicts with the main inference stack while still presenting one unified API to the app [13].</p>
+
       <h3>Desktop Application Stack</h3>
       <p>The move from the older prototype toward a cross-platform packaged desktop application made the application framework decision especially important. Tauri was chosen because it matched the project priorities around packaging, native backend control, and a lighter-weight desktop footprint while still allowing a modern web-based UI [9].</p>
       <table>
@@ -311,7 +345,7 @@
           </tr>
           <tr>
             <td>Flagship workflow</td>
-            <td>CodeHelper as the core user-facing mode</td>
+            <td>Code mode as the core user-facing workflow</td>
             <td>Made the platform identity clearer while still supporting other assistant workflows</td>
           </tr>
           <tr>
@@ -349,6 +383,16 @@
             <td>App-specific host bridges and tool providers</td>
             <td>Enabled structured control of GIMP, Blender, and LibreOffice workflows instead of plain chat alone</td>
           </tr>
+          <tr>
+            <td>Voice input</td>
+            <td>Local Whisper speech-to-text through the shared engine</td>
+            <td>Added offline dictation without introducing cloud speech services</td>
+          </tr>
+          <tr>
+            <td>Voice output</td>
+            <td>Local TTS sidecar behind the engine API</td>
+            <td>Preserved a unified app contract while isolating TTS runtime concerns</td>
+          </tr>
         </tbody>
       </table>
     </section>
@@ -368,6 +412,7 @@
         <li>[10] Svelte, &ldquo;Svelte,&rdquo; 2026. [Online]. Available: <a href="https://svelte.dev/" target="_blank">https://svelte.dev/</a>. [Accessed: 23-Mar-2026].</li>
         <li>[11] Model Context Protocol, &ldquo;What is the Model Context Protocol (MCP)?,&rdquo; 2026. [Online]. Available: <a href="https://modelcontextprotocol.io/docs/getting-started/intro" target="_blank">https://modelcontextprotocol.io/docs/getting-started/intro</a>. [Accessed: 23-Mar-2026].</li>
         <li>[12] SmolPC-2.0, &ldquo;Shared Engine Integration Notes,&rdquo; GitHub, 2026. [Online]. Available: <a href="https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/SMOLPC_SUITE_INTEGRATION.md" target="_blank">https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/SMOLPC_SUITE_INTEGRATION.md</a>. [Accessed: 23-Mar-2026].</li>
+        <li>[13] SmolPC-2.0, &ldquo;Voice I/O: Whisper STT + KittenTTS,&rdquo; GitHub, 2026. [Online]. Available: <a href="https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/superpowers/specs/2026-03-24-voice-io-design.md" target="_blank">https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/superpowers/specs/2026-03-24-voice-io-design.md</a>. [Accessed: 24-Mar-2026].</li>
       </ol>
     </section>
 
