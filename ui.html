@@ -18,14 +18,19 @@
     <a href="appendices.html">Appendices</a>
   </nav>
 
-  <  <main>
+  <main>
 
     <h1>UI Design</h1>
 
-    <!-- Design Principles -->
     <section id="design-principles">
       <h2>Design Principles</h2>
-      <p><!-- Brief intro to your design approach --></p>
+      <p>
+        The UI was designed around a single guiding idea: users should not have to learn a different
+        application shell for each assistant. Instead of building four disconnected interfaces, SmolPC
+        uses one shared desktop shell and changes the active mode, help content, setup state, and prompt
+        suggestions depending on the task. This supports the broader project goal of a unified offline
+        platform rather than a collection of unrelated demos.
+      </p>
 
       <div class="card">
         <h3>Simplicity</h3>
@@ -34,103 +39,269 @@
 
       <div class="card">
         <h3>Consistency</h3>
-        <p><!-- How you maintained consistency across all four assistants --></p>
+        <p>
+          CodeHelper, LibreOffice, GIMP, and Blender all use the same core layout: shared sidebar,
+          common header controls, the same conversation view, the same composer bar, and the same setup
+          and status language. This means that switching tools feels like changing context inside one
+          product rather than launching a new product each time.
+        </p>
       </div>
 
       <div class="card">
         <h3>Visibility</h3>
-        <p><!-- How you ensured important elements are visible --></p>
+        <p>
+          Important state is always visible. The interface exposes the active mode, setup readiness,
+          model and runtime information, loading states, and host-application availability so that users
+          can understand whether the assistant is ready and what environment it is currently using.
+        </p>
       </div>
 
       <div class="card">
         <h3>Feedback</h3>
-        <p><!-- How the UI provides feedback to users e.g. loading states, confirmations --></p>
+        <p>
+          Feedback is provided through startup loading screens, setup banners, streaming assistant
+          responses, quick examples, availability messages, and error surfaces for host-app launch or
+          inference issues. This is particularly important for a local AI system, where users need to
+          understand why a request may be slower or blocked on a prerequisite.
+        </p>
       </div>
 
       <div class="card">
         <h3>Tolerance</h3>
-        <p><!-- How the UI handles errors and allows users to recover --></p>
+        <p>
+          The interface is designed to help users recover rather than fail abruptly. Setup gating
+          explains missing prerequisites, mode help panels explain what a mode is for, and chat history
+          persists across sessions so users do not lose their place when a workflow needs to be retried.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Learnability</h3>
+        <p>
+          Each mode uses short, mode-specific welcome copy and example prompts to teach the user what the
+          assistant can do. This matters because the same shell supports very different tasks, from coding
+          help to image editing and Blender guidance.
+        </p>
       </div>
 
     </section>
 
-    <!-- LibreOffice Assistant -->
-    <section id="libreoffice">
-      <h2>LibreOffice Assistant</h2>
-
-      <h3>Hand-Drawn Sketches</h3>
-      <div class="sketch-grid">
-        <img src="assets/images/sketches/libreoffice-1.jpg" alt="LibreOffice assistant sketch 1">
-        <img src="assets/images/sketches/libreoffice-2.jpg" alt="LibreOffice assistant sketch 2">
-      </div>
-
-      <h3>High Fidelity Wireframe</h3>
-      <p>View the interactive wireframe on Figma: 
-        <a href="<!-- figma link -->" target="_blank">LibreOffice Assistant Wireframe</a>
+    <section id="overall-layout">
+      <h2>Unified App Shell</h2>
+      <p>
+        The implemented interface is centred on a reusable application shell. This shell gives every mode
+        the same basic structure while still allowing mode-specific behaviour, copy, setup checks, and
+        host-application controls. The result is a UI that feels coherent even though the underlying
+        assistants target very different workflows.
       </p>
-      <img src="assets/images/wireframes/libreoffice-wireframe.png" alt="LibreOffice assistant wireframe">
 
+      <table>
+        <thead>
+          <tr>
+            <th>UI Element</th>
+            <th>Purpose</th>
+            <th>Why It Matters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Sidebar</td>
+            <td>Shows and switches between saved conversations.</td>
+            <td>Supports continuity and makes the app feel like a persistent workspace rather than a one-off prompt box.</td>
+          </tr>
+          <tr>
+            <td>Mode selector</td>
+            <td>Changes the active assistant workflow without leaving the main shell.</td>
+            <td>Reinforces the idea of one platform with multiple specialised modes.</td>
+          </tr>
+          <tr>
+            <td>Workspace header</td>
+            <td>Shows current context and provides access to help, model info, hardware, and diagnostics.</td>
+            <td>Keeps important system state visible without cluttering the main conversation area.</td>
+          </tr>
+          <tr>
+            <td>Setup banner and setup panel</td>
+            <td>Warns the user when a mode is unavailable or missing prerequisites.</td>
+            <td>Essential for host-integrated tools such as GIMP, Blender, and LibreOffice.</td>
+          </tr>
+          <tr>
+            <td>Conversation view and welcome state</td>
+            <td>Displays mode-specific onboarding copy, example prompts, and the running conversation.</td>
+            <td>Supports both first-time guidance and ongoing use in the same space.</td>
+          </tr>
+          <tr>
+            <td>Composer bar</td>
+            <td>Provides a single input pattern for all text-based interactions.</td>
+            <td>Reduces cognitive load by keeping the core interaction model consistent.</td>
+          </tr>
+          <tr>
+            <td>Help drawer and overlays</td>
+            <td>Explain mode purpose, controls, troubleshooting steps, and runtime status.</td>
+            <td>Improves learnability and gives non-expert users confidence in an unfamiliar local AI workflow.</td>
+          </tr>
+          <tr>
+            <td>Host app launch controls</td>
+            <td>Open or focus the relevant external application from the current workflow.</td>
+            <td>Bridges the gap between the assistant shell and real user tasks inside GIMP, Blender, or LibreOffice.</td>
+          </tr>
+        </tbody>
+      </table>
     </section>
 
-    <!-- CodeHelper -->
     <section id="codehelper">
       <h2>CodeHelper</h2>
+      <p>
+        CodeHelper is the clearest and simplest mode in the current UI. It uses the shared shell without
+        needing an external host application, which makes it the easiest place to establish the product&apos;s
+        overall interaction pattern.
+      </p>
 
-      <h3>Hand-Drawn Sketches</h3>
-      <div class="sketch-grid">
-        <img src="assets/images/sketches/codehelper-1.jpg" alt="CodeHelper sketch 1">
-        <img src="assets/images/sketches/codehelper-2.jpg" alt="CodeHelper sketch 2">
+      <div class="card">
+        <h3>Implemented UI Decisions</h3>
+        <p>
+          This mode emphasises a clean conversation view, clear prompt starters, visible runtime status,
+          and low-friction onboarding. The welcome state explains what CodeHelper is for and encourages
+          users to ask for code explanations, debugging help, or new code in plain language.
+        </p>
       </div>
 
-      <h3>High Fidelity Wireframe</h3>
-      <p>View the interactive wireframe on Figma: 
-        <a href="<!-- figma link -->" target="_blank">CodeHelper Wireframe</a>
-      </p>
-      <img src="assets/images/wireframes/codehelper-wireframe.png" alt="CodeHelper wireframe">
+      <div class="card">
+        <h3>Hand-Drawn Sketches</h3>
+        <p>
+          To be added. Final sketches should show the empty state, an active coding conversation, loading
+          feedback, and the relationship between the sidebar, mode selector, and composer.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>High-Fidelity Wireframe</h3>
+        <p>
+          To be added. The final exported wireframe or Figma link should capture the polished shared
+          shell with CodeHelper as the flagship mode.
+        </p>
+      </div>
 
     </section>
 
-    <!-- GIMP Assistant -->
+    <section id="libreoffice">
+      <h2>LibreOffice Modes</h2>
+      <p>
+        The LibreOffice workflows reuse the same shell as CodeHelper but place more emphasis on setup
+        readiness, host-application launching, and concise structured task descriptions. This lets the
+        UI support document and presentation work without inventing a totally separate interaction model.
+      </p>
+
+      <div class="card">
+        <h3>Implemented UI Decisions</h3>
+        <p>
+          Writer and Slides use mode-specific welcome copy, host-app launch controls, and setup
+          messaging that make it clear the user is working with a real desktop tool rather than a generic
+          chatbot. The same shared layout helps users transfer knowledge across office tasks.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Hand-Drawn Sketches</h3>
+        <p>
+          To be added. These should show how office tasks fit into the shared shell, including mode
+          switching, setup state, and a document- or slide-oriented prompt flow.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>High-Fidelity Wireframe</h3>
+        <p>
+          To be added. The final wireframe should show the LibreOffice-specific welcome state, host-app
+          button, and example task flow inside the unified app.
+        </p>
+      </div>
+    </section>
+
     <section id="gimp">
       <h2>GIMP Assistant</h2>
+      <p>
+        GIMP mode required a stronger emphasis on host-state awareness than CodeHelper because the
+        usefulness of the assistant depends on the external editor being available and correctly prepared.
+        The UI therefore gives setup, mode availability, and edit feedback a more prominent role.
+      </p>
 
-      <h3>Hand-Drawn Sketches</h3>
-      <div class="sketch-grid">
-        <img src="assets/images/sketches/gimp-1.jpg" alt="GIMP assistant sketch 1">
-        <img src="assets/images/sketches/gimp-2.jpg" alt="GIMP assistant sketch 2">
+      <div class="card">
+        <h3>Implemented UI Decisions</h3>
+        <p>
+          The mode-specific copy encourages direct plain-English image-editing prompts, while setup and
+          help surfaces explain what needs to be ready before the assistant can act. This keeps the
+          workflow approachable for users who may not know GIMP&apos;s menu structure well.
+        </p>
       </div>
 
-      <h3>High Fidelity Wireframe</h3>
-      <p>View the interactive wireframe on Figma: 
-        <a href="<!-- figma link -->" target="_blank">GIMP Assistant Wireframe</a>
+      <div class="card">
+        <h3>Hand-Drawn Sketches</h3>
+        <p>
+          To be added. Final sketches should show the relationship between the shared app shell, the GIMP
+          launch control, and the user flow for simple image-editing requests.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>High-Fidelity Wireframe</h3>
+        <p>
+          To be added. The final wireframe should illustrate how edit summaries, setup status, and host
+          application controls appear within the unified interface.
+        </p>
+      </div>
+    </section>
+
+    <section id="blender">
+      <h2>Blender Assistant</h2>
+      <p>
+        Blender mode has the most context-heavy UI story because it is designed around scene-aware
+        guidance rather than generic chat alone. The interface therefore uses its welcome copy and help
+        surfaces to steer users toward asking about the live scene, objects, modifiers, materials, and
+        specific modelling steps.
       </p>
-      <img src="assets/images/wireframes/gimp-wireframe.png" alt="GIMP assistant wireframe">
+
+      <div class="card">
+        <h3>Implemented UI Decisions</h3>
+        <p>
+          Blender mode keeps the shared shell but places extra importance on clear troubleshooting and
+          contextual guidance. This is because the user is often moving between the assistant and a live
+          3D environment, making clarity and state awareness especially important.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Hand-Drawn Sketches</h3>
+        <p>
+          To be added. The final sketches should show how the mode supports scene-based help, Blender
+          launching, and the relationship between the assistant shell and the active 3D workflow.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>High-Fidelity Wireframe</h3>
+        <p>
+          To be added. The final wireframe should focus on scene-aware onboarding, help content, and a
+          representative Blender conversation inside the unified shell.
+        </p>
+      </div>
 
     </section>
 
-    <!-- Blender Assistant -->
-    <section id="blender">
-      <h2>Blender Assistant</h2>
-
-      <h3>Hand-Drawn Sketches</h3>
-      <div class="sketch-grid">
-        <img src="assets/images/sketches/blender-1.jpg" alt="Blender assistant sketch 1">
-        <img src="assets/images/sketches/blender-2.jpg" alt="Blender assistant sketch 2">
-      </div>
-
-      <h3>High Fidelity Wireframe</h3>
-      <p>View the interactive wireframe on Figma: 
-        <a href="<!-- figma link -->" target="_blank">Blender Assistant Wireframe</a>
+    <section id="artefacts">
+      <h2>Design Artefacts Status</h2>
+      <p>
+        Hand-drawn sketches, exported wireframes, and any Figma links are still to be inserted. This
+        page already captures the implemented design rationale and the current UI structure, so the
+        remaining work here is mainly to attach the visual artefacts that document the design process more
+        explicitly.
       </p>
-      <img src="assets/images/wireframes/blender-wireframe.png" alt="Blender assistant wireframe">
-
     </section>
 
   </main>
 
   <footer>
     <div class="footer-links">
-    <a href="mailto:<!-- team email -->">Email</a>
+    <span>Email to be added</span>
     <a href="https://github.com/SmolPC-2-0/smolpc-codehelper" target="_blank">GitHub</a>
   </div>
 

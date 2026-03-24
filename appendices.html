@@ -22,7 +22,6 @@
 
     <h1>Appendices</h1>
 
-    <!-- User Manual -->
     <section id="user-manual">
       <h2>User Manual</h2>
       <p><!-- how to use this manual --></p>
@@ -38,56 +37,95 @@
       <h3>LibreOffice Assistant</h3>
       <p><!-- How to use the LibreOffice assistant --></p>
 
-      <h4>Step 1: <!-- Step name --></h4>
-      <p><!-- Description --></p>
-      <img src="assets/images/manual/libreoffice-1.png" alt="LibreOffice assistant step 1">
+      <h3>Starting SmolPC</h3>
+      <ol>
+        <li>Launch the SmolPC desktop application.</li>
+        <li>Wait for the startup screen and setup checks to complete.</li>
+        <li>If the setup banner reports a missing dependency, open the setup panel and follow the guidance before continuing.</li>
+      </ol>
+      <div class="card">
+        <h3>Screenshot To Add</h3>
+        <p>The final report should include a screenshot of the startup screen and the initial unified app shell.</p>
+      </div>
 
-      <h4>Step 2: <!-- Step name --></h4>
-      <p><!-- Description --></p>
-      <img src="assets/images/manual/libreoffice-2.png" alt="LibreOffice assistant step 2">
+      <h3>General Navigation</h3>
+      <ol>
+        <li>Use the sidebar to open or continue previous conversations.</li>
+        <li>Use the mode selector to switch between CodeHelper, LibreOffice modes, GIMP, and Blender.</li>
+        <li>Use the help drawer, setup panel, and status overlays if you need more information about the current mode.</li>
+        <li>Type requests into the composer bar at the bottom of the conversation view.</li>
+      </ol>
 
       <h3>CodeHelper</h3>
-      <p><!-- How to use CodeHelper --></p>
+      <ol>
+        <li>Select <strong>Code</strong> mode.</li>
+        <li>Ask a coding question in plain language or paste a code snippet into the composer.</li>
+        <li>Read the assistant response and continue the conversation if more detail is needed.</li>
+      </ol>
+      <div class="card">
+        <h3>Screenshot To Add</h3>
+        <p>Insert a screenshot showing the CodeHelper welcome state and a typical coding conversation.</p>
+      </div>
 
-      <h4>Step 1: <!-- Step name --></h4>
-      <p><!-- Description --></p>
-      <img src="assets/images/manual/codehelper-1.png" alt="CodeHelper step 1">
-
-      <h4>Step 2: <!-- Step name --></h4>
-      <p><!-- Description --></p>
-      <img src="assets/images/manual/codehelper-2.png" alt="CodeHelper step 2">
+      <h3>LibreOffice Writer and Slides</h3>
+      <ol>
+        <li>Select <strong>Writer</strong> or <strong>Slides</strong> mode.</li>
+        <li>Use the host-application button to open LibreOffice if required.</li>
+        <li>Describe the task in natural language, for example adding a heading, creating a section, or inserting a slide.</li>
+        <li>Review the assistant reply and any setup or recovery guidance if the workflow is unavailable.</li>
+      </ol>
+      <div class="card">
+        <h3>Screenshot To Add</h3>
+        <p>Insert a screenshot showing a Writer or Slides workflow inside the unified shell.</p>
+      </div>
 
       <h3>GIMP Assistant</h3>
-      <p><!-- How to use the GIMP assistant --></p>
-
-      <h4>Step 1: <!-- Step name --></h4>
-      <p><!-- Description --></p>
-      <img src="assets/images/manual/gimp-1.png" alt="GIMP assistant step 1">
-
-      <h4>Step 2: <!-- Step name --></h4>
-      <p><!-- Description --></p>
-      <img src="assets/images/manual/gimp-2.png" alt="GIMP assistant step 2">
+      <ol>
+        <li>Select <strong>GIMP</strong> mode.</li>
+        <li>Open GIMP from the host-application control if the mode is ready.</li>
+        <li>Ask for a direct edit in plain language, such as cropping, rotating, brightening, or blurring an image.</li>
+        <li>Check the assistant summary to confirm what action was taken.</li>
+      </ol>
+      <div class="card">
+        <h3>Screenshot To Add</h3>
+        <p>Insert a screenshot showing GIMP mode, setup state, and an example image-editing prompt.</p>
+      </div>
 
       <h3>Blender Assistant</h3>
-      <p><!-- How to use the Blender assistant --></p>
+      <ol>
+        <li>Select <strong>Blender</strong> mode.</li>
+        <li>Open Blender from the host-application control if the mode is ready.</li>
+        <li>Ask a scene-aware question or request help with a modelling task, modifier, material, or object.</li>
+        <li>Use the response as guidance for the current Blender scene and continue with narrower follow-up questions if needed.</li>
+      </ol>
+      <div class="card">
+        <h3>Screenshot To Add</h3>
+        <p>Insert a screenshot showing Blender mode with a scene-aware prompt and response.</p>
+      </div>
 
-      <h4>Step 1: <!-- Step name --></h4>
-      <p><!-- Description --></p>
-      <img src="assets/images/manual/blender-1.png" alt="Blender assistant step 1">
-
-      <h4>Step 2: <!-- Step name --></h4>
-      <p><!-- Description --></p>
-      <img src="assets/images/manual/blender-2.png" alt="Blender assistant step 2">
+      <h3>Known User-Facing Limitations</h3>
+      <ul>
+        <li>Some modes depend on external host applications and may be unavailable until setup is complete.</li>
+        <li>Response quality and speed depend on the available local hardware and the active model/runtime path.</li>
+        <li>More complex multi-step requests may work best when broken into smaller actions.</li>
+      </ul>
 
     </section>
 
-    <!-- Deployment Manual -->
     <section id="deployment-manual">
       <h2>Deployment Manual</h2>
-      <p><!-- Brief intro — who this is for and what it covers --></p>
+      <p>
+        This appendix documents the current deployment picture for the project. The long-term goal is a
+        smoother bundled local installer, but the repository already contains a concrete developer and
+        tester setup path for the unified application.
+      </p>
 
       <h3>Prerequisites</h3>
-      <p><!-- List everything that needs to be installed before deploying --></p>
+      <p>
+        The current repo-backed setup is Windows-first and assumes a development or tester machine with
+        the project dependencies available. The exact final end-user installer steps may be refined later
+        once the packaging flow is fully locked down.
+      </p>
       <table>
         <thead>
           <tr>
@@ -98,27 +136,65 @@
         </thead>
         <tbody>
           <tr>
-            <td><!-- e.g. Python --></td>
-
+            <td>Node.js and npm</td>
+            <td>Project workspace version</td>
+            <td>Required for workspace scripts such as <code>npm run check</code> and Tauri app commands.</td>
+          </tr>
+          <tr>
+            <td>Rust toolchain and Cargo</td>
+            <td>Project workspace version</td>
+            <td>Required for engine crates and the Tauri backend.</td>
+          </tr>
+          <tr>
+            <td>Tauri desktop dependencies</td>
+            <td>Current project version</td>
+            <td>Needed to run the desktop shell from source.</td>
+          </tr>
+          <tr>
+            <td>Local runtime resources</td>
+            <td>Current project version</td>
+            <td>Provisioned through the project&apos;s runtime and model setup scripts.</td>
+          </tr>
+          <tr>
+            <td>Optional host applications</td>
+            <td>Installed locally</td>
+            <td>Needed for GIMP, Blender, and LibreOffice workflows.</td>
           </tr>
         </tbody>
       </table>
 
-      <h3>Step 1: Clone the Repository</h3>
+      <h3>Developer or Tester Setup From Source</h3>
+
+      <h4>Step 1: Clone the repository</h4>
       <pre><code>git clone "https://github.com/SmolPC-2-0/smolpc-codehelper"
-        cd smolpc-codehelper</code></pre>
+cd smolpc-codehelper</code></pre>
 
-      <h3>Step 2: Install Dependencies</h3>
-      <pre><code></code></pre>
-      <img src="assets/images/manual/deploy-2.png" alt="Install dependencies screenshot">
+      <h4>Step 2: Install workspace dependencies</h4>
+      <pre><code>npm ci
+cargo check --workspace</code></pre>
 
-      <h3>Step 3: <!-- Next step --></h3>
-      <p><!-- Description --></p>
-      <pre><code><!-- Command --></code></pre>
+      <h4>Step 3: Prepare local runtime resources</h4>
+      <pre><code>npm run runtime:setup:openvino
+npm run runtime:setup:python
+npm run model:setup:qwen25-instruct
+npm run model:setup:qwen3-4b</code></pre>
 
-      <h3>Step 4: <!-- Next step --></h3>
-      <p><!-- Description --></p>
-      <pre><code><!-- Command --></code></pre>
+      <h4>Step 4: Run checks</h4>
+      <pre><code>npm run check
+npm run boundary:check
+cargo test -p smolpc-engine-core -p smolpc-engine-client -p smolpc-engine-host</code></pre>
+
+      <h4>Step 5: Launch the unified app</h4>
+      <pre><code>npm run tauri:dev</code></pre>
+
+      <h3>Current Packaging Direction</h3>
+      <p>
+        The codebase also includes offline-bundle and Windows-local packaging scripts. These are part of
+        the project&apos;s move toward a single-install local deployment path rather than requiring users to
+        operate a separate model server manually.
+      </p>
+      <pre><code>npm run package:offline
+npm run package:offline:bundle</code></pre>
 
       <h3>Step 5: Run SmolPC 2.0</h3>
       <p><!-- How to launch the application --></p>
@@ -127,63 +203,109 @@
 
       <h3>Troubleshooting</h3>
       <div class="card">
-        <h3><!-- Common issue 1 --></h3>
-        <p><!-- Solution --></p>
+        <h3>Mode Unavailable</h3>
+        <p>
+          If GIMP, Blender, Writer, or Slides is unavailable, open the setup panel and check which host
+          application or runtime prerequisite is missing.
+        </p>
       </div>
       <div class="card">
-        <h3><!-- Common issue 2 --></h3>
-        <p><!-- Solution --></p>
+        <h3>Runtime Or Model Problems</h3>
+        <p>
+          If inference startup fails, rerun the runtime and model setup scripts and verify that the local
+          machine has the required runtime path available.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Host Application Issues</h3>
+        <p>
+          Host-integrated workflows depend on external application state. If a bridge-backed mode behaves
+          unexpectedly, launch the host app first and then retry a simpler request.
+        </p>
       </div>
 
     </section>
 
-    <!-- GDPR and Privacy -->
     <section id="gdpr">
       <h2>GDPR and Privacy of Data</h2>
+      <p>
+        SmolPC was designed as a local-first system, so privacy is one of its core architectural
+        properties rather than an afterthought. The project minimises data transfer by keeping inference,
+        prompts, and normal usage on the local device.
+      </p>
 
       <h3>Data Collection</h3>
       <p><!-- What data SmolPC 2.0 collects if any --></p>
 
       <h3>Data Storage</h3>
-      <p><!-- Where and how data is stored --></p>
+      <p>
+        Conversation history and settings are stored on the local machine. Runtime resources, model
+        assets, tokens, and host-application integration files are also stored locally as part of the
+        application environment. Host applications such as GIMP, Blender, and LibreOffice may also store
+        their own local files in the normal way outside SmolPC itself.
+      </p>
 
       <h3>Data Usage</h3>
-      <p><!-- How collected data is used --></p>
+      <p>
+        Local data is used only to operate the application, preserve chat history, support setup flows,
+        and provide assistant responses on-device. The intended purpose is functional use of the product,
+        not user profiling or remote analytics.
+      </p>
 
       <h3>Data Sharing</h3>
-      <p><!-- Whether data is shared with third parties --></p>
+      <p>
+        Under normal use, SmolPC does not send prompts, generated content, or conversation history to
+        third-party inference providers. This is one of the main reasons the project moved away from a
+        cloud-dependent architecture.
+      </p>
 
       <h3>User Rights</h3>
-      <p><!-- What rights users have over their data under GDPR --></p>
+      <p>
+        Because data is stored locally, users retain direct control over their own conversations and
+        application state on the device. Final release documentation should include clear instructions for
+        deleting stored chat data and removing local runtime assets if required.
+      </p>
 
       <h3>Offline Operation</h3>
       <p><!-- Since SmolPC 2.0 is offline, explain the privacy benefits of this --></p>
 
     </section>
 
-    <!-- License -->
     <section id="license">
       <h2>Source Code License</h2>
-      <p><!-- Check with your project partner and state the license here --></p>
+      <p>
+        The current repository includes an MIT License at the repository root. This permits reuse,
+        modification, and redistribution subject to the license terms and the retention of the copyright
+        notice and permission notice.
+      </p>
       <div class="card">
-        <h3><!-- License name e.g. MIT License --></h3>
-        <p><!-- License statement --></p>
+        <h3>MIT License</h3>
+        <p>
+          The software is provided &quot;as is&quot;, without warranty of any kind. Third-party dependencies
+          retain their own licenses, so a final release should continue to respect the license conditions
+          of bundled libraries and external components.
+        </p>
       </div>
     </section>
 
-    <!-- Development Blog -->
     <section id="blog">
       <h2>Development Blog</h2>
       <p>
-        Our development blog is hosted publicly and updated every two weeks throughout the project.
-        <a href="<!-- blog url -->" target="_blank">View our development blog here</a>
+        A public development blog link should be inserted here before submission, as required by the
+        assessment brief.
       </p>
+      <div class="card">
+        <h3>Blog Link To Add</h3>
+        <p>Public development blog URL: to be added.</p>
+      </div>
     </section>
 
-    <!-- Monthly Videos -->
     <section id="monthly-videos">
       <h2>Monthly Videos</h2>
-      <p><!-- Brief description --></p>
+      <p>
+        Monthly progress videos should be linked here in the final submission. The table below keeps the
+        required structure in place so links and titles can be added later without redesigning the page.
+      </p>
 
       <table>
         <thead>
@@ -196,28 +318,28 @@
         <tbody>
           <tr>
             <td>November 2025</td>
-            <td><!-- Video title --></td>
-            <td><a href="<!-- OneDrive link -->" target="_blank">Watch</a></td>
+            <td>To be added</td>
+            <td>Link to be added</td>
           </tr>
           <tr>
             <td>December 2025</td>
-            <td><!-- Video title --></td>
-            <td><a href="<!-- OneDrive link -->" target="_blank">Watch</a></td>
+            <td>To be added</td>
+            <td>Link to be added</td>
           </tr>
           <tr>
             <td>January 2026</td>
-            <td><!-- Video title --></td>
-            <td><a href="<!-- OneDrive link -->" target="_blank">Watch</a></td>
+            <td>To be added</td>
+            <td>Link to be added</td>
           </tr>
           <tr>
             <td>February 2026</td>
-            <td><!-- Video title --></td>
-            <td><a href="<!-- OneDrive link -->" target="_blank">Watch</a></td>
+            <td>To be added</td>
+            <td>Link to be added</td>
           </tr>
           <tr>
             <td>March 2026</td>
-            <td><!-- Video title --></td>
-            <td><a href="<!-- OneDrive link -->" target="_blank">Watch</a></td>
+            <td>To be added</td>
+            <td>Link to be added</td>
           </tr>
         </tbody>
       </table>
@@ -230,7 +352,7 @@
 
   <footer>
     <div class="footer-links">
-    <a href="mailto:<!-- team email -->">Email</a>
+    <span>Email to be added</span>
     <a href="https://github.com/SmolPC-2-0/smolpc-codehelper" target="_blank">GitHub</a>
   </div>
 

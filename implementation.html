@@ -18,14 +18,13 @@
     <a href="appendices.html">Appendices</a>
   </nav>
 
-    <main>
+  <main>
 
     <h1>Implementation</h1>
 
-    <!-- Overview -->
     <section id="overview">
       <h2>Overview</h2>
-      <p><!-- Brief intro to the implementation, tech stack summary --></p>
+      <p>The implementation moved from separate prototypes toward a unified desktop product built around one shared engine and one integrated application shell. The strongest implementation theme is therefore not four isolated assistants, but the interaction between the shared engine, the Tauri backend, the Svelte frontend, and the mode-specific providers that adapt the platform to different workflows.</p>
     </section>
 
     <!-- Shared Infrastructure -->
@@ -34,211 +33,219 @@
       <p><!-- Describe how SmolPC 2.0 ties all four assistants together, shared components, common code --></p>
 
       <h3>Project Structure</h3>
-      <pre><code><!-- Paste your folder/file structure here --></code></pre>
+      <pre><code>.
+engine/
+  crates/
+    smolpc-engine-core
+    smolpc-engine-host
+    smolpc-engine-client
+apps/
+  codehelper/
+launcher/
+docs/</code></pre>
 
-      <h3>AI Model Integration</h3>
-      <p><!-- How the AI model is loaded and shared across assistants --></p>
-      <pre><code><!-- Code snippet --></code></pre>
+      <h3>Shared Engine Integration</h3>
+      <p>The shared engine is responsible for startup, readiness, backend selection, model loading, generation, and cancellation. The frontend does not talk to inference libraries directly. Instead, the Svelte app uses Tauri commands, and those commands delegate to the shared engine client. This design removes per-assistant runtime ownership and makes the local inference path reusable across multiple modes.</p>
+
+      <h3>Runtime and Model Selection</h3>
+      <p>The backend supports multiple local runtime lanes and resolves the best supported path for the current machine. This is important because the product is intended for offline local use across varying hardware rather than one fixed benchmark device. The implementation therefore includes startup/readiness handling, runtime mode selection, model registry support, and lane-specific status reporting.</p>
 
       <h3>Communication Between Components</h3>
-      <p><!-- How the assistants communicate with the core --></p>
-      <img src="assets/images/diagrams/communication.png" alt="Communication diagram">
-
+      <p>The communication path is layered. The user interacts with the Svelte frontend, which calls a Tauri command. The Tauri backend either routes the request to the shared engine or to a mode-specific provider. The provider may then call the engine, a host-app bridge, or both. This is the key implementation pattern that ties together the unified product.</p>
     </section>
 
-    <!-- LibreOffice Assistant -->
-    <section id="libreoffice">
-      <h2>LibreOffice Assistant</h2>
-      <p><!-- Brief overview of this assistant --></p>
+    <section id="unified-shell">
+      <h2>Unified App Shell</h2>
+      <p>The current integrated application lives in <code>apps/codehelper</code>. Although CodeHelper is the flagship mode, the app shell now supports multiple workflows in one interface, including CodeHelper, GIMP, Blender, and LibreOffice modes such as Writer and Slides.</p>
 
-      <h3>AI Integration</h3>
-      <p><!-- How the AI model is integrated into LibreOffice --></p>
-      <pre><code><!-- Code snippet --></code></pre>
+      <h3>Mode Configuration and Switching</h3>
+      <p>Modes are configured as structured frontend objects with labels, capability flags, suggestions, and provider types. The UI does not hard-code one assistant flow; instead, it loads mode metadata and presents the appropriate controls for the selected mode. This was an important step in turning a single assistant UI into a platform shell.</p>
 
-      <h3>Frameworks and Libraries</h3>
+      <h3>Streaming Chat Flow</h3>
+      <p>Assistant requests are sent through a unified frontend API using Tauri channels for streaming events. This allows the interface to display partial tokens, completion, cancellation, and assistant-specific error events in one consistent conversation view. The streaming behaviour is especially important for making local generation feel responsive even when running heavier models.</p>
+
+      <h3>Local Persistence</h3>
+      <p>The frontend stores chats, current mode chat IDs, and settings in localStorage. Chats are organised per mode rather than as one global list, which allows the user to switch between workflows without losing context. Settings such as runtime preference, selected model, and theme are also persisted locally.</p>
+
+      <h3>Setup and Availability Gating</h3>
+      <p>The UI does not assume that every host application is installed or ready. Instead, startup and setup checks expose whether GIMP, Blender, or LibreOffice are available, and the frontend maps those results into mode availability. This implementation detail is important because the platform is designed to operate across different machines with different installed applications.</p>
+    </section>
+
+    <section id="assistant-routing">
+      <h2>Assistant Routing and Providers</h2>
+      <p>A major implementation feature is the provider registry in the Rust backend. The assistant request layer receives a unified assistant request and then dispatches it to the correct provider family based on the selected mode. This keeps the UI simple while still allowing each mode to have different execution behaviour.</p>
+
       <table>
         <thead>
           <tr>
-            <th>Framework/Library</th>
-            <th>Purpose</th>
-            <th>How it was used</th>
+            <th>Provider Family</th>
+            <th>Modes</th>
+            <th>Implementation Role</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><!-- e.g. python-pptx --></td>
-            <td><!-- Purpose --></td>
-            <td><!-- How --></td>
+            <td>Code provider</td>
+            <td>Code</td>
+            <td>Direct text generation through the shared engine</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>GIMP provider</td>
+            <td>GIMP</td>
+            <td>Bridge management, tool discovery, tool execution, and undo support</td>
+          </tr>
+          <tr>
+            <td>Blender provider</td>
+            <td>Blender</td>
+            <td>Scene bridge management, local RAG retrieval, and scene-aware tool support</td>
+          </tr>
+          <tr>
+            <td>LibreOffice provider</td>
+            <td>Writer, Slides, and related office workflows</td>
+            <td>Shared office-mode runtime handling, tool filtering, and office workflow orchestration</td>
           </tr>
         </tbody>
       </table>
-
-      <h3>Key Features Implementation</h3>
-
-      <h4><!-- Feature 1 name --></h4>
-      <p><!-- Description --></p>
-      <pre><code><!-- Code snippet --></code></pre>
-
-      <h4><!-- Feature 2 name --></h4>
-      <p><!-- Description --></p>
-      <pre><code><!-- Code snippet --></code></pre>
-
-      <h3>Diagrams</h3>
-      <img src="assets/images/diagrams/implementation-libreoffice.png" alt="LibreOffice assistant implementation diagram">
-
     </section>
 
-    <!-- CodeHelper -->
     <section id="codehelper">
-      <h2>CodeHelper</h2>
-      <p><!-- Brief overview of this assistant --></p>
+      <h2>Code Mode and Core Chat Experience</h2>
+      <p>Code mode is the simplest implementation path and the foundation of the unified app shell. It uses the shared engine for local text generation and presents the result through the same conversation UI that the other modes reuse.</p>
 
-      <h3>AI Integration</h3>
-      <p><!-- How the AI model is integrated into CodeHelper --></p>
-      <pre><code><!-- Code snippet --></code></pre>
-
-      <h3>Frameworks and Libraries</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Framework/Library</th>
-            <th>Purpose</th>
-            <th>How it was used</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><!-- e.g. tree-sitter --></td>
-            <td><!-- Purpose --></td>
-            <td><!-- How --></td>
-          </tr>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3>Key Features Implementation</h3>
-
-      <h4><!-- Feature 1 name --></h4>
-      <p><!-- Description --></p>
-      <pre><code><!-- Code snippet --></code></pre>
-
-      <h4><!-- Feature 2 name --></h4>
-      <p><!-- Description --></p>
-      <pre><code><!-- Code snippet --></code></pre>
-
-      <h3>Diagrams</h3>
-      <img src="assets/images/diagrams/implementation-codehelper.png" alt="CodeHelper implementation diagram">
-
+      <h3>Key Implementation Features</h3>
+      <p><strong>Blocking engine startup handshake:</strong> the inference store ensures that the engine is started and ready before normal generation begins, and then refreshes backend status so the UI can show the active runtime state.</p>
+      <p><strong>Streaming generation:</strong> responses are streamed token by token through the Tauri command boundary, which allows the frontend to update the active assistant message incrementally.</p>
+      <p><strong>Memory and runtime awareness:</strong> the inference layer also exposes runtime mode, backend status, and memory-pressure information so the UI can react to constrained devices more gracefully.</p>
     </section>
 
-    <!-- GIMP Assistant -->
     <section id="gimp">
-      <h2>GIMP Assistant</h2>
-      <p><!-- Brief overview of this assistant --></p>
-
-      <h3>AI Integration</h3>
-      <p><!-- How the AI model is integrated into GIMP --></p>
-      <pre><code><!-- Code snippet --></code></pre>
+      <h2>GIMP Mode</h2>
+      <p>GIMP mode is implemented as a host-assisted workflow rather than plain text chat. The provider is responsible for preparing the required runtime, detecting GIMP, establishing the MCP session, discovering tools, and executing image-editing actions.</p>
 
       <h3>Frameworks and Libraries</h3>
       <table>
         <thead>
           <tr>
-            <th>Framework/Library</th>
+            <th>Framework / Library</th>
             <th>Purpose</th>
-            <th>How it was used</th>
+            <th>How It Was Used</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><!-- e.g. GIMP Python-Fu --></td>
-            <td><!-- Purpose --></td>
-            <td><!-- How --></td>
+            <td>Tauri + Rust</td>
+            <td>Desktop app backend and process orchestration</td>
+            <td>Used to manage the GIMP bridge runtime, tool execution, and setup flow</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>MCP client layer</td>
+            <td>Structured tool communication</td>
+            <td>Used to connect to the GIMP MCP bridge, list tools, and execute actions</td>
+          </tr>
+          <tr>
+            <td>Shared engine</td>
+            <td>Local text generation</td>
+            <td>Used when natural-language requests need planning or text generation support</td>
           </tr>
         </tbody>
       </table>
 
       <h3>Key Features Implementation</h3>
-
-      <h4><!-- Feature 1 name --></h4>
-      <p><!-- Description --></p>
-      <pre><code><!-- Code snippet --></code></pre>
-
-      <h4><!-- Feature 2 name --></h4>
-      <p><!-- Description --></p>
-      <pre><code><!-- Code snippet --></code></pre>
-
-      <h3>Diagrams</h3>
-      <img src="assets/images/diagrams/implementation-gimp.png" alt="GIMP assistant implementation diagram">
-
+      <p><strong>Bundled runtime preparation:</strong> the provider prepares or validates the required GIMP-side runtime resources before trying to connect, which reduces manual setup for the user.</p>
+      <p><strong>Connection and tool discovery:</strong> the provider connects to the GIMP bridge, stores discovered tools, and exposes mode state back to the frontend.</p>
+      <p><strong>Undo support:</strong> GIMP mode is one of the few modes in the unified app that explicitly exposes undo through the provider interface.</p>
     </section>
 
-    <!-- Blender Assistant -->
     <section id="blender">
-      <h2>Blender Assistant</h2>
-      <p><!-- Brief overview of this assistant --></p>
-
-      <h3>AI Integration</h3>
-      <p><!-- How the AI model is integrated into Blender --></p>
-      <pre><code><!-- Code snippet --></code></pre>
+      <h2>Blender Mode</h2>
+      <p>Blender mode combines a host bridge with local context retrieval. This makes it different from both Code mode and GIMP mode: it is not just a tool executor, and it is not just a plain text assistant. Instead, it is designed to answer scene-aware questions and support Blender workflows using both bridge state and local retrieval assets.</p>
 
       <h3>Frameworks and Libraries</h3>
       <table>
         <thead>
           <tr>
-            <th>Framework/Library</th>
+            <th>Framework / Library</th>
             <th>Purpose</th>
-            <th>How it was used</th>
+            <th>How It Was Used</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><!-- e.g. bpy --></td>
-            <td><!-- Purpose --></td>
-            <td><!-- How --></td>
+            <td>Tauri + Rust</td>
+            <td>Backend orchestration and desktop integration</td>
+            <td>Used to manage the Blender scene bridge and assistant routing</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Bridge runtime and addon</td>
+            <td>Scene-aware host communication</td>
+            <td>Used to retrieve live scene information and expose Blender-specific tooling</td>
+          </tr>
+          <tr>
+            <td>Local RAG index</td>
+            <td>Reference retrieval</td>
+            <td>Used to load local Blender reference documents and enrich responses with relevant context</td>
           </tr>
         </tbody>
       </table>
 
       <h3>Key Features Implementation</h3>
+      <p><strong>Scene bridge startup:</strong> the provider starts or connects to a local scene bridge and stores runtime state so Blender mode can remain scene-aware across requests.</p>
+      <p><strong>RAG-backed assistance:</strong> the provider loads a local retrieval index and combines it with live scene information, allowing responses to use both static reference material and current workspace context.</p>
+      <p><strong>Hybrid execution path:</strong> Blender mode can gather scene state, retrieve reference context, and use the shared engine for generated explanations within one request flow.</p>
+    </section>
 
-      <h4><!-- Feature 1 name --></h4>
-      <p><!-- Description --></p>
-      <pre><code><!-- Code snippet --></code></pre>
+    <section id="libreoffice">
+      <h2>LibreOffice Modes</h2>
+      <p>The LibreOffice workflows are implemented through one shared provider family. This reflects the system design decision that office features should share runtime management and tool orchestration instead of being implemented as completely separate products.</p>
 
-      <h4><!-- Feature 2 name --></h4>
-      <p><!-- Description --></p>
-      <pre><code><!-- Code snippet --></code></pre>
+      <h3>Frameworks and Libraries</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Framework / Library</th>
+            <th>Purpose</th>
+            <th>How It Was Used</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Tauri + Rust</td>
+            <td>Backend orchestration</td>
+            <td>Used to manage LibreOffice runtime setup, provider state, and assistant execution</td>
+          </tr>
+          <tr>
+            <td>MCP-backed office runtime</td>
+            <td>Structured office tool access</td>
+            <td>Used to connect Writer and Slides workflows to office actions through an allowlisted tool layer</td>
+          </tr>
+          <tr>
+            <td>Shared engine planner and streamer</td>
+            <td>Planning and summarisation</td>
+            <td>Used to decide whether to call a tool and to produce short user-facing summaries after a successful office action</td>
+          </tr>
+        </tbody>
+      </table>
 
-      <h3>Diagrams</h3>
-      <img src="assets/images/diagrams/implementation-blender.png" alt="Blender assistant implementation diagram">
+      <h3>Key Features Implementation</h3>
+      <p><strong>Mode-specific tool filtering:</strong> the provider filters the raw office tool list based on the selected mode so that each office workflow only exposes the tools appropriate to that task.</p>
+      <p><strong>Planner then tool execution:</strong> the office executor first uses the engine to decide whether a tool call is needed, then executes the chosen office action, and finally generates a short summary for the user.</p>
+      <p><strong>Shared provider family:</strong> the office workflows are grouped under one provider family, which reduces duplication and fits the unified product architecture.</p>
+    </section>
 
+    <section id="launcher-setup">
+      <h2>Launcher and Setup Features</h2>
+      <p>The project also includes implementation work for setup preparation and launch orchestration. These pieces are important because the product goal is not only local AI, but local AI that is practical to run.</p>
+
+      <p><strong>Setup commands:</strong> the backend exposes commands for reading setup status and preparing local resources, which allows the frontend to guide the user when runtimes or host apps are missing.</p>
+      <p><strong>Mode open/focus behaviour:</strong> the backend can detect and launch host applications such as GIMP, Blender, and LibreOffice, making the unified shell more than a passive chat window.</p>
+      <p><strong>Manifest-driven launcher direction:</strong> launcher modules and manifest handling are already present in the codebase, supporting the longer-term goal of a cohesive suite and easier deployment.</p>
     </section>
 
   </main>
 
   <footer>
     <div class="footer-links">
-    <a href="mailto:<!-- team email -->">Email</a>
+    <span>Email to be added</span>
     <a href="https://github.com/SmolPC-2-0/smolpc-codehelper" target="_blank">GitHub</a>
   </div>
 

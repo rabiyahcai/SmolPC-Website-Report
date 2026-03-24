@@ -18,11 +18,10 @@
     <a href="appendices.html">Appendices</a>
   </nav>
 
-    <main>
+  <main>
 
     <h1>System Design</h1>
 
-    <!-- Overall System Architecture -->
     <section id="architecture">
       <h2>System Architecture</h2>
       <p><!-- Brief overview of how SmolPC 2.0 is structured and how the four assistants fit together --></p>
@@ -31,7 +30,7 @@
       <img src="assets/images/diagrams/architecture-overview.png" alt="SmolPC 2.0 high-level system architecture diagram">
       <p><!-- Description of each component in the diagram --></p>
 
-      <h3>Components</h3>
+      <h3>Core Components</h3>
 
       <div class="card">
         <h3>SmolPC 2.0 Core</h3>
@@ -39,47 +38,24 @@
       </div>
 
       <div class="card">
-        <h3>LibreOffice Assistant</h3>
-        <p><!-- desc --></p>
+        <h3>Shared SmolPC Engine</h3>
+        <p>The shared engine is split into <code>smolpc-engine-core</code>, <code>smolpc-engine-host</code>, and <code>smolpc-engine-client</code>. It owns startup lifecycle, readiness, backend and model selection, generation, cancellation, and the localhost API contract. This keeps model/runtime ownership out of individual assistants and makes it possible to reuse the same local runtime across multiple modes.</p>
       </div>
 
       <div class="card">
-        <h3>CodeHelper</h3>
-        <p><!-- desc --></p>
+        <h3>Mode Provider Layer</h3>
+        <p>The backend uses a registry of tool providers to map each mode to its corresponding orchestration logic. Code uses a local provider, GIMP uses a dedicated provider, Blender uses a scene-aware provider, and the LibreOffice workflows share one office provider family. This design keeps the frontend unaware of host-specific implementation details and makes the mode system extensible.</p>
       </div>
 
       <div class="card">
-        <h3>GIMP Assistant</h3>
-        <p><!-- desc --></p>
+        <h3>Host Application Bridges</h3>
+        <p>External applications are not controlled directly by the chat UI. Instead, each workflow uses an application-specific bridge. GIMP uses a bundled MCP bridge, Blender uses a local bridge and addon for scene-aware access, and LibreOffice uses an MCP-backed runtime and helper bridge. These bridges allow the assistant layer to call structured tools rather than relying on unstructured text only.</p>
       </div>
 
       <div class="card">
-        <h3>Blender Assistant</h3>
-        <p><!-- desc --></p>
+        <h3>Launcher and Setup Layer</h3>
+        <p>The current branch also contains launcher-oriented orchestration and manifest support. At the moment this is still transitional rather than a fully separate standalone launcher application, but it already supports manifest-driven launch or focus behaviour and contributes to the longer-term single-suite packaging direction. The setup layer also checks runtime resources and host-app availability so the UI can gate modes when prerequisites are missing.</p>
       </div>
-
-    </section>
-
-    <!-- Sub-Diagrams of Assistants -->
-    <section id="sub-diagrams">
-      <h2>Assistant Architecture Diagrams</h2>
-
-      <h3>LibreOffice Assistant</h3>
-      <img src="assets/images/diagrams/architecture-libreoffice.png" alt="LibreOffice assistant architecture diagram">
-      <p><!-- desc --></p>
-
-      <h3>CodeHelper</h3>
-      <img src="assets/images/diagrams/architecture-codehelper.png" alt="CodeHelper architecture diagram">
-      <p><!-- desc --></p>
-
-      <h3>GIMP Assistant</h3>
-      <img src="assets/images/diagrams/architecture-gimp.png" alt="GIMP assistant architecture diagram">
-      <p><!-- desc --></p>
-
-      <h3>Blender Assistant</h3>
-      <img src="assets/images/diagrams/architecture-blender.png" alt="Blender assistant architecture diagram">
-      <p><!-- desc --></p>
-
     </section>
 
     <!-- Site Map -->
@@ -89,111 +65,164 @@
       <img src="assets/images/diagrams/sitemap.png" alt="SmolPC 2.0 site map">
     </section>
 
-    <!-- Sequence Diagrams -->
     <section id="sequence-diagrams">
-      <h2>Sequence Diagrams</h2>
-      <p><!-- Brief intro to the sequence diagrams --></p>
+      <h2>Interaction Flows</h2>
+      <p>The final diagrams for this page should focus on the main architectural flows rather than repeating very similar assistant-specific pictures. Two sequence diagrams are especially important: a pure text-generation flow and a host-assisted tool-execution flow.</p>
 
-      <h3>LibreOffice Assistant</h3>
-      <img src="assets/images/diagrams/sequence-libreoffice.png" alt="LibreOffice assistant sequence diagram">
-      <p><!-- Description of the interaction flow --></p>
+      <h3>Text Generation Flow</h3>
+      <p>In Code mode, the user writes a request in the Svelte frontend. The frontend sends this through a Tauri command to the backend, which ensures the engine is running and ready. The backend then calls the shared engine client, which communicates with the localhost engine host. Tokens are streamed back to the frontend and appended to the active chat. This flow demonstrates the clean boundary between UI, Tauri backend, and shared engine.</p>
 
-      <h3>CodeHelper</h3>
-      <img src="assets/images/diagrams/sequence-codehelper.png" alt="CodeHelper sequence diagram">
-      <p><!-- Description of the interaction flow --></p>
+      <h3>Host-Assisted Mode Flow</h3>
+      <p>In GIMP, Blender, and LibreOffice modes, the frontend still sends one assistant request, but the backend first resolves the correct provider from the mode registry. The provider then checks the relevant bridge, gathers tool status or context, and may use the shared engine to plan or phrase the response before executing structured host actions. This is the key flow that distinguishes the unified assistant platform from a plain local chatbot.</p>
 
-      <h3>GIMP Assistant</h3>
-      <img src="assets/images/diagrams/sequence-gimp.png" alt="GIMP assistant sequence diagram">
-      <p><!-- Description of the interaction flow --></p>
-
-      <h3>Blender Assistant</h3>
-      <img src="assets/images/diagrams/sequence-blender.png" alt="Blender assistant sequence diagram">
-      <p><!-- Description of the interaction flow --></p>
-
+      <h3>Availability and Launch Flow</h3>
+      <p>On startup, the app checks runtime resources, engine readiness, and host application availability. These checks drive the setup UI and the mode availability state shown to the user. When supported, host applications can be launched or focused through command-based orchestration rather than requiring the user to manage every dependency manually.</p>
     </section>
 
-    <!-- ER Diagram -->
-    <section id="er-diagram">
-      <h2>Data Schema</h2>
-      <p><!-- Brief description of your data storage approach --></p>
-      <img src="assets/images/diagrams/er-diagram.png" alt="ER diagram">
-      <p><!-- Description of each entity and relationship --></p>
+    <section id="data-storage">
+      <h2>Data Storage and State</h2>
+      <p>This project does not centre around a relational database, so a traditional ER diagram is not the most useful design artefact. The more relevant design question is where lightweight user state, runtime resources, and shared engine assets are stored.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Data / State</th>
+            <th>Location</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Chats and active conversation state</td>
+            <td>Frontend localStorage</td>
+            <td>Stores per-mode chats and restores the user&rsquo;s recent conversation history inside the desktop UI</td>
+          </tr>
+          <tr>
+            <td>Settings and runtime preferences</td>
+            <td>Frontend localStorage</td>
+            <td>Persists selected model, runtime preference, context settings, and theme</td>
+          </tr>
+          <tr>
+            <td>App-local provider resources</td>
+            <td>Tauri app-local-data directory and bundled resources</td>
+            <td>Stores provider-specific runtime data and allows packaged resource resolution in development and release modes</td>
+          </tr>
+          <tr>
+            <td>Shared engine token, status, and runtime files</td>
+            <td>Shared local runtime directory</td>
+            <td>Coordinates engine startup, health, and secure localhost access</td>
+          </tr>
+          <tr>
+            <td>Shared model artifacts and runtime bundles</td>
+            <td>Shared local model/runtime directories</td>
+            <td>Allows cross-mode reuse of local models and backend runtimes instead of duplicating them per assistant</td>
+          </tr>
+        </tbody>
+      </table>
     </section>
 
-    <!-- Design Patterns -->
     <section id="design-patterns">
       <h2>Design Patterns</h2>
-      <p><!-- Describe any design patterns used e.g. MVC, Observer, Singleton --></p>
+      <p>The most important design patterns in this project are architectural rather than purely object-oriented. The system is designed around strong boundaries between inference ownership, application orchestration, and host-specific tooling.</p>
 
       <div class="card">
-        <h3><!-- Pattern name e.g. MVC --></h3>
-        <p><!-- Where and why you used it --></p>
+        <h3>Contract-First Boundary</h3>
+        <p>Applications talk to the engine through the typed engine client or the documented localhost HTTP API instead of depending on engine internals. This makes the engine reusable across products and reduces the chance that one assistant becomes tightly coupled to one runtime implementation.</p>
       </div>
 
       <div class="card">
-        <h3><!-- Pattern name --></h3>
-        <p><!-- Where and why you used it --></p>
+        <h3>Provider Registry / Strategy Pattern</h3>
+        <p>The mode registry chooses the correct provider family for each mode. This is effectively a strategy-style design: the frontend sends a unified request, and the backend delegates behaviour to the provider that knows how to handle that mode&rsquo;s tools, context, and bridge logic.</p>
       </div>
 
+      <div class="card">
+        <h3>Command Boundary Through Tauri</h3>
+        <p>The Tauri command layer acts as a stable boundary between the Svelte frontend and the Rust backend. This keeps the UI code focused on user interaction while backend commands handle engine startup, assistant execution, mode status, setup preparation, and launch orchestration.</p>
+      </div>
     </section>
 
-    <!-- Class Diagrams -->
-    <section id="class-diagrams">
-      <h2>Class Diagrams</h2>
-      <img src="assets/images/diagrams/class-diagram.png" alt="Class diagram">
-      <p><!-- Description --></p>
-    </section>
-
-    <!-- Packages and APIs -->
     <section id="packages-apis">
       <h2>Packages and APIs</h2>
 
-      <h3>Packages</h3>
+      <h3>Key Packages</h3>
       <table>
         <thead>
           <tr>
-            <th>Package</th>
+            <th>Package / Module</th>
             <th>Purpose</th>
             <th>Used By</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><!-- Package name --></td>
-            <td><!-- Purpose --></td>
-            <td><!-- Which assistant --></td>
+            <td><code>smolpc-engine-core</code></td>
+            <td>Runtime and model domain logic</td>
+            <td>Shared engine layer</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td><code>smolpc-engine-host</code></td>
+            <td>Localhost API host for readiness, model loading, and generation</td>
+            <td>Shared engine layer</td>
+          </tr>
+          <tr>
+            <td><code>smolpc-engine-client</code></td>
+            <td>Typed client used by the app to communicate with the engine</td>
+            <td>CodeHelper backend and future suite integrations</td>
+          </tr>
+          <tr>
+            <td><code>apps/codehelper</code></td>
+            <td>Current integrated UI shell and Tauri application</td>
+            <td>User-facing unified app</td>
+          </tr>
+          <tr>
+            <td><code>launcher</code> and launcher modules</td>
+            <td>Manifest, launch-or-focus orchestration, and suite-level entry logic</td>
+            <td>Current transitional launcher layer</td>
           </tr>
         </tbody>
       </table>
 
-      <h3>APIs</h3>
+      <h3>Key APIs and Interfaces</h3>
       <table>
         <thead>
           <tr>
-            <th>API</th>
+            <th>API / Interface</th>
             <th>Purpose</th>
             <th>Used By</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><!-- API name --></td>
-            <td><!-- Purpose --></td>
-            <td><!-- Which assistant --></td>
+            <td><code>/engine/*</code> localhost API</td>
+            <td>Engine health, startup, status, model readiness, load, unload, and shutdown</td>
+            <td>Shared engine integration and diagnostics</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td><code>/v1/chat/completions</code></td>
+            <td>OpenAI-compatible local generation surface with streaming support</td>
+            <td>Generation flows that use the shared engine</td>
+          </tr>
+          <tr>
+            <td>Tauri command interface</td>
+            <td>Connects frontend actions to backend features such as assistant execution, setup, launcher, and mode status</td>
+            <td>Unified desktop UI</td>
+          </tr>
+          <tr>
+            <td><code>ToolProvider</code> interface</td>
+            <td>Defines the common contract for connect, status, list-tools, execute-tool, undo, and disconnect operations</td>
+            <td>Code, GIMP, Blender, and LibreOffice provider families</td>
+          </tr>
+          <tr>
+            <td>Host-app bridge interfaces</td>
+            <td>Connect the assistant layer to GIMP, Blender, and LibreOffice functionality</td>
+            <td>Mode-specific orchestration</td>
           </tr>
         </tbody>
       </table>
+    </section>
 
+    <section id="applicability">
+      <h2>Applicability of Template Items</h2>
+      <p>Some standard report-template items are less central to this project than the architecture and API boundaries above. A traditional website sitemap is not the best fit because the product is a single-window desktop app with mode switching rather than a multi-page web application. Likewise, a relational ER diagram is not central because the system does not use a database as a core architectural component. If time is limited, the final report should prioritise the high-level architecture diagram, one or two strong sequence diagrams, provider boundaries, and API contracts over generic placeholder diagrams.</p>
     </section>
 
   </main>
@@ -201,7 +230,7 @@
 
   <footer>
     <div class="footer-links">
-    <a href="mailto:<!-- team email -->">Email</a>
+    <span>Email to be added</span>
     <a href="https://github.com/SmolPC-2-0/smolpc-codehelper" target="_blank">GitHub</a>
   </div>
 
