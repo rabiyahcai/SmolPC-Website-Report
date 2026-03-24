@@ -153,18 +153,31 @@ p {
 }
 
 /* ===== team ===== */
+.team-section-intro {
+  margin-bottom: 1.5rem;
+}
+
 .team-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  max-width: 980px;
+  margin: 0 auto;
 }
 
 .team-member {
-  background: var(--bg-card);
+  flex: 0 1 290px;
+  max-width: 290px;
+  background: linear-gradient(180deg, #ffffff 0%, var(--bg-card) 100%);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 2rem;
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -174,22 +187,75 @@ p {
 }
 
 .team-member img {
-  width: 100px;
-  height: 100px;
+  width: 112px;
+  height: 112px;
   border-radius: 50%;
   object-fit: cover;
-  margin-bottom: 1rem;
   border: 3px solid var(--primary);
+  background: white;
+  box-shadow: 0 10px 24px rgba(33, 56, 133, 0.12);
 }
 
-.team-member a {
+.team-member h3 {
+  margin-bottom: 0;
+}
+
+.team-role {
+  color: var(--primary);
+  font-weight: 700;
+  margin-bottom: 0;
+}
+
+.team-bio {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 0;
+  flex-grow: 1;
+}
+
+.team-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 0.35rem;
+}
+
+.team-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: white;
   color: var(--primary);
   text-decoration: none;
   font-size: 0.9rem;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.team-member a:hover {
-  text-decoration: underline;
+.team-link-icon {
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.team-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(33, 56, 133, 0.12);
+  border-color: rgba(33, 56, 133, 0.35);
+  text-decoration: none;
 }
 
 /* ===== video ===== */
@@ -506,7 +572,12 @@ a:hover {
   }
 
   .team-grid {
-    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .team-member {
+    flex-basis: 100%;
+    max-width: none;
   }
 }
 

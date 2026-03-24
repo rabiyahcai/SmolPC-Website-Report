@@ -39,7 +39,7 @@
 
       <div class="card">
         <h3>Shared SmolPC Engine</h3>
-        <p>The shared engine is split into <code>smolpc-engine-core</code>, <code>smolpc-engine-host</code>, and <code>smolpc-engine-client</code>. It owns startup lifecycle, readiness, backend and model selection, generation, cancellation, and the localhost API contract. This keeps model/runtime ownership out of individual assistants and makes it possible to reuse the same local runtime across multiple modes.</p>
+        <p>The shared engine is split into <code>smolpc-engine-core</code>, <code>smolpc-engine-host</code>, and <code>smolpc-engine-client</code>. It owns startup lifecycle, readiness, backend and model selection, generation, cancellation, and the localhost API contract. It also now exposes local audio endpoints for speech-to-text and text-to-speech support. This keeps model/runtime ownership out of individual assistants and makes it possible to reuse the same local runtime across multiple modes.</p>
       </div>
 
       <div class="card">
@@ -56,6 +56,11 @@
         <h3>Launcher and Setup Layer</h3>
         <p>The current branch also contains launcher-oriented orchestration and manifest support. At the moment this is still transitional rather than a fully separate standalone launcher application, but it already supports manifest-driven launch or focus behaviour and contributes to the longer-term single-suite packaging direction. The setup layer also checks runtime resources and host-app availability so the UI can gate modes when prerequisites are missing.</p>
       </div>
+
+      <div class="card">
+        <h3>Voice I/O Layer</h3>
+        <p>Voice input and read-aloud are part of SmolPC 2.0&apos;s shared application layer rather than a separate product. The Tauri app captures microphone audio locally, resamples it, and sends it to <code>/v1/audio/transcriptions</code>. Read-aloud requests go to <code>/v1/audio/speech</code>. Speech-to-text is handled inside the engine host through Whisper on CPU, while text-to-speech is isolated in a detached <code>smolpc-tts-server</code> sidecar so that voice failures do not take down the core chat path.</p>
+      </div>
     </section>
 
     <!-- Site Map -->
@@ -71,6 +76,9 @@
 
       <h3>Text Generation Flow</h3>
       <p>In Code mode, the user writes a request in the Svelte frontend. The frontend sends this through a Tauri command to the backend, which ensures the engine is running and ready. The backend then calls the shared engine client, which communicates with the localhost engine host. Tokens are streamed back to the frontend and appended to the active chat. This flow demonstrates the clean boundary between UI, Tauri backend, and shared engine.</p>
+
+      <h3>Voice Interaction Flow</h3>
+      <p>In the current SmolPC 2.0 voice flow, the user presses the microphone button in the composer. The Tauri layer captures device-native audio locally, resamples it to the format required by Whisper, and sends it to the engine&apos;s transcription endpoint. The returned text is inserted back into the composer so the user can review it before sending. When the user presses read aloud on an assistant message, the frontend requests speech from the engine, which proxies the request to a detached TTS sidecar and returns WAV audio for local playback.</p>
 
       <h3>Host-Assisted Mode Flow</h3>
       <p>In GIMP, Blender, and LibreOffice modes, the frontend still sends one assistant request, but the backend first resolves the correct provider from the mode registry. The provider then checks the relevant bridge, gathers tool status or context, and may use the shared engine to plan or phrase the response before executing structured host actions. This is the key flow that distinguishes the unified assistant platform from a plain local chatbot.</p>
@@ -115,6 +123,11 @@
             <td>Shared model artifacts and runtime bundles</td>
             <td>Shared local model/runtime directories</td>
             <td>Allows cross-mode reuse of local models and backend runtimes instead of duplicating them per assistant</td>
+          </tr>
+          <tr>
+            <td>Voice models, TTS binaries, and audio support files</td>
+            <td>Bundled resources and shared local model directories</td>
+            <td>Supports Whisper transcription and detached TTS playback without relying on cloud services</td>
           </tr>
         </tbody>
       </table>
@@ -166,12 +179,17 @@
           <tr>
             <td><code>smolpc-engine-client</code></td>
             <td>Typed client used by the app to communicate with the engine</td>
-            <td>CodeHelper backend and future suite integrations</td>
+            <td>Current SmolPC 2.0 app backend and future suite integrations</td>
           </tr>
           <tr>
             <td><code>apps/codehelper</code></td>
-            <td>Current integrated UI shell and Tauri application</td>
-            <td>User-facing unified app</td>
+            <td>Current integrated SmolPC 2.0 app package and Tauri shell</td>
+            <td>User-facing unified app implementation</td>
+          </tr>
+          <tr>
+            <td><code>smolpc-tts-server</code></td>
+            <td>Detached local text-to-speech sidecar</td>
+            <td>Voice read-aloud path behind the engine API</td>
           </tr>
           <tr>
             <td><code>launcher</code> and launcher modules</td>
@@ -200,6 +218,16 @@
             <td><code>/v1/chat/completions</code></td>
             <td>OpenAI-compatible local generation surface with streaming support</td>
             <td>Generation flows that use the shared engine</td>
+          </tr>
+          <tr>
+            <td><code>/v1/audio/transcriptions</code></td>
+            <td>Local Whisper speech-to-text endpoint</td>
+            <td>Voice input from the current SmolPC 2.0 app shell</td>
+          </tr>
+          <tr>
+            <td><code>/v1/audio/speech</code></td>
+            <td>Local text-to-speech proxy endpoint</td>
+            <td>Per-message read-aloud in the current SmolPC 2.0 app shell</td>
           </tr>
           <tr>
             <td>Tauri command interface</td>

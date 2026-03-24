@@ -53,17 +53,17 @@
           </tr>
           <tr>
             <td>FR-M2</td>
-            <td>Unified desktop shell for CodeHelper, LibreOffice, GIMP, and Blender workflows</td>
+            <td>Unified desktop shell for Code mode, LibreOffice, GIMP, and Blender workflows</td>
             <td>Must have</td>
             <td class="yes">Achieved</td>
             <td>The platform moved beyond separate prototypes into a shared multi-mode desktop application.</td>
           </tr>
           <tr>
             <td>FR-M3</td>
-            <td>CodeHelper supports coding questions, explanation, and debugging help</td>
+            <td>Code mode supports coding questions, explanation, and debugging help</td>
             <td>Must have</td>
             <td class="yes">Achieved</td>
-            <td>CodeHelper is the flagship mode and provides a simple local coding assistant workflow.</td>
+            <td>Code mode is the flagship workflow and provides a simple local coding assistant experience inside SmolPC 2.0.</td>
           </tr>
           <tr>
             <td>FR-M4</td>
@@ -95,17 +95,10 @@
           </tr>
           <tr>
             <td>FR-M8</td>
-            <td>Prompts and interactions remain on-device during normal use</td>
+            <td>SmolPC 2.0 Home provides a unified launcher for supported tools</td>
             <td>Must have</td>
             <td class="yes">Achieved</td>
-            <td>Privacy is a core system property and a major reason for the local-first design.</td>
-          </tr>
-          <tr>
-            <td>FR-M9</td>
-            <td>Deployment path without requiring a separate manually operated model server</td>
-            <td>Must have</td>
-            <td class="yes">Achieved</td>
-            <td>The move away from Ollama-driven deployment was one of the key architectural successes of the project.</td>
+            <td>The shared shell and Home workflow give users one entry point into the platform instead of separate assistant launches.</td>
           </tr>
         </tbody>
       </table>
@@ -164,6 +157,13 @@
             <td class="yes">Achieved</td>
             <td>Error handling and setup flows were designed to recover cleanly rather than force users to restart from scratch.</td>
           </tr>
+          <tr>
+            <td>FR-S7</td>
+            <td>Optional local voice input and read-aloud in SmolPC 2.0</td>
+            <td>Should have</td>
+            <td class="yes">Achieved</td>
+            <td>The current SmolPC 2.0 app shell supports local dictation and per-message read-aloud while keeping voice traffic on-device.</td>
+          </tr>
         </tbody>
       </table>
 
@@ -214,11 +214,11 @@
         <tbody>
           <tr>
             <td>Must-have requirements</td>
-            <td>9 out of 9 achieved</td>
+            <td>8 out of 8 achieved</td>
           </tr>
           <tr>
             <td>Should-have requirements</td>
-            <td>6 out of 6 achieved</td>
+            <td>7 out of 7 achieved</td>
           </tr>
           <tr>
             <td>Could-have requirements</td>
@@ -261,7 +261,7 @@
           <tr>
             <td>BUG-02</td>
             <td>Host-application bridges</td>
-            <td>GIMP, Blender, and LibreOffice workflows are inherently more fragile than CodeHelper because they depend on external application state, bridge availability, and version alignment.</td>
+            <td>GIMP, Blender, and LibreOffice workflows are inherently more fragile than Code mode because they depend on external application state, bridge availability, and version alignment.</td>
             <td>Medium</td>
             <td>Improve recovery messaging, bridge health checks, and plugin/runtime verification.</td>
           </tr>
@@ -279,6 +279,13 @@
             <td>Medium</td>
             <td>Refine planner prompts, recovery strategies, and scenario testing for tool-heavy flows.</td>
           </tr>
+          <tr>
+            <td>BUG-05</td>
+            <td>Voice I/O packaging and hardware assumptions</td>
+            <td>Voice features depend on microphone access, audio output, and correctly bundled Whisper and TTS resources, so environment-specific issues are still more likely here than in plain text chat.</td>
+            <td>Medium</td>
+            <td>Complete final packaged validation for voice resources and improve recovery messaging when audio features are unavailable.</td>
+          </tr>
         </tbody>
       </table>
     </section>
@@ -295,18 +302,20 @@
       <h3>Functionality</h3>
       <p>
         Functionally, the system now covers all major intended tool families: coding assistance,
-        office workflows, image editing, and Blender support. The unified shell is a major improvement
+        office workflows, image editing, and Blender support. It also now includes optional local voice
+        input and read-aloud in the unified app. The unified shell is a major improvement
         over earlier separate prototypes because it gives the project a single identity and a common
         interaction model. The trade-off is that some specialist flows still feel narrower and more
-        constrained than the strongest core path, which remains CodeHelper.
+        constrained than the strongest core path, which remains Code mode.
       </p>
       <div class="card">
-        <h3>CodeHelper</h3>
+        <h3>Code Mode</h3>
         <p>
-          CodeHelper succeeds as a simple local coding assistant and is the clearest expression of the
+          Code mode succeeds as a simple local coding assistant and is the clearest expression of the
           platform&apos;s offline-first goal. Its main weakness is that it is still closer to a detached
           chatbot than to a deeply embedded coding workflow, which leaves room for richer context and
-          stronger task integration in future work.
+          stronger task integration in future work. The addition of local voice input and read-aloud also
+          strengthens the accessibility story of the wider SmolPC 2.0 platform.
         </p>
       </div>
       <div class="card">
@@ -347,14 +356,16 @@
         <h3>Shared Engine and App Shell</h3>
         <p>
           Centralising startup, runtime choice, and model orchestration made the platform easier to
-          reason about and test. This architectural consolidation is one of the strongest technical
+          reason about and test. Keeping speech-to-text inside the engine while isolating text-to-speech
+          in a detached sidecar also reduces the blast radius of voice-specific failures. This
+          architectural consolidation is one of the strongest technical
           decisions in the whole project.
         </p>
       </div>
       <div class="card">
         <h3>Host-Integrated Modes</h3>
         <p>
-          GIMP, Blender, and LibreOffice remain inherently more fragile than CodeHelper because they rely
+          GIMP, Blender, and LibreOffice remain inherently more fragile than Code mode because they rely
           on bridge processes, external applications, and setup assumptions. They are therefore stable
           enough to demonstrate the concept, but still the first place where environment-specific issues
           are likely to appear.
@@ -387,7 +398,15 @@
       </div>
 
       <h3>Compatibility</h3>
-      <p><!-- How well SmolPC 2.0 works across different platforms and versions of LibreOffice, GIMP, Blender --></p>
+      <p>
+        Compatibility remains strongest on the Windows-first packaged path that shaped most of the
+        runtime and host-application work. The shared engine improves consistency across different local
+        hardware by choosing between CPU, DirectML, and OpenVINO NPU where supported, while host-based
+        modes still depend on the relevant external application being installed and reachable. Voice
+        features add another compatibility layer because microphone access, audio output, and bundled
+        voice resources must all be present, but the current design degrades these features more safely
+        than a monolithic in-process approach would.
+      </p>
 
       <h3>Maintainability</h3>
       <p>
@@ -401,8 +420,9 @@
       <h3>UI/UX</h3>
       <p>
         The unified interface is a strong usability improvement because it gives the project a single
-        consistent entry point instead of multiple disconnected tools. CodeHelper currently offers the
-        clearest and simplest user journey. The more specialised modes benefit from the same shell but
+        consistent entry point instead of multiple disconnected tools. Code mode currently offers the
+        clearest and simplest user journey, and the added mic and read-aloud controls strengthen its
+        accessibility story. The more specialised modes benefit from the same shell but
         still need clearer setup guidance, richer onboarding, and more polish around error recovery and
         workflow explanation.
       </p>
@@ -582,7 +602,7 @@
 
       <h3>Short-Term Improvements</h3>
       <div class="card">
-        <h3>CodeHelper</h3>
+        <h3>Code Mode</h3>
         <p>
           Move beyond a detached chat-box workflow by improving context injection, project awareness,
           and support for richer coding interactions while preserving the simple offline model.
@@ -627,8 +647,8 @@
         <h3>Performance, Accessibility, and Deployment</h3>
         <p>
           A future release should complete the benchmark migration, expand hardware validation, add more
-          accessibility options, and improve packaging so that local deployment is as smooth as the
-          underlying architecture now promises.
+          accessibility options, broaden voice support beyond the flagship chat flow, and improve
+          packaging so that local deployment is as smooth as the underlying architecture now promises.
         </p>
       </div>
 

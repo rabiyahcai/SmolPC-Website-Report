@@ -59,10 +59,12 @@
       <div class="card">
         <h3>Evidence And Limitations</h3>
         <p>
-          The repository already contains substantial automated coverage across the engine, CodeHelper
-          backend, setup flows, launcher logic, and host bridges. Some final compatibility, performance,
+          The repository already contains substantial automated coverage across the engine, the current
+          SmolPC 2.0 app backend package (<code>apps/codehelper</code>), setup flows, launcher logic,
+          and host bridges. Some final compatibility, performance,
           and user acceptance values are intentionally still generic on this page and will be tightened
-          later once the final packaged builds and the last hardware pass are complete.
+          later once the final packaged builds, voice-resource packaging checks, and the last hardware
+          pass are complete.
         </p>
       </div>
 
@@ -134,6 +136,13 @@ cargo check -p smolpc-code-helper</code></pre>
             <td>Checks version compatibility gates and confirms that required local resources can be staged before the user enters a mode.</td>
             <td class="yes">Covered</td>
           </tr>
+          <tr>
+            <td>UT-VO1</td>
+            <td>Voice I/O</td>
+            <td><code>audio_body_must_be_f32_aligned</code>, <code>f32_le_bytes_round_trip</code>, <code>whisper_model_path_structure</code>, <code>audio_speech_request_defaults</code></td>
+            <td>Checks the PCM request contract, expected Whisper model layout, and safe default handling for text-to-speech requests.</td>
+            <td class="yes">Covered</td>
+          </tr>
         </tbody>
       </table>
     </section>
@@ -172,6 +181,13 @@ cargo check -p smolpc-code-helper</code></pre>
             <td>Switch between code, GIMP, Blender, and LibreOffice modes and confirm routing to the correct backend provider.</td>
             <td>Each mode should invoke the correct provider family without leaking behaviour across assistants.</td>
             <td class="yes">Covered</td>
+          </tr>
+          <tr>
+            <td>IT6</td>
+            <td>Composer mic control + audio commands + engine voice endpoints</td>
+            <td>Record a short prompt fragment, transcribe it locally into the composer, send the prompt, and request read-aloud on the response.</td>
+            <td>The dictated text should appear in the chat input, and local playback should work or fail cleanly without breaking the text workflow.</td>
+            <td class="yes">Covered in development builds</td>
           </tr>
         </tbody>
       </table>
@@ -227,7 +243,8 @@ cargo check -p smolpc-code-helper</code></pre>
 - launcher engine API compatibility gates
 - mode-specific executor and provider tests
 - setup preparation and resource staging checks
-- fallback behaviour for malformed tool responses</code></pre>
+- fallback behaviour for malformed tool responses
+- voice request contract checks and TTS sidecar resolution checks</code></pre>
     </section>
 
     <section id="prompt-testing">
@@ -252,10 +269,17 @@ cargo check -p smolpc-code-helper</code></pre>
         <tbody>
           <tr>
             <td>PT-CH1</td>
-            <td>CodeHelper</td>
+            <td>Code Mode</td>
             <td>&quot;Explain this error and suggest how to fix it.&quot;</td>
             <td>The assistant should provide a clear coding explanation and next steps in a simple local chat workflow.</td>
             <td class="yes">Scenario defined and used during development</td>
+          </tr>
+          <tr>
+            <td>PT-VO1</td>
+            <td>Code Mode Voice</td>
+            <td>Dictate a short coding question, then ask the app to read the answer aloud.</td>
+            <td>Voice input should transcribe into the composer correctly, and the response should remain understandable when played back through the local read-aloud control.</td>
+            <td class="yes">Scenario aligned with implemented UI flow</td>
           </tr>
           <tr>
             <td>PT-GI1</td>
@@ -328,6 +352,12 @@ cargo check -p smolpc-code-helper</code></pre>
             <td class="yes">Covered by setup checks and manual scenarios</td>
           </tr>
           <tr>
+            <td>Missing microphone or unavailable audio output</td>
+            <td>Voice feature degradation</td>
+            <td>Voice controls should disable cleanly or report temporary unavailability while leaving the text-chat workflow unaffected.</td>
+            <td class="yes">Implemented in UI and engine fallback flow</td>
+          </tr>
+          <tr>
             <td>Cross-platform development environment</td>
             <td>Tauri, Rust, and Svelte portability</td>
             <td>The codebase should remain more portable than the older Windows-only prototype, even where packaging details still differ.</td>
@@ -386,6 +416,13 @@ cargo check -p smolpc-code-helper</code></pre>
             <td>Protects weaker devices from becoming unstable during local generation.</td>
             <td class="yes">Heuristics covered by automated tests</td>
           </tr>
+          <tr>
+            <td>PF5</td>
+            <td>Voice I/O</td>
+            <td>Transcription turnaround, TTS availability, and added resource overhead</td>
+            <td>Voice support should improve accessibility without making the main chat flow feel fragile or unexpectedly heavy.</td>
+            <td>Implemented path and resource budget defined, final timings TBC</td>
+          </tr>
         </tbody>
       </table>
     </section>
@@ -394,7 +431,7 @@ cargo check -p smolpc-code-helper</code></pre>
       <h2>User Acceptance Testing</h2>
       <p>
         User acceptance testing was planned around representative target users rather than a single
-        generic tester. This matched the product itself: CodeHelper targets coding support, GIMP and
+        generic tester. This matched the product itself: the Code mode targets coding support, GIMP and
         Blender target creative workflows, and the LibreOffice modes target classroom and document-based
         tasks. Final acceptance quotes and scores can be added later, but the intended test profiles and
         scenarios are already clear.
@@ -413,7 +450,7 @@ cargo check -p smolpc-code-helper</code></pre>
           <tr>
             <td>Tester 1</td>
             <td>Student or beginner programmer</td>
-            <td>CodeHelper</td>
+            <td>Code Mode</td>
           </tr>
           <tr>
             <td>Tester 2</td>
@@ -447,9 +484,9 @@ cargo check -p smolpc-code-helper</code></pre>
         <tbody>
           <tr>
             <td>UAT1</td>
-            <td>CodeHelper</td>
-            <td>Ask for help understanding and fixing a short code issue in a chat-based workflow.</td>
-            <td>The tester should understand the answer, identify a next step, and remain comfortable with the offline interface.</td>
+            <td>Code Mode</td>
+            <td>Ask for help understanding and fixing a short code issue in a chat-based workflow, optionally using voice input or read-aloud.</td>
+            <td>The tester should understand the answer, identify a next step, and remain comfortable with both the offline chat flow and the optional voice controls.</td>
             <td>Scenario prepared, final feedback to be inserted</td>
           </tr>
           <tr>
@@ -478,7 +515,7 @@ cargo check -p smolpc-code-helper</code></pre>
 
       <h3>Tester Feedback</h3>
       <div class="card">
-        <h3>CodeHelper Profile</h3>
+        <h3>Code Mode Profile</h3>
         <p>
           Final feedback will be added after the last acceptance pass. The key questions for this tester
           are whether the chat flow is simple enough for beginners and whether local/offline operation
