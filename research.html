@@ -19,47 +19,37 @@
   </nav>
 
   <main>
-
     <h1>Research</h1>
 
     <section id="related-projects">
       <h2>Related Projects Review</h2>
-      <p><!-- brief intro to what was reviewed and why --></p>
+      <p>We reviewed both external tools and our own predecessor prototype to understand what interaction patterns were already effective, where deployment friction came from, and which technical choices would scale from a single assistant to a unified platform. This was important because the project evolved during development from a LibreOffice-focused prototype into a broader multi-mode assistant platform with CodeHelper as the flagship experience [4], [5].</p>
 
-      <h3>LibreOffice Assistant</h3>
+      <h3>Previous SmolPC LibreOffice Prototype</h3>
       <div class="card">
-        <p><strong>Main Features:</strong> <!-- description --></p>
-        <p><strong>What we learned:</strong> <!-- description --></p>
+        <p><strong>Main Features:</strong> An earlier local desktop assistant focused on LibreOffice workflows, using a separate local model-serving setup and document-oriented tool orchestration.</p>
+        <p><strong>What we learned:</strong> The prototype proved that offline educational assistance was viable, but it also exposed problems that became more serious as scope expanded: duplicated runtime ownership, platform-specific setup, and a weak path to a single bundled installer. Those lessons directly influenced the later move to a shared engine and a unified application shell.</p>
       </div>
 
-      <h3>CodeHelper</h3>
+      <h3>GitHub Copilot</h3>
       <div class="card">
-        <p><strong>Main Features:</strong> <!-- description --></p>
-        <p><strong>What we learned:</strong> <!-- description --></p>
+        <p><strong>Main Features:</strong> Context-aware code completion, chat, editing support, and integration inside common development tools [1].</p>
+        <p><strong>What we learned:</strong> This helped us benchmark the broader expectation that AI can support coding tasks. However, our own response to that need was different: instead of deep IDE integration, CodeHelper was designed as a simple local chat-based coding assistant inside the unified SmolPC app, prioritising offline use, privacy, and low deployment friction over editor-specific features.</p>
       </div>
 
-      <h3>GIMP Assistant</h3>
+      <h3>GIMP MCP</h3>
       <div class="card">
-        <p><strong>Main Features:</strong> <!-- description --></p>
-        <p><strong>What we learned:</strong> <!-- description --></p>
+        <p><strong>Main Features:</strong> Natural-language control of GIMP through MCP, exposing image-editing operations through a structured tool interface [2], [11].</p>
+        <p><strong>What we learned:</strong> This showed that structured tool access into an existing creative application is stronger than relying only on screenshot description or plain chat. It influenced both our GIMP integration and the wider idea that different assistant modes should use host-specific bridges where needed rather than one generic interaction model for every workflow.</p>
       </div>
-
-      <h3>Blender Assistant</h3>
-      <div class="card">
-        <p><strong>Main Features:</strong> <!-- description --></p>
-        <p><strong>What we learned:</strong> <!-- description --></p>
-      </div>
-
     </section>
 
     <section id="technology-review">
       <h2>Technology Review</h2>
-      <p><!-- Brief intro to technology review process --></p>
+      <p>The technology research evolved alongside the implementation. Early experiments prioritised rapid prototyping; later decisions prioritised packaging, cross-platform development, security, runtime ownership, and predictable local deployment. The final architecture therefore reflects a series of deliberate pivots rather than one fixed plan from the start [4], [5], [12].</p>
 
-      <h3>AI Model Selection</h3>
-      <p><!-- Overview of how we chose the AI models --></p>
-
-      <h4>LibreOffice Assistant</h4>
+      <h3>Inference Runtime Ownership</h3>
+      <p>One of the most important technical pivots was how local inference should be owned. Early experimentation used Ollama because it made local prototyping quick, but a separate model server still introduces extra setup and makes it harder to present the system as one product. The final direction was therefore a shared SmolPC engine that owns startup, readiness, backend selection, and inference for the whole suite [3], [5], [12].</p>
       <table>
         <thead>
           <tr>
@@ -71,21 +61,28 @@
         </thead>
         <tbody>
           <tr>
-            <td><!-- Model name --></td>
-            <td><!-- Pros --></td>
-            <td><!-- Cons --></td>
-            <td><!-- Yes/No --></td>
+            <td>Cloud-hosted model APIs</td>
+            <td>High model capability and minimal local compute requirements</td>
+            <td>Internet dependency, privacy concerns, account dependency, and poor classroom deployability</td>
+            <td class="no">No</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Ollama as a separate local model server</td>
+            <td>Quick to prototype, simple localhost API, and useful for early local experimentation [3]</td>
+            <td>Still requires separate runtime management and weakens the single-installer deployment story</td>
+            <td class="no">No</td>
+          </tr>
+          <tr>
+            <td>Shared SmolPC engine</td>
+            <td>One runtime lifecycle, shared model ownership, hardware-aware backend selection, and a better fit for unified deployment [5], [12]</td>
+            <td>Requires more up-front architecture and contract discipline</td>
+            <td class="yes">Yes</td>
           </tr>
         </tbody>
       </table>
 
-      <h4>CodeHelper</h4>
+      <h3>Solution and Deployment Architecture</h3>
+      <p>Three broad product shapes were considered. A cloud-first architecture was rejected early because it conflicted with the privacy and offline goals in the requirements. A collection of separate assistants worked well enough for prototyping, but it created repeated setup and a weaker deployment story. The final direction was a unified application with a shared local engine and mode-specific providers [4], [5], [12].</p>
       <table>
         <thead>
           <tr>
@@ -97,21 +94,22 @@
         </thead>
         <tbody>
           <tr>
-            <td><!-- Model name --></td>
-            <td><!-- Pros --></td>
-            <td><!-- Cons --></td>
-            <td><!-- Yes/No --></td>
+            <td>Separate assistants with their own runtime and setup flows</td>
+            <td>Fast to prototype and easy to develop independently in the early phase</td>
+            <td>Repeated setup, fragmented UX, and more difficult packaging for end users</td>
+            <td class="no">No</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Unified SmolPC app with a shared engine and mode-specific providers</td>
+            <td>Shared model/runtime ownership, more consistent UX, reusable setup, and a clearer path to a single bundled product [5], [12]</td>
+            <td>More architectural complexity and stricter boundaries between app logic and inference ownership</td>
+            <td class="yes">Yes</td>
           </tr>
         </tbody>
       </table>
 
-      <h4>GIMP Assistant</h4>
+      <h3>Device and Runtime Strategy</h3>
+      <p>We deliberately moved away from framing the system around one fixed laptop specification. Local AI performance depends heavily on the hardware and drivers available on the machine, so the more realistic goal was to recognise the supported runtime path and use the best available local lane rather than promise identical behaviour everywhere. ONNX Runtime execution providers make this kind of backend selection practical, and OpenVINO provides a stronger path on supported Intel hardware [6], [7].</p>
       <table>
         <thead>
           <tr>
@@ -123,21 +121,28 @@
         </thead>
         <tbody>
           <tr>
-            <td><!-- Model name --></td>
-            <td><!-- Pros --></td>
-            <td><!-- Cons --></td>
-            <td><!-- Yes/No --></td>
+            <td>Optimise for one fixed target laptop profile</td>
+            <td>Simpler benchmarking and narrower tuning target</td>
+            <td>Too brittle for real deployment because hardware and driver state vary between machines</td>
+            <td class="no">No</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>CPU-only local inference</td>
+            <td>Largest baseline compatibility and simplest fallback story</td>
+            <td>Lower performance and a weaker experience on machines that do have GPU or NPU acceleration</td>
+            <td class="no">No</td>
+          </tr>
+          <tr>
+            <td>Hardware-aware local runtime selection</td>
+            <td>Can adapt to CPU, DirectML, or OpenVINO NPU support while preserving the offline goal [6], [7], [12]</td>
+            <td>More engineering complexity and no guarantee that every device will deliver the same performance</td>
+            <td class="yes">Yes</td>
           </tr>
         </tbody>
       </table>
 
-      <h4>Blender Assistant</h4>
+      <h3>Model Selection</h3>
+      <p>This project does not train or evaluate a novel algorithm, so we do not include a separate Algorithms page. Instead, the research focus here is model, runtime, and architecture selection. In practice, the shared model strategy moved toward <code>qwen3-4b</code> as the main cross-mode baseline, while smaller models remained useful for lighter or more constrained flows [8].</p>
       <table>
         <thead>
           <tr>
@@ -149,25 +154,32 @@
         </thead>
         <tbody>
           <tr>
-            <td><!-- Model name --></td>
-            <td><!-- Pros --></td>
-            <td><!-- Cons --></td>
-            <td><!-- Yes/No --></td>
+            <td><code>qwen3-4b</code></td>
+            <td>Stronger cross-mode baseline and better suited to a unified assistant platform [8]</td>
+            <td>Heavier artifacts, slower bring-up, and more sensitive to runtime constraints</td>
+            <td class="yes">Yes</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td><code>qwen2.5-1.5b-instruct</code></td>
+            <td>Smaller footprint and useful for lighter-weight local flows or more constrained hardware [8]</td>
+            <td>Not strong enough as the single baseline across all assistant modes</td>
+            <td class="yes">Yes</td>
+          </tr>
+          <tr>
+            <td>Larger 7B+ local models as the default</td>
+            <td>Potentially stronger generation quality</td>
+            <td>Too heavy for the intended deployment story and harder to package for general classroom use</td>
+            <td class="no">No</td>
           </tr>
         </tbody>
       </table>
 
-      <h3>Programming Languages</h3>
+      <h3>Desktop Application Stack</h3>
+      <p>The move from the older prototype toward a cross-platform packaged desktop application made the application framework decision especially important. Tauri was chosen because it matched the project priorities around packaging, native backend control, and a lighter-weight desktop footprint while still allowing a modern web-based UI [9].</p>
       <table>
         <thead>
           <tr>
-            <th>Language</th>
+            <th>Option</th>
             <th>Pros</th>
             <th>Cons</th>
             <th>Chosen</th>
@@ -175,81 +187,97 @@
         </thead>
         <tbody>
           <tr>
-            <td><!-- e.g. Python --></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Electron with TypeScript</td>
+            <td>Mature ecosystem and familiar web development workflow</td>
+            <td>Heavier desktop footprint and a weaker fit for the project&rsquo;s lightweight packaging goals</td>
+            <td class="no">No</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Tauri with Rust backend and TypeScript frontend</td>
+            <td>Good fit for packaged desktop delivery, native backend control, and a reusable web UI [9]</td>
+            <td>More Rust-specific engineering effort and stricter integration boundaries</td>
+            <td class="yes">Yes</td>
+          </tr>
+          <tr>
+            <td>Python desktop application stack</td>
+            <td>Fast experimentation and strong AI tooling ecosystem</td>
+            <td>Weaker long-term fit for a bundled cross-platform desktop product with shared engine ownership</td>
+            <td class="no">No</td>
           </tr>
         </tbody>
       </table>
 
-      <h3>Frameworks and Libraries</h3>
+      <h3>Frontend Framework</h3>
+      <p>Svelte was selected for the frontend because it fits well with Tauri and keeps the UI layer lightweight. Its compiler-first approach also aligns with the project&rsquo;s preference for small, responsive desktop interfaces [10].</p>
       <table>
         <thead>
           <tr>
-            <th>Framework/Library</th>
+            <th>Option</th>
+            <th>Pros</th>
+            <th>Cons</th>
+            <th>Chosen</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Plain HTML, CSS, and JavaScript only</td>
+            <td>Minimal dependency footprint and full control over page structure</td>
+            <td>Harder to scale across a dynamic multi-mode desktop application</td>
+            <td class="no">No</td>
+          </tr>
+          <tr>
+            <td>React</td>
+            <td>Large ecosystem and broad developer familiarity</td>
+            <td>More framework overhead than necessary for this project</td>
+            <td class="no">No</td>
+          </tr>
+          <tr>
+            <td>Svelte</td>
+            <td>Compiler-based, concise components, and a lightweight UI layer that works well inside Tauri [10]</td>
+            <td>Smaller ecosystem than React and more team-specific learning upfront</td>
+            <td class="yes">Yes</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>APIs and Integration Strategy</h3>
+      <p>The final platform uses more than one kind of interface because the problem itself has multiple layers. Inference is owned by the shared engine through a typed client and localhost HTTP contract, while host applications are integrated through app-specific tool providers and host bridges, including GIMP MCP bridging and LibreOffice MCP-backed tooling where appropriate [5], [11], [12].</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Approach</th>
             <th>Purpose</th>
             <th>Pros</th>
             <th>Cons</th>
-            <th>Chosen</th>
+            <th>Decision</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><!-- e.g. Flask --></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>App-local inference inside each assistant</td>
+            <td>Let each assistant own its own model/runtime logic</td>
+            <td>Simpler for isolated early experiments</td>
+            <td>Duplicates runtime logic and weakens a unified deployment model</td>
+            <td>Rejected for the final architecture</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Shared engine client plus localhost HTTP contract</td>
+            <td>Final inference ownership across assistant modes</td>
+            <td>One engine lifecycle, shared models, and a clear cross-app boundary [5], [12]</td>
+            <td>Requires more up-front architecture and contract discipline</td>
+            <td>Final inference path</td>
+          </tr>
+          <tr>
+            <td>App-specific host bridges and tool providers</td>
+            <td>Controlling external creative/productivity software</td>
+            <td>Structured access to host-app operations instead of fragile prompt-only interaction [2], [11]</td>
+            <td>Still depends on the host application being installed and reachable</td>
+            <td>Final host-app path</td>
           </tr>
         </tbody>
       </table>
-
-      <h3>APIs</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>API</th>
-            <th>Purpose</th>
-            <th>Pros</th>
-            <th>Cons</th>
-            <th>Chosen</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><!-- e.g. OpenAI API --></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
-
     </section>
 
-    <!-- Summary of Technical Decisions -->
     <section id="summary">
       <h2>Summary of Technical Decisions</h2>
       <table>
@@ -262,33 +290,76 @@
         </thead>
         <tbody>
           <tr>
-            <td><!-- e.g. AI Model --></td>
-            <td><!-- e.g. Llama 3 --></td>
-            <td><!-- Reason --></td>
+            <td>Overall product shape</td>
+            <td>Unified multi-mode SmolPC application</td>
+            <td>Provided a more coherent UX and a stronger packaging story than separate assistants</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Flagship workflow</td>
+            <td>CodeHelper as the core user-facing mode</td>
+            <td>Made the platform identity clearer while still supporting other assistant workflows</td>
+          </tr>
+          <tr>
+            <td>Inference ownership</td>
+            <td>Shared local engine</td>
+            <td>Reduced duplicated runtime setup and enabled model reuse across modes</td>
+          </tr>
+          <tr>
+            <td>Runtime strategy</td>
+            <td>Hardware-aware local backend selection with fallbacks</td>
+            <td>Better matched real deployment variability than targeting one fixed machine profile</td>
+          </tr>
+          <tr>
+            <td>Primary model baseline</td>
+            <td><code>qwen3-4b</code></td>
+            <td>Worked better as the main cross-mode baseline for the unified assistant platform</td>
+          </tr>
+          <tr>
+            <td>Smaller supporting model</td>
+            <td><code>qwen2.5-1.5b-instruct</code></td>
+            <td>Retained for lighter-weight flows and more constrained runtime situations</td>
+          </tr>
+          <tr>
+            <td>Desktop framework</td>
+            <td>Tauri with Rust backend</td>
+            <td>Better aligned with cross-platform packaging, native backend control, and a lighter desktop footprint</td>
+          </tr>
+          <tr>
+            <td>Frontend framework</td>
+            <td>Svelte</td>
+            <td>Kept the UI layer compact while still supporting a dynamic multi-mode interface</td>
+          </tr>
+          <tr>
+            <td>Host-application integration</td>
+            <td>App-specific host bridges and tool providers</td>
+            <td>Enabled structured control of GIMP, Blender, and LibreOffice workflows instead of plain chat alone</td>
           </tr>
         </tbody>
       </table>
     </section>
 
-    <!-- References -->
     <section id="references">
       <h2>References</h2>
       <ol>
-        <li><!-- [1] Author, "Title," Journal, vol., no., pp., year. --></li>
-        <li><!-- [2] --></li>
-        <li><!-- [3] --></li>
+        <li>[1] GitHub, &ldquo;GitHub Copilot,&rdquo; 2026. [Online]. Available: <a href="https://github.com/features/copilot" target="_blank">https://github.com/features/copilot</a>. [Accessed: 23-Mar-2026].</li>
+        <li>[2] maorcc, &ldquo;gimp-mcp,&rdquo; GitHub, 2026. [Online]. Available: <a href="https://github.com/maorcc/gimp-mcp" target="_blank">https://github.com/maorcc/gimp-mcp</a>. [Accessed: 23-Mar-2026].</li>
+        <li>[3] Ollama, &ldquo;Ollama,&rdquo; 2026. [Online]. Available: <a href="https://ollama.com/" target="_blank">https://ollama.com/</a>. [Accessed: 23-Mar-2026].</li>
+        <li>[4] SmolPC-2.0, &ldquo;SmolPC Platform Monorepo,&rdquo; GitHub, 2026. [Online]. Available: <a href="https://github.com/SmolPC-2-0/smolpc-codehelper" target="_blank">https://github.com/SmolPC-2-0/smolpc-codehelper</a>. [Accessed: 23-Mar-2026].</li>
+        <li>[5] SmolPC-2.0, &ldquo;SmolPC Monorepo Architecture,&rdquo; GitHub, 2026. [Online]. Available: <a href="https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/ARCHITECTURE.md" target="_blank">https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/ARCHITECTURE.md</a>. [Accessed: 23-Mar-2026].</li>
+        <li>[6] ONNX Runtime, &ldquo;Execution Providers,&rdquo; 2026. [Online]. Available: <a href="https://onnxruntime.ai/docs/execution-providers/" target="_blank">https://onnxruntime.ai/docs/execution-providers/</a>. [Accessed: 23-Mar-2026].</li>
+        <li>[7] Intel, &ldquo;OpenVINO GenAI on NPU,&rdquo; 2026. [Online]. Available: <a href="https://docs.openvino.ai/2026/openvino-workflow-generative/inference-with-genai/inference-with-genai-on-npu.html" target="_blank">https://docs.openvino.ai/2026/openvino-workflow-generative/inference-with-genai/inference-with-genai-on-npu.html</a>. [Accessed: 23-Mar-2026].</li>
+        <li>[8] SmolPC-2.0, &ldquo;Model Strategy,&rdquo; GitHub, 2026. [Online]. Available: <a href="https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/openvino-native-genai/MODEL_STRATEGY.md" target="_blank">https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/openvino-native-genai/MODEL_STRATEGY.md</a>. [Accessed: 23-Mar-2026].</li>
+        <li>[9] Tauri, &ldquo;Tauri 2.0,&rdquo; 2026. [Online]. Available: <a href="https://tauri.app/" target="_blank">https://tauri.app/</a>. [Accessed: 23-Mar-2026].</li>
+        <li>[10] Svelte, &ldquo;Svelte,&rdquo; 2026. [Online]. Available: <a href="https://svelte.dev/" target="_blank">https://svelte.dev/</a>. [Accessed: 23-Mar-2026].</li>
+        <li>[11] Model Context Protocol, &ldquo;What is the Model Context Protocol (MCP)?,&rdquo; 2026. [Online]. Available: <a href="https://modelcontextprotocol.io/docs/getting-started/intro" target="_blank">https://modelcontextprotocol.io/docs/getting-started/intro</a>. [Accessed: 23-Mar-2026].</li>
+        <li>[12] SmolPC-2.0, &ldquo;Shared Engine Integration Notes,&rdquo; GitHub, 2026. [Online]. Available: <a href="https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/SMOLPC_SUITE_INTEGRATION.md" target="_blank">https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/SMOLPC_SUITE_INTEGRATION.md</a>. [Accessed: 23-Mar-2026].</li>
       </ol>
     </section>
 
   </main>
   <footer>
     <div class="footer-links">
-    <a href="mailto:<!-- team email -->">Email</a>
+    <span>Email to be added</span>
     <a href="https://github.com/SmolPC-2-0/smolpc-codehelper" target="_blank">GitHub</a>
   </div>
 

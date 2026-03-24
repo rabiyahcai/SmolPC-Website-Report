@@ -25,50 +25,50 @@
     <!-- partner intros -->
     <section id="partner">
       <h2>Partner Introduction</h2>
-        <h3> Intel </h3>
-        <p>Intel is a global leader in semiconductor and computing technology. SmolPC is designed to run on Intel N200-powered laptops, and Intel's support has been instrumental in ensuring our AI pipeline is optimised for low-cost, low-power hardware through OpenVino, Intel's open-source toolkit for efficient AI inference.</p>
-        <h3> Microsoft </h3>
-        <p>Microsoft is one of the world's leading technology companies and a major contributor to open-source software. Microsoft's involvement has supported the development of SmolPC's accessibility features and its integration with open-source productivity tools used in educational environments</p>
-        <h3> IBM </h3>
-        <p>
-IBM is a global technology and research company with a strong commitment to education and open-source innovation. IBM's expertise in AI and enterprise software has informed SmolPC's approach to building scalable, privacy-first AI tools for real-world deployment.</p>
-      <p><!-- --></p>
+        <h3>Project Partner</h3>
+        <p>SmolPC was developed under the supervision of Professor Dean Mohamedally at UCL's Department of Computer Science. He acted as the primary academic stakeholder for the project, helping define the educational problem, review major design decisions, and keep the work aligned with practical classroom use rather than a purely technical demonstration.</p>
+        <h3>Educational Stakeholders</h3>
+        <p>Requirements were also shaped by discussions with teachers and by external demonstrations of the project. These conversations consistently pushed the platform towards privacy, ease of deployment, practical classroom value, and support for everyday student workflows rather than isolated AI features.</p>
+        <h3>Software Context</h3>
+        <p>The final platform was designed around tasks students and teachers regularly perform across coding, writing, image editing, and 3D work. This is why the scope expanded beyond the original LibreOffice prototype to include CodeHelper together with assistants for LibreOffice, GIMP, and Blender inside one unified local platform.</p>
     </section>
 
     <!-- project background -->
     <section id="background">
       <h2>Project Background</h2>
-      <p>Artificial intelligence is transforming education, yet access to AI-powered learning tools remains deeply unequal. Leading solutions such as Microsoft Copilot and Google Gemini require paid subscriptions and reliable internet connectivity, placing them out of reach for the millions of students attending under-resourced schools worldwide. According to UNESCO, the majority of primary schools and a significant proportion of secondary schools worldwide lack internet connectivity. [1] Meanwhile, teachers in these schools continue to spend excessive time manually producing lesson materials with little technological support.Full-time teachers already work over 50 hours per week [2], leaving little time to manually produce the diverse learning materials that modern classrooms demand. The result is a widening attainment gap between students in well-funded institutions and those without access to modern EdTech tools. [3]
-      </p>
-      <p>Existing open-source alternatives offer some promise but fall short in practice. <a href="https://github.com/bthompson-dev/SmolPC" target="_blank">The original SmolPC LibreOffice Assistant</a> demonstrates that locally-run AI is technically feasible, yet remains limited to a single application and lacks the educational features needed for real classroom use. Broader frameworks such as OpenVino have matured significantly, making it increasingly practical to run capable language models on affordable consumer hardware, but no existing solution brings these capabilities together into a cohesive, educationally-focused suite that works out of the box for students and teachers.
-      </p>
-      <p>
-        It was against this backdrop that SmolPC 2.0 was conceived, under the supervision of Professor Dean Mohamedally at UCL's Department of Computer Science. Building upon the original SmolPC framework, this project extends the platform into a multi-application AI assistant suite spanning LibreOffice, CodeHelper, GIMP, and Blender, with the goal of making AI-assisted learning freely accessible to every student, regardless of their school's budget or internet connectivity.
-      </p>
+      <p>Artificial intelligence is transforming education, yet access to AI-powered learning tools remains deeply unequal. Most mainstream systems still depend on cloud accounts, reliable internet connectivity, and platform lock-in, which makes them difficult to deploy in privacy-sensitive or under-resourced educational settings. According to UNESCO, the majority of primary schools and a significant proportion of secondary schools worldwide lack internet connectivity. [1] At the same time, teachers are under increasing workload pressure [2], and schools risk falling further behind in the emerging AI divide. [3]</p>
+      <p>The project began from an earlier SmolPC LibreOffice prototype that demonstrated local AI assistance was possible, but also exposed important limitations. It centred on one application, relied on a more cumbersome local inference setup, and did not translate cleanly into a broader classroom platform. As the project scope expanded to include CodeHelper, GIMP, and Blender, it became clear that simply extending the old architecture would create repeated deployment, security, and maintainability problems.</p>
+      <p>Those constraints shaped the final direction of SmolPC 2.0. Rather than remaining a LibreOffice-first prototype, the project evolved into a unified offline AI platform with CodeHelper as the flagship experience and shared support for writing, presentations, image editing, and 3D workflows. This shift also changed the technical requirements: cross-platform desktop development, local privacy, easier packaging, reduced setup burden, and hardware-aware local inference became core project goals rather than secondary concerns.</p>
 
     </section>
 
     <!-- project goals -->
     <section id="goals">
       <h2>Project Goals</h2>
-      <p>The overarching goal of SmolPC is to deliver a free, offline, open-source AI assistant suite that integrates directly into the software students already use: LibreOffice, CodeHelper, GIMP, and Blender, and runs on low-cost hardware such as Intel N200 laptops costing as little as £300.</p>
+      <p>The overarching goal of SmolPC is to deliver a free, offline, open-source AI platform for education that makes local AI practical to deploy and use across coding, writing, image editing, and 3D design, with CodeHelper as the flagship experience inside a broader unified system.</p>
       <p>Specifically, SmolPC aims to:</p>
-      <li>Enable students and teachers to control educational software through natural language, reducing the technical barrier to using complex applications.</li>
-      <li>Support coding education through an AI-powered assistant that guides students through programming concepts and helps them debug their work.</li>
-      <li>Teach image editing and 3D modelling interactively, through AI assistants embedded directly in GIMP and Blender.</li>
-      <li>Operate entirely offline using locally deployed large language models via OpenVino, ensuring data privacy and removing the dependency on internet connectivity.</li>
-      <li>Run efficiently on low-spec, affordable hardware to ensure accessibility for under-resourced schools.</li>
+      <ul>
+        <li>Provide a unified desktop experience that brings together CodeHelper and assistants for LibreOffice, GIMP, and Blender.</li>
+        <li>Enable students and teachers to interact with software through natural language, lowering the barrier to coding, writing, editing, and creative work.</li>
+        <li>Keep prompts, generated content, and inference local to the device during normal use, supporting privacy-sensitive educational deployment.</li>
+        <li>Reduce deployment friction by avoiding workflows that require students or teachers to manage a separate model server or run ad hoc setup commands.</li>
+        <li>Use hardware-aware local inference so the platform can choose the best supported runtime path for the device it is installed on.</li>
+        <li>Maintain an extensible architecture so additional assistants or workflows can be added without rebuilding the platform from scratch.</li>
+      </ul>
     </section>
 
     <!-- gathering requirements -->
     <section id="gathering">
       <h2>Gathering Requirements</h2>
-      <p> Because SmolPC v2.0 is an extension of an existing project, we began by reviewing the original SmolPC v1.5 specification and meeting with our supervisor, Prof. Dean Mohamedally, who acts as our project partner. Through these discussions, we established the core direction of the project:</p>
-      <li>The tool must run entirely offline on budget school laptops (under £300), such as Intel N200 devices, with a minimum of 4 GB RAM.</li>
-      <li>Data privacy is non-negotiable. No student data can leave the device, ruling out cloud-based AI solutions entirely.</li>
-      <li>The system must be free and open-source, as schools cannot afford subscription-based tools.</li>
-      <li>The primary tools to build are an AI assistant for LibreOffice (Writer and Impress), an AI coding tutor (CodeHelper), and learning assistants for GIMP and Blender.</li>
-      <p>We also conducted a comparative analysis of cloud AI tools (Microsoft Copilot, Google Gemini, ChatGPT) against local AI alternatives to validate this direction. The analysis confirmed that cloud solutions are unsuitable for UK state schools due to GDPR constraints, cost barriers, and dependence on stable internet connectivity. This reinforced the need for a fully offline, local AI platform.</p>
+      <p>Requirements were gathered iteratively rather than fixed once at the start. Because SmolPC evolved through several architectural pivots during development, the final requirements reflect both early stakeholder goals and constraints discovered through implementation.</p>
+      <ol>
+        <li><strong>Legacy baseline:</strong> we reviewed the original SmolPC LibreOffice and Ollama-based prototype to identify what was reusable and what prevented broader adoption.</li>
+        <li><strong>Scope expansion:</strong> new project objectives introduced CodeHelper together with assistants for GIMP and Blender, turning the project from a single-application prototype into a multi-workflow platform.</li>
+        <li><strong>Prototype-driven refinement:</strong> early assistant development exposed problems around cross-platform development, duplicated inference logic, security boundaries, and the deployment overhead of relying on a separately managed model server.</li>
+        <li><strong>Deployment-driven refinement:</strong> as the goal shifted towards realistic school deployment, requirements expanded to include a unified app, a shared local engine, hardware-aware runtime selection, and a setup flow that avoids asking students or teachers to manage local inference infrastructure manually.</li>
+      </ol>
+      <p>We did not rely on a formal pupil survey. Direct access to school-age users was limited for safeguarding reasons, so requirements were refined through supervisor discussions, teacher-facing feedback, prototype evaluation, and iterative internal testing of realistic workflows.</p>
+      <p>We also conducted a comparative analysis of cloud AI tools against local deployment goals. The comparison reinforced that the decisive requirements were not only AI capability, but privacy, deployability, local control, and practical classroom use.</p>
       <table class="comparison-table">
         <thead>
           <tr>
@@ -81,36 +81,42 @@ IBM is a global technology and research company with a strong commitment to educ
         </thead>
         <tbody>
           <tr>
-            <td>Cost</td>
-            <td>$18/user/month (education)</td>
-            <td>Free tier; paid plans for schools</td>
-            <td>Free with Google Workspace for Education</td>
-            <td class="yes">Free, open-source</td>
-          </tr>
-          <tr>
-            <td>Internet required</td>
+            <td>Internet required during normal use</td>
             <td class="no">Yes</td>
             <td class="no">Yes</td>
             <td class="no">Yes</td>
-            <td class="yes">No, fully offline</td>
+            <td class="yes">No</td>
           </tr>
           <tr>
-            <td>Data leaves device</td>
-            <td class="no">Yes (Microsoft servers)</td>
-            <td class="no">Yes (OpenAI servers)</td>
-            <td class="no">Yes (Google servers)</td>
-            <td class="yes">No, all on-device</td>
-          </tr>
-
-          <tr>
-            <td>Works on budget hardware (4 GB RAM)</td>
-            <td class="no">No, offloads to cloud</td>
-            <td class="no">No, offloads to cloud</td>
-            <td class="no">No, offloads to cloud</td>
-            <td class="yes">Yes, Intel N200 optimised</td>
+            <td>User data processed off-device</td>
+            <td class="no">Yes</td>
+            <td class="no">Yes</td>
+            <td class="no">Yes</td>
+            <td class="yes">No</td>
           </tr>
           <tr>
-            <td>Open-source</td>
+            <td>Account or platform dependency for core use</td>
+            <td class="no">Yes</td>
+            <td class="no">Yes</td>
+            <td class="no">Yes</td>
+            <td class="yes">No</td>
+          </tr>
+          <tr>
+            <td>Suitable for privacy-preserving local deployment</td>
+            <td class="no">No</td>
+            <td class="no">No</td>
+            <td class="no">No</td>
+            <td class="yes">Yes</td>
+          </tr>
+          <tr>
+            <td>Adapts local inference to available device capabilities</td>
+            <td class="no">No</td>
+            <td class="no">No</td>
+            <td class="no">No</td>
+            <td class="yes">Yes</td>
+          </tr>
+          <tr>
+            <td>Open-source and redistributable core stack</td>
             <td class="no">No</td>
             <td class="no">No</td>
             <td class="no">No</td>
@@ -119,14 +125,8 @@ IBM is a global technology and research company with a strong commitment to educ
         </tbody>
       </table>
       <p class="comparison-caption">
-        Table 1. Comparative analysis of cloud AI tools vs. SmolPC v2.0 in the context of UK school deployment.
+        Table 1. Comparative analysis of cloud AI tools vs. SmolPC v2.0 in the context of local classroom deployment.
       </p>
-
-      <p>Direct access to school-age pupils is restricted for ethical and safeguarding reasons. We therefore collected user requirements through two approaches:</p>
-      <ol>
-        <li>stakeholder interviews facilitated by our supervisor, and</li>
-        <li>informal pseudo-user testing with coursemates acting as stand-in users.</li>
-      </ol>
     </section>
 
     <!-- personas -->
@@ -137,179 +137,180 @@ IBM is a global technology and research company with a strong commitment to educ
       <div class="card">
         <h3>Persona of a Student</h3>
         <img src="assets/images/persona1.jpg" alt="Persona 1 photo">
-        <p><!-- desc --></p>
+        <p>A secondary-school student who uses a school or personal laptop for programming, coursework, presentations, and creative assignments. They are comfortable asking questions in plain English, but not configuring local AI tooling or debugging installation problems. They need a tool that feels approachable, keeps their work private, and helps across more than one subject area.</p>
       </div>
 
       <div class="card">
         <h3>Persona of a Teacher</h3>
-        <img src="assets/images/persona2.jpg" alt="Persona 1 photo">
-        <p><!-- desc --></p>
+        <img src="assets/images/persona2.jpg" alt="Persona 2 photo">
+        <p>A teacher or teaching assistant who prepares lesson material, supports students in computing and digital media work, and values predictable deployment. They want useful AI support for classroom tasks, but cannot depend on cloud services, paid subscriptions, or setup steps that would be difficult to repeat across many student devices.</p>
       </div>
 
     </section>
 
     <!-- use cases -->
-    <section id="use-cases">
-      <h2>Use Cases</h2>
-
-      <h3>Use Case Diagram</h3>
-      <img src="assets/images/use-case-diagram.png" alt="Use case diagram">
+    <section id="use-case-diagram">
+      <h2>Use Case Diagram</h2>
+      <div class="card">
+        <p>The final use case diagram will be added here before submission.</p>
+      </div>
     </section>
     
-    <section id="use-cases">
-    <h2>Use Cases</h2>
+    <section id="use-case-list">
+    <h2>Use Case List</h2>
   
     <p>
-      The following use cases describe how students and teachers interact with SmolPC v2.0.
+      The following use cases describe how students and teachers interact with SmolPC v2.0 as a unified local AI platform.
       Each use case maps to one or more functional requirements listed in the MoSCoW section below.
     </p>
   
     <!-- UC1 -->
     <div class="uc-block">
-      <h3>UC1 — Send a Voice or Text Command to the AI</h3>
+      <h3>UC1 — Start SmolPC and Send a Text Request</h3>
       <table>
         <tr><td class="uc-label">Actor</td><td>Student / Teacher</td></tr>
-        <tr><td class="uc-label">Pre-condition</td><td>SmolPC Home is open and a local AI model is running via Ollama.</td></tr>
+        <tr><td class="uc-label">Pre-condition</td><td>SmolPC is installed and the shared local engine is ready or can be started from the application.</td></tr>
         <tr>
           <td class="uc-label">Main Flow</td>
           <td class="uc-flow">
             <ol>
-              <li>User opens SmolPC Home and selects a tool.</li>
-              <li>User types a request in the chat box, or presses the microphone button to speak.</li>
-              <li>If voice, Whisper transcribes the audio to text locally.</li>
-              <li>The text is sent to the local LLM; a loading indicator is shown while processing.</li>
-              <li>The AI response appears in the chat panel.</li>
+              <li>User opens SmolPC and selects an assistant mode.</li>
+              <li>User types a request in the chat box.</li>
+              <li>The request is routed through the shared local engine and the tool provider for the active mode.</li>
+              <li>A loading or readiness indicator is shown while processing.</li>
+              <li>The response appears in the workspace and, where relevant, triggers the requested tool action.</li>
             </ol>
           </td>
         </tr>
-        <tr><td class="uc-label">Post-condition</td><td>The AI response is visible in the chat and, where applicable, applied to the open document.</td></tr>
-        <tr><td class="uc-label">Exception</td><td>If Ollama is not running, a clear error message is shown with a restart prompt.</td></tr>
+        <tr><td class="uc-label">Post-condition</td><td>The response is visible in the active workspace and the request has been handled locally.</td></tr>
+        <tr><td class="uc-label">Exception</td><td>If the runtime or host application is unavailable, the user is shown setup guidance or a clear recoverable error.</td></tr>
       </table>
     </div>
   
     <!-- UC2 -->
     <div class="uc-block">
-      <h3>UC2 — Create or Edit a Document in LibreOffice Writer</h3>
+      <h3>UC2 — Get Coding Help from CodeHelper</h3>
       <table>
-        <tr><td class="uc-label">Actor</td><td>Student / Teacher</td></tr>
-        <tr><td class="uc-label">Pre-condition</td><td>LibreOffice ≥ 7.6 is installed and the SmolPC extension is loaded.</td></tr>
+        <tr><td class="uc-label">Actor</td><td>Student</td></tr>
+        <tr><td class="uc-label">Pre-condition</td><td>Code mode is selected in SmolPC and the local model is ready.</td></tr>
         <tr>
           <td class="uc-label">Main Flow</td>
           <td class="uc-flow">
             <ol>
-              <li>User opens LibreOffice AI from SmolPC Home.</li>
-              <li>User types or speaks a command (e.g. "Write an introduction about photosynthesis" or "Reformat this as bullet points").</li>
-              <li>The AI reads the current document context via the LibreOffice UNO API.</li>
-              <li>Generated content is previewed in the chat before being inserted into the document.</li>
-              <li>User confirms; the document is updated. Undo/redo remains available.</li>
+              <li>Student types a coding question or pastes code into the chat.</li>
+              <li>Student optionally uses a prompt starter or follow-up question.</li>
+              <li>CodeHelper returns an explanation, debugging help, or generated code.</li>
+              <li>Student continues the conversation until the problem is understood or solved.</li>
             </ol>
           </td>
         </tr>
-        <tr><td class="uc-label">Post-condition</td><td>The document is updated as instructed. The action can be undone.</td></tr>
+        <tr><td class="uc-label">Post-condition</td><td>Student receives a locally generated coding answer suited to the task.</td></tr>
       </table>
     </div>
   
     <!-- UC3 -->
     <div class="uc-block">
-      <h3>UC3 — Create a Presentation in LibreOffice Impress</h3>
+      <h3>UC3 — Create or Edit a Document in LibreOffice Writer</h3>
       <table>
-        <tr><td class="uc-label">Actor</td><td>Teacher</td></tr>
-        <tr><td class="uc-label">Pre-condition</td><td>LibreOffice AI extension is active; Impress is installed.</td></tr>
+        <tr><td class="uc-label">Actor</td><td>Student / Teacher</td></tr>
+        <tr><td class="uc-label">Pre-condition</td><td>LibreOffice is installed and Writer mode is available in SmolPC.</td></tr>
         <tr>
           <td class="uc-label">Main Flow</td>
           <td class="uc-flow">
             <ol>
-              <li>Teacher types a command such as "Create a 5-slide presentation on the water cycle for Year 8."</li>
-              <li>The AI generates slide titles, bullet points, and speaker notes via the UNO API.</li>
-              <li>Accessible formatting is applied automatically (high-contrast colours, font size ≥ 18pt).</li>
-              <li>Teacher reviews the slides inside Impress and requests edits via natural language.</li>
+              <li>User opens Writer mode from the unified application.</li>
+              <li>User creates a new document or works on an existing one.</li>
+              <li>User asks the assistant to draft, edit, structure, or format content.</li>
+              <li>The Writer workflow applies the requested actions and returns a summary.</li>
+              <li>User reviews the result and requests further refinement if needed.</li>
             </ol>
           </td>
         </tr>
-        <tr><td class="uc-label">Post-condition</td><td>A complete, accessible presentation is saved to disk. No internet was required.</td></tr>
+        <tr><td class="uc-label">Post-condition</td><td>The document is updated locally according to the request.</td></tr>
       </table>
     </div>
   
     <!-- UC4 -->
     <div class="uc-block">
-      <h3>UC4 — Get Coding Help from CodeHelper</h3>
+      <h3>UC4 — Create or Edit a Presentation in Slides</h3>
       <table>
-        <tr><td class="uc-label">Actor</td><td>Student</td></tr>
-        <tr><td class="uc-label">Pre-condition</td><td>SmolPC CodeHelper is open; a code-focused model (e.g. Llama 3.2 or DeepSeek) is loaded.</td></tr>
+        <tr><td class="uc-label">Actor</td><td>Teacher / Student</td></tr>
+        <tr><td class="uc-label">Pre-condition</td><td>LibreOffice is installed and Slides mode is available in SmolPC.</td></tr>
         <tr>
           <td class="uc-label">Main Flow</td>
           <td class="uc-flow">
             <ol>
-              <li>Student types a coding question or pastes broken code into the chat.</li>
-              <li>Student optionally selects a quick-example chip (e.g. "loops", "functions", "file I/O").</li>
-              <li>CodeHelper returns working code with inline comments in plain English.</li>
-              <li>Student copies the code or asks a follow-up question; chat history persists.</li>
+              <li>User opens Slides mode from the unified application.</li>
+              <li>User asks for a new presentation, new slide content, or edits to an existing deck.</li>
+              <li>The assistant generates slide-level actions and applies them through the LibreOffice workflow.</li>
+              <li>User reviews the updated deck and continues refining it in natural language.</li>
             </ol>
           </td>
         </tr>
-        <tr><td class="uc-label">Post-condition</td><td>Student receives correct, well-commented code with a plain-English explanation suited to their age group.</td></tr>
+        <tr><td class="uc-label">Post-condition</td><td>The presentation is created or updated locally according to the request.</td></tr>
       </table>
     </div>
   
     <!-- UC5 -->
     <div class="uc-block">
-      <h3>UC5 — Learn GIMP or Blender with Step-by-Step Guidance</h3>
+      <h3>UC5 — Edit an Image in GIMP</h3>
       <table>
-        <tr><td class="uc-label">Actor</td><td>Student</td></tr>
-        <tr><td class="uc-label">Pre-condition</td><td>GIMP or Blender is installed on the device; the corresponding SmolPC assistant is selected.</td></tr>
+        <tr><td class="uc-label">Actor</td><td>Student / Teacher</td></tr>
+        <tr><td class="uc-label">Pre-condition</td><td>GIMP is installed, GIMP mode is available, and an image is open or ready to be edited.</td></tr>
         <tr>
           <td class="uc-label">Main Flow</td>
           <td class="uc-flow">
             <ol>
-              <li>Student asks how to do something (e.g. "How do I remove the background from an image in GIMP?").</li>
-              <li>The assistant provides numbered, step-by-step instructions in plain English.</li>
-              <li>Student follows the instructions in GIMP or Blender and asks follow-up questions as needed.</li>
-              <li>The assistant clarifies any steps or suggests alternatives if the student gets stuck.</li>
+              <li>User switches to GIMP mode.</li>
+              <li>User asks for an edit such as cropping, blurring, adjusting colour, or applying a transformation.</li>
+              <li>The GIMP workflow maps the request to local tool actions.</li>
+              <li>The image is updated and the user asks for follow-up changes if needed.</li>
             </ol>
           </td>
         </tr>
-        <tr><td class="uc-label">Post-condition</td><td>Student completes the task themselves having learned the relevant workflow, rather than having it done for them.</td></tr>
+        <tr><td class="uc-label">Post-condition</td><td>The requested image edit is completed locally inside the GIMP workflow.</td></tr>
       </table>
     </div>
   
     <!-- UC6 -->
     <div class="uc-block">
-      <h3>UC6 — Switch Between Tools</h3>
+      <h3>UC6 — Get Scene-Aware Help in Blender</h3>
       <table>
-        <tr><td class="uc-label">Actor</td><td>Student / Teacher</td></tr>
-        <tr><td class="uc-label">Pre-condition</td><td>User is inside any SmolPC tool.</td></tr>
+        <tr><td class="uc-label">Actor</td><td>Student</td></tr>
+        <tr><td class="uc-label">Pre-condition</td><td>Blender is installed, Blender mode is available, and a Blender scene is open.</td></tr>
         <tr>
           <td class="uc-label">Main Flow</td>
           <td class="uc-flow">
             <ol>
-              <li>User opens the tool dropdown in the sidebar.</li>
-              <li>User selects a different tool (e.g. switches from LibreOffice AI to CodeHelper).</li>
-              <li>The interface updates without closing the application. Chat history is preserved per tool.</li>
-              <li>Optionally, user selects a different local model from the model selector.</li>
+              <li>User switches to Blender mode.</li>
+              <li>User asks a question about the current scene, object, material, or workflow.</li>
+              <li>The assistant uses local context and retrieval to produce a scene-aware answer.</li>
+              <li>User follows the guidance and continues the conversation with follow-up questions.</li>
             </ol>
           </td>
         </tr>
-        <tr><td class="uc-label">Post-condition</td><td>User is in the selected tool with no data loss; previous chats remain accessible in the sidebar.</td></tr>
+        <tr><td class="uc-label">Post-condition</td><td>User receives Blender help that is grounded in the local workflow rather than a generic web-style answer.</td></tr>
       </table>
     </div>
   
     <!-- UC7 -->
     <div class="uc-block">
-      <h3>UC7 — View and Continue a Previous Chat Session</h3>
+      <h3>UC7 — Switch Modes and Continue Previous Work</h3>
       <table>
         <tr><td class="uc-label">Actor</td><td>Student / Teacher</td></tr>
-        <tr><td class="uc-label">Pre-condition</td><td>At least one previous session exists locally.</td></tr>
+        <tr><td class="uc-label">Pre-condition</td><td>At least one previous conversation exists locally and the unified application is open.</td></tr>
         <tr>
           <td class="uc-label">Main Flow</td>
           <td class="uc-flow">
             <ol>
-              <li>User opens SmolPC and sees their chat history listed in the left sidebar.</li>
-              <li>User clicks a past conversation (e.g. "Python Function Help — Yesterday").</li>
-              <li>The full conversation loads and the user continues from where they left off.</li>
+              <li>User opens the mode selector or sidebar.</li>
+              <li>User switches from one workflow to another, for example from CodeHelper to Writer or Blender.</li>
+              <li>User optionally opens a previous conversation associated with that mode.</li>
+              <li>The conversation loads and the user continues from the previous state.</li>
             </ol>
           </td>
         </tr>
-        <tr><td class="uc-label">Post-condition</td><td>User resumes a previous session with all context retained.</td></tr>
+        <tr><td class="uc-label">Post-condition</td><td>Mode-specific work and chat history remain available inside one unified application.</td></tr>
       </table>
     </div>
   
@@ -340,42 +341,47 @@ IBM is a global technology and research company with a strong commitment to educ
       <tbody>
         <tr>
           <td>FR-M1</td>
-          <td>The system shall accept natural language commands via text input across all tools.</td>
+          <td>The platform shall accept natural language requests via text input across all assistant modes.</td>
           <td><span class="badge badge-must">Must Have</span></td>
         </tr>
         <tr>
           <td>FR-M2</td>
-          <td>The system shall accept voice commands and transcribe them locally using a Whisper model, with no audio sent externally.</td>
+          <td>The platform shall provide a unified desktop shell that brings together CodeHelper and assistant workflows for LibreOffice, GIMP, and Blender.</td>
           <td><span class="badge badge-must">Must Have</span></td>
         </tr>
         <tr>
           <td>FR-M3</td>
-          <td>The system shall allow users to create, edit, and format documents in LibreOffice Writer via AI commands.</td>
+          <td>CodeHelper shall answer coding questions, explain programming concepts, and generate or debug code in plain language.</td>
           <td><span class="badge badge-must">Must Have</span></td>
         </tr>
         <tr>
           <td>FR-M4</td>
-          <td>The system shall allow users to create and edit presentations in LibreOffice Impress via AI commands.</td>
+          <td>The LibreOffice assistant shall support document and presentation workflows through natural language requests.</td>
           <td><span class="badge badge-must">Must Have</span></td>
         </tr>
         <tr>
           <td>FR-M5</td>
-          <td>All AI inference shall run entirely on-device with no internet connection required after initial setup.</td>
+          <td>The GIMP assistant shall support image-editing workflows through natural language requests.</td>
           <td><span class="badge badge-must">Must Have</span></td>
         </tr>
         <tr>
           <td>FR-M6</td>
-          <td>The system shall run on devices with a minimum of 4 GB RAM, including Intel N200 and ARM-based laptops under £300.</td>
+          <td>The Blender assistant shall support scene-aware 3D help and workflow guidance through natural language requests.</td>
           <td><span class="badge badge-must">Must Have</span></td>
         </tr>
         <tr>
           <td>FR-M7</td>
-          <td>CodeHelper shall answer coding questions, explain programming concepts, and generate working, commented code suited to students aged 11–18.</td>
+          <td>All AI inference shall run locally on-device during normal use, with no cloud dependency after setup.</td>
           <td><span class="badge badge-must">Must Have</span></td>
         </tr>
         <tr>
           <td>FR-M8</td>
-          <td>SmolPC Home shall provide a unified launcher for all tools without requiring the user to open separate applications.</td>
+          <td>User prompts, generated content, and assistant interactions shall remain on-device during normal use.</td>
+          <td><span class="badge badge-must">Must Have</span></td>
+        </tr>
+        <tr>
+          <td>FR-M9</td>
+          <td>The platform shall provide a deployment path that does not require students or teachers to manually install or operate a separate local model server.</td>
           <td><span class="badge badge-must">Must Have</span></td>
         </tr>
         <tr>
@@ -390,32 +396,32 @@ IBM is a global technology and research company with a strong commitment to educ
         </tr>
         <tr>
           <td>FR-S3</td>
-          <td>The GIMP and Blender assistants shall provide step-by-step instructional guidance, teaching users how to use the software themselves rather than controlling it directly.</td>
+          <td>The platform shall detect required host applications and provide setup guidance when a workflow is unavailable.</td>
           <td><span class="badge badge-should">Should Have</span></td>
         </tr>
         <tr>
           <td>FR-S4</td>
-          <td>Generated content shall be filtered for school-appropriate language before being displayed to the user.</td>
+          <td>The platform shall choose the best supported local runtime path for the current machine and fall back gracefully when a preferred accelerator is unavailable.</td>
           <td><span class="badge badge-should">Should Have</span></td>
         </tr>
         <tr>
           <td>FR-S5</td>
-          <td>The system shall support at least 3 languages for input and output.</td>
+          <td>The unified app shall allow users to open or focus the relevant host application directly from the active workflow.</td>
           <td><span class="badge badge-should">Should Have</span></td>
         </tr>
         <tr>
           <td>FR-S6</td>
-          <td>The system shall leverage Intel NPU hardware acceleration where available, with transparent fallback to CPU-only inference.</td>
+          <td>The system shall allow users to recover from missing prerequisites or runtime failures without losing chat state.</td>
           <td><span class="badge badge-should">Should Have</span></td>
         </tr>
         <tr>
           <td>FR-C1</td>
-          <td>A teacher dashboard could display student usage patterns and session frequency, stored entirely on the local device.</td>
+          <td>The platform could include local benchmark or diagnostics features to help compare runtime behaviour on different machines.</td>
           <td><span class="badge badge-could">Could Have</span></td>
         </tr>
         <tr>
           <td>FR-C2</td>
-          <td>A RAG-based help system could retrieve relevant LibreOffice, GIMP, or Blender documentation in response to user queries.</td>
+          <td>A local retrieval-augmented workflow could surface relevant documentation or help content for supported tools.</td>
           <td><span class="badge badge-could">Could Have</span></td>
         </tr>
         <tr>
@@ -468,56 +474,68 @@ IBM is a global technology and research company with a strong commitment to educ
         </tr>
         <tr>
           <td>NF-M3</td>
-          <td>The system shall run without crashing or becoming unresponsive on a device with 4 GB RAM and an Intel N200 processor.</td>
-          <td>Performance</td>
+          <td>Installation and launch shall not require end users to manage a separate inference server or run ad hoc shell commands as part of normal setup.</td>
+          <td>Deployability</td>
           <td><span class="badge badge-must">Must Have</span></td>
         </tr>
         <tr>
           <td>NF-M4</td>
-          <td>All source code and AI models used shall be open-source and redistributable under compatible licences.</td>
+          <td>The system shall degrade gracefully when a preferred local accelerator is unavailable, using a supported local runtime path instead of failing completely.</td>
+          <td>Reliability</td>
+          <td><span class="badge badge-must">Must Have</span></td>
+        </tr>
+        <tr>
+          <td>NF-M5</td>
+          <td>The architecture shall separate shared inference, app orchestration, and user interface logic to keep the platform maintainable as it grows.</td>
+          <td>Maintainability</td>
+          <td><span class="badge badge-must">Must Have</span></td>
+        </tr>
+        <tr>
+          <td>NF-M6</td>
+          <td>All source code, runtimes, and models used in the final platform shall be open-source or redistributable under compatible licences.</td>
           <td>Legal / Licensing</td>
           <td><span class="badge badge-must">Must Have</span></td>
         </tr>
         <tr>
           <td>NF-S1</td>
-          <td>Users shall be able to complete common tasks in no more than 3 interface steps.</td>
-          <td>Usability</td>
+          <td>The core application architecture should remain cross-platform and avoid unnecessary platform-specific product logic where possible.</td>
+          <td>Portability</td>
           <td><span class="badge badge-should">Should Have</span></td>
         </tr>
         <tr>
           <td>NF-S2</td>
-          <td>Voice input and screen-reader compatibility shall be available across all primary tools.</td>
-          <td>Accessibility</td>
+          <td>The platform should surface setup status, host application availability, and model or runtime state clearly to the user.</td>
+          <td>Usability</td>
           <td><span class="badge badge-should">Should Have</span></td>
         </tr>
         <tr>
           <td>NF-S3</td>
-          <td>AI responses shall be generated in under 30 seconds on CPU-only hardware and under 5 seconds with Intel NPU acceleration.</td>
+          <td>The hardware-aware runtime selector should choose the best supported backend for the current device automatically.</td>
           <td>Performance</td>
           <td><span class="badge badge-should">Should Have</span></td>
         </tr>
         <tr>
           <td>NF-S4</td>
-          <td>The architecture shall be extensible — adding a new tool shall not require changes to the core SmolPC codebase.</td>
+          <td>The architecture should make it possible to add or migrate assistant workflows without rewriting the core engine.</td>
           <td>Maintainability</td>
           <td><span class="badge badge-should">Should Have</span></td>
         </tr>
         <tr>
           <td>NF-S5</td>
-          <td>Installation and setup shall complete in under 15 minutes on a fresh device with no prior configuration.</td>
-          <td>Deployability</td>
+          <td>Response quality and user experience should remain acceptable across a range of supported hardware, even if throughput varies significantly by device.</td>
+          <td>Performance</td>
           <td><span class="badge badge-should">Should Have</span></td>
         </tr>
         <tr>
           <td>NF-C1</td>
-          <td>The UI could support a high-contrast mode and dyslexia-friendly font options.</td>
-          <td>Accessibility</td>
+          <td>The system could log anonymous local performance metrics to support future optimisation.</td>
+          <td>Maintainability</td>
           <td><span class="badge badge-could">Could Have</span></td>
         </tr>
         <tr>
           <td>NF-C2</td>
-          <td>The system could log anonymous performance metrics locally (e.g. response time, model used) to assist future optimisation.</td>
-          <td>Maintainability</td>
+          <td>The UI could support a high-contrast mode and dyslexia-friendly font options.</td>
+          <td>Accessibility</td>
           <td><span class="badge badge-could">Could Have</span></td>
         </tr>
       </tbody>
@@ -528,16 +546,16 @@ IBM is a global technology and research company with a strong commitment to educ
     <section id="references">
       <h2>References</h2>
       <ol>
-          <li>UNESCO, "UNESCO spotlights how digital learning can promote equity in low-resource contexts", 31st March 2025, Available: <a href="<!-- url -->" target="_blank">https://www.unesco.org/en/articles/unesco-spotlights-how-digital-learning-can-promote-equity-low-resource-contexts</a></li>
-          <li>National Education Union, "Working lives of teachers and leaders report shows staff overwhelmed by workload", 27th November 2025, Available: <a href="<!-- url -->" target="_blank">https://neu.org.uk/latest/press-releases/working-lives-teachers-and-leaders-report-shows-staff-overwhelmed-workload</a></li>
-          <li>The Sutton Trust, "State schools falling behind in new AI digital divide" 16th July 2025, Available: <a href="<!-- url -->" target="_blank">https://www.suttontrust.com/news-opinion/all-news-opinion/state-schools-falling-behind-in-new-ai-digital-divide/</a></li>
+          <li>UNESCO, "UNESCO spotlights how digital learning can promote equity in low-resource contexts", 31st March 2025, Available: <a href="https://www.unesco.org/en/articles/unesco-spotlights-how-digital-learning-can-promote-equity-low-resource-contexts" target="_blank">https://www.unesco.org/en/articles/unesco-spotlights-how-digital-learning-can-promote-equity-low-resource-contexts</a></li>
+          <li>National Education Union, "Working lives of teachers and leaders report shows staff overwhelmed by workload", 27th November 2025, Available: <a href="https://neu.org.uk/latest/press-releases/working-lives-teachers-and-leaders-report-shows-staff-overwhelmed-workload" target="_blank">https://neu.org.uk/latest/press-releases/working-lives-teachers-and-leaders-report-shows-staff-overwhelmed-workload</a></li>
+          <li>The Sutton Trust, "State schools falling behind in new AI digital divide", 16th July 2025, Available: <a href="https://www.suttontrust.com/news-opinion/all-news-opinion/state-schools-falling-behind-in-new-ai-digital-divide/" target="_blank">https://www.suttontrust.com/news-opinion/all-news-opinion/state-schools-falling-behind-in-new-ai-digital-divide/</a></li>
     </ol>
     </section>
   </main>
 
   <footer>
     <div class="footer-links">
-    <a href="mailto:<!-- team email -->">Email</a>
+    <span>Email to be added</span>
     <a href="https://github.com/SmolPC-2-0/smolpc-codehelper" target="_blank">GitHub</a>
   </div>
 

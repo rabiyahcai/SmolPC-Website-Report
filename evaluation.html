@@ -23,123 +23,182 @@
 
     <h1>Evaluation</h1>
 
-    <!-- Achievement Table -->
     <section id="achievements">
       <h2>Summary of Achievements</h2>
-      <p><!-- Brief overview of what was achieved --></p>
+      <p>
+        This evaluation measures the delivered system against the functional requirements defined in the
+        Requirements page. The strongest project outcome is not just one assistant mode in isolation, but
+        the successful pivot toward a unified offline platform with a shared local engine, a common app
+        shell, and assistant-specific workflows for coding, creative tools, and office tasks.
+      </p>
 
-      <h3>LibreOffice Assistant</h3>
+      <h3>Must-Have Requirements</h3>
       <table>
         <thead>
           <tr>
             <th>ID</th>
             <th>Requirement</th>
             <th>Priority</th>
-            <th>State</th>
-            <th>Contributors</th>
+            <th>Outcome</th>
+            <th>Notes</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>FR-LO1</td>
-            <td><!-- Requirement --></td>
+            <td>FR-M1</td>
+            <td>Natural-language text input across assistant modes</td>
             <td>Must have</td>
-            <td><!-- ✓ or ✗ --></td>
-            <td><!-- Names --></td>
+            <td class="yes">Achieved</td>
+            <td>Text-based workflows are central to the unified app and all major assistant flows.</td>
           </tr>
           <tr>
-            <td>FR-LO2</td>
-            <td></td>
-            <td>Should have</td>
-            <td></td>
-            <td></td>
+            <td>FR-M2</td>
+            <td>Unified desktop shell for CodeHelper, LibreOffice, GIMP, and Blender workflows</td>
+            <td>Must have</td>
+            <td class="yes">Achieved</td>
+            <td>The platform moved beyond separate prototypes into a shared multi-mode desktop application.</td>
+          </tr>
+          <tr>
+            <td>FR-M3</td>
+            <td>CodeHelper supports coding questions, explanation, and debugging help</td>
+            <td>Must have</td>
+            <td class="yes">Achieved</td>
+            <td>CodeHelper is the flagship mode and provides a simple local coding assistant workflow.</td>
+          </tr>
+          <tr>
+            <td>FR-M4</td>
+            <td>LibreOffice assistant supports document and presentation workflows</td>
+            <td>Must have</td>
+            <td class="yes">Achieved</td>
+            <td>Office workflows are supported within the unified platform, with room for further breadth and polish.</td>
+          </tr>
+          <tr>
+            <td>FR-M5</td>
+            <td>GIMP assistant supports image-editing workflows</td>
+            <td>Must have</td>
+            <td class="yes">Achieved</td>
+            <td>The assistant can translate natural-language edits into tool-based image workflows through the GIMP bridge.</td>
+          </tr>
+          <tr>
+            <td>FR-M6</td>
+            <td>Blender assistant supports scene-aware 3D help and workflow guidance</td>
+            <td>Must have</td>
+            <td class="yes">Achieved</td>
+            <td>Blender mode combines a local bridge with scene context and documentation retrieval.</td>
+          </tr>
+          <tr>
+            <td>FR-M7</td>
+            <td>Local on-device inference during normal use</td>
+            <td>Must have</td>
+            <td class="yes">Achieved</td>
+            <td>The final architecture prioritises local inference rather than cloud-hosted AI services.</td>
+          </tr>
+          <tr>
+            <td>FR-M8</td>
+            <td>Prompts and interactions remain on-device during normal use</td>
+            <td>Must have</td>
+            <td class="yes">Achieved</td>
+            <td>Privacy is a core system property and a major reason for the local-first design.</td>
+          </tr>
+          <tr>
+            <td>FR-M9</td>
+            <td>Deployment path without requiring a separate manually operated model server</td>
+            <td>Must have</td>
+            <td class="yes">Achieved</td>
+            <td>The move away from Ollama-driven deployment was one of the key architectural successes of the project.</td>
           </tr>
         </tbody>
       </table>
 
-      <h3>CodeHelper</h3>
+      <h3>Should-Have Requirements</h3>
       <table>
         <thead>
           <tr>
             <th>ID</th>
             <th>Requirement</th>
             <th>Priority</th>
-            <th>State</th>
-            <th>Contributors</th>
+            <th>Outcome</th>
+            <th>Notes</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>FR-CH1</td>
-            <td></td>
-            <td>Must have</td>
-            <td></td>
-            <td></td>
+            <td>FR-S1</td>
+            <td>Visible loading and generation feedback</td>
+            <td>Should have</td>
+            <td class="yes">Achieved</td>
+            <td>Streaming and loading feedback help the app feel responsive even on local hardware.</td>
           </tr>
           <tr>
-            <td>FR-CH2</td>
-            <td></td>
+            <td>FR-S2</td>
+            <td>Per-tool chat persistence across sessions</td>
             <td>Should have</td>
-            <td></td>
-            <td></td>
+            <td class="yes">Achieved</td>
+            <td>Chat state is preserved so users can continue tool-specific conversations later.</td>
+          </tr>
+          <tr>
+            <td>FR-S3</td>
+            <td>Host-application detection and setup guidance</td>
+            <td>Should have</td>
+            <td class="yes">Achieved</td>
+            <td>Setup gating and prerequisite checks are built into the unified app flow.</td>
+          </tr>
+          <tr>
+            <td>FR-S4</td>
+            <td>Choose the best supported local runtime path and fall back gracefully</td>
+            <td>Should have</td>
+            <td class="yes">Achieved</td>
+            <td>The shared engine recognises CPU, DirectML, and OpenVINO NPU paths and falls back when needed.</td>
+          </tr>
+          <tr>
+            <td>FR-S5</td>
+            <td>Open or focus the relevant host application from the workflow</td>
+            <td>Should have</td>
+            <td class="yes">Achieved</td>
+            <td>This supports the transition between the assistant shell and the external creative or office tool.</td>
+          </tr>
+          <tr>
+            <td>FR-S6</td>
+            <td>Recover from missing prerequisites or runtime failures without losing chat state</td>
+            <td>Should have</td>
+            <td class="yes">Achieved</td>
+            <td>Error handling and setup flows were designed to recover cleanly rather than force users to restart from scratch.</td>
           </tr>
         </tbody>
       </table>
 
-      <h3>GIMP Assistant</h3>
+      <h3>Could-Have Requirements</h3>
       <table>
         <thead>
           <tr>
             <th>ID</th>
             <th>Requirement</th>
             <th>Priority</th>
-            <th>State</th>
-            <th>Contributors</th>
+            <th>Outcome</th>
+            <th>Notes</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>FR-GI1</td>
-            <td></td>
-            <td>Must have</td>
-            <td></td>
-            <td></td>
+            <td>FR-C1</td>
+            <td>Local benchmark or diagnostics features</td>
+            <td>Could have</td>
+            <td>Partially achieved</td>
+            <td>Diagnostics and benchmark-related UI exist, but the benchmark path is still being refined around the shared engine.</td>
           </tr>
           <tr>
-            <td>FR-GI2</td>
-            <td></td>
-            <td>Should have</td>
-            <td></td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3>Blender Assistant</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Requirement</th>
-            <th>Priority</th>
-            <th>State</th>
-            <th>Contributors</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>FR-BL1</td>
-            <td></td>
-            <td>Must have</td>
-            <td></td>
-            <td></td>
+            <td>FR-C2</td>
+            <td>Local retrieval-augmented support for documentation or help content</td>
+            <td>Could have</td>
+            <td class="yes">Achieved</td>
+            <td>Blender mode includes local retrieval to surface relevant tool documentation.</td>
           </tr>
           <tr>
-            <td>FR-BL2</td>
-            <td></td>
-            <td>Should have</td>
-            <td></td>
-            <td></td>
+            <td>FR-C3</td>
+            <td>High-contrast mode and dyslexia-friendly accessibility options</td>
+            <td>Could have</td>
+            <td class="no">Not yet prioritised</td>
+            <td>Accessibility improvements remain valuable future work for the final platform and website.</td>
           </tr>
         </tbody>
       </table>
@@ -154,189 +213,266 @@
         </thead>
         <tbody>
           <tr>
-            <td>Key Functionalities (Must have and Should have)</td>
-            <td><!-- e.g. 85% --></td>
+            <td>Must-have requirements</td>
+            <td>9 out of 9 achieved</td>
           </tr>
           <tr>
-            <td>Optional Functionalities (Could have)</td>
-            <td><!-- e.g. 65% --></td>
+            <td>Should-have requirements</td>
+            <td>6 out of 6 achieved</td>
+          </tr>
+          <tr>
+            <td>Could-have requirements</td>
+            <td>1 achieved, 1 partially achieved, 1 deferred</td>
+          </tr>
+          <tr>
+            <td>Won&apos;t-have requirements</td>
+            <td>Intentionally excluded rather than missed</td>
           </tr>
         </tbody>
       </table>
 
     </section>
 
-    <!-- Known Bugs -->
     <section id="bugs">
       <h2>Known Bugs</h2>
+      <p>
+        The core platform is usable, but several areas still deserve explicit tracking. These are not
+        hidden failures; they are the main issues that would most improve reliability and deployment
+        confidence if resolved before final submission.
+      </p>
       <table>
         <thead>
           <tr>
             <th>ID</th>
-            <th>Assistant</th>
-            <th>Bug Description</th>
+            <th>Area</th>
+            <th>Issue</th>
             <th>Priority</th>
+            <th>Planned Direction</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>BUG1</td>
-            <td><!-- Assistant --></td>
-            <td><!-- Description --></td>
+            <td>BUG-01</td>
+            <td>Setup and packaging</td>
+            <td>Bundled prerequisites and host-application setup can still vary across machines, especially when local runtimes or tool plugins are not in the expected state.</td>
             <td>High</td>
+            <td>Tighten packaged setup flows, improve validation, and expand final compatibility testing.</td>
           </tr>
           <tr>
-            <td>BUG2</td>
-            <td></td>
-            <td></td>
+            <td>BUG-02</td>
+            <td>Host-application bridges</td>
+            <td>GIMP, Blender, and LibreOffice workflows are inherently more fragile than CodeHelper because they depend on external application state, bridge availability, and version alignment.</td>
             <td>Medium</td>
+            <td>Improve recovery messaging, bridge health checks, and plugin/runtime verification.</td>
           </tr>
           <tr>
-            <td>BUG3</td>
-            <td></td>
-            <td></td>
+            <td>BUG-03</td>
+            <td>Benchmark and diagnostics path</td>
+            <td>The benchmark path is still being migrated to the shared-engine contract, so performance tooling is not yet as polished as the main assistant workflows.</td>
             <td>Low</td>
+            <td>Finish benchmark-contract migration and replace temporary legacy behaviour.</td>
+          </tr>
+          <tr>
+            <td>BUG-04</td>
+            <td>Complex multi-step prompts</td>
+            <td>Long or ambiguous requests can still produce less predictable tool behaviour than narrow, single-purpose prompts.</td>
+            <td>Medium</td>
+            <td>Refine planner prompts, recovery strategies, and scenario testing for tool-heavy flows.</td>
           </tr>
         </tbody>
       </table>
     </section>
 
-    <!-- Critical Evaluation -->
     <section id="critical-evaluation">
       <h2>Critical Evaluation</h2>
-      <p><!-- Brief intro to your evaluation approach --></p>
+      <p>
+        The project should be judged not only by feature count, but by whether the final direction
+        solves the real deployment problem it set out to address. In that sense, the most important
+        success was the shift from disconnected or harder-to-deploy local prototypes toward a more
+        coherent shared-engine platform that better fits an educational offline use case.
+      </p>
 
       <h3>Functionality</h3>
-      <p><!-- Overall --></p>
-      <div class="card">
-        <h3>LibreOffice Assistant</h3>
-        <p><!-- Evaluation --></p>
-      </div>
+      <p>
+        Functionally, the system now covers all major intended tool families: coding assistance,
+        office workflows, image editing, and Blender support. The unified shell is a major improvement
+        over earlier separate prototypes because it gives the project a single identity and a common
+        interaction model. The trade-off is that some specialist flows still feel narrower and more
+        constrained than the strongest core path, which remains CodeHelper.
+      </p>
       <div class="card">
         <h3>CodeHelper</h3>
-        <p><!-- Evaluation --></p>
+        <p>
+          CodeHelper succeeds as a simple local coding assistant and is the clearest expression of the
+          platform&apos;s offline-first goal. Its main weakness is that it is still closer to a detached
+          chatbot than to a deeply embedded coding workflow, which leaves room for richer context and
+          stronger task integration in future work.
+        </p>
+      </div>
+      <div class="card">
+        <h3>LibreOffice Assistant</h3>
+        <p>
+          The office modes are valuable because they preserve the original educational productivity
+          motivation of SmolPC, but they also highlight the difficulty of bridging natural language into
+          structured host-application actions. The current outcome is useful and credible, yet still a
+          good candidate for more tool breadth and refinement.
+        </p>
       </div>
       <div class="card">
         <h3>GIMP Assistant</h3>
-        <p><!-- Evaluation --></p>
+        <p>
+          GIMP mode shows the value of tool-aware editing rather than generic chat. It is one of the
+          clearest examples of why app-specific bridges matter, although its usefulness still depends on
+          reliable setup and host-state alignment.
+        </p>
       </div>
       <div class="card">
         <h3>Blender Assistant</h3>
-        <p><!-- Evaluation --></p>
+        <p>
+          Blender mode is particularly strong conceptually because it combines scene awareness with local
+          retrieval. It demonstrates how a specialist assistant can do more than answer generic questions,
+          though the surrounding tooling remains more complex than a pure chat mode.
+        </p>
       </div>
 
       <h3>Stability</h3>
-      <p><!-- Overall --></p>
+      <p>
+        Stability improved significantly once common responsibilities were moved into the shared engine
+        and unified shell. Automated tests now cover many of the failure-prone boundaries, including
+        runtime selection, engine-state mapping, setup preparation, provider logic, and compatibility
+        gates. The main remaining stability risks come from the parts of the system that depend on
+        external desktop applications and their local plugin environments.
+      </p>
       <div class="card">
-        <h3>LibreOffice Assistant</h3>
-        <p><!-- Evaluation --></p>
+        <h3>Shared Engine and App Shell</h3>
+        <p>
+          Centralising startup, runtime choice, and model orchestration made the platform easier to
+          reason about and test. This architectural consolidation is one of the strongest technical
+          decisions in the whole project.
+        </p>
       </div>
       <div class="card">
-        <h3>CodeHelper</h3>
-        <p><!-- Evaluation --></p>
-      </div>
-      <div class="card">
-        <h3>GIMP Assistant</h3>
-        <p><!-- Evaluation --></p>
-      </div>
-      <div class="card">
-        <h3>Blender Assistant</h3>
-        <p><!-- Evaluation --></p>
+        <h3>Host-Integrated Modes</h3>
+        <p>
+          GIMP, Blender, and LibreOffice remain inherently more fragile than CodeHelper because they rely
+          on bridge processes, external applications, and setup assumptions. They are therefore stable
+          enough to demonstrate the concept, but still the first place where environment-specific issues
+          are likely to appear.
+        </p>
       </div>
 
       <h3>Efficiency</h3>
-      <p><!-- Overall --></p>
+      <p>
+        Efficiency should be understood in context: this is a local-first AI platform, so acceptable
+        performance depends on startup behaviour, streaming responsiveness, memory pressure handling, and
+        choosing the best supported runtime for the current device. The architecture is well aligned with
+        that goal, but final performance reporting still needs one more benchmark pass now that the
+        shared-engine design has stabilised.
+      </p>
       <div class="card">
-        <h3>LibreOffice Assistant</h3>
-        <p><!-- Evaluation --></p>
+        <h3>Runtime Selection</h3>
+        <p>
+          The move to hardware-aware runtime selection is a major improvement over a fixed local stack.
+          It allows the system to aim for the best supported local performance rather than assuming one
+          narrow hardware profile.
+        </p>
       </div>
       <div class="card">
-        <h3>CodeHelper</h3>
-        <p><!-- Evaluation --></p>
-      </div>
-      <div class="card">
-        <h3>GIMP Assistant</h3>
-        <p><!-- Evaluation --></p>
-      </div>
-      <div class="card">
-        <h3>Blender Assistant</h3>
-        <p><!-- Evaluation --></p>
+        <h3>Model Trade-Offs</h3>
+        <p>
+          The platform demonstrates a realistic trade-off between model quality, responsiveness, and
+          device capability. Smaller models can help with fallback behaviour, while stronger baseline
+          models improve reliability across the wider set of assistant modes.
+        </p>
       </div>
 
       <h3>Compatibility</h3>
-      <p><!-- How well SmolPC works across different platforms and versions of LibreOffice, GIMP, Blender --></p>
+      <p>
+        Compatibility is better than it was in the older prototype because the project intentionally
+        moved toward a more portable desktop stack. Even so, compatibility is still constrained by the
+        reality of host applications, local runtimes, and packaging differences across machines. The
+        platform is strongest when evaluated as a bundled local system with clearly managed prerequisites
+        rather than as a promise that every target machine will behave identically.
+      </p>
 
       <h3>Maintainability</h3>
-      <p><!-- How easy is the codebase to maintain and extend --></p>
+      <p>
+        Maintainability improved substantially after the architecture pivot. Separating responsibilities
+        across the shared engine, the app shell, and the mode-provider layer makes the system easier to
+        extend than the earlier prototype path. The remaining challenge is coordination: because several
+        layers interact, changes to contracts or setup behaviour still need careful documentation and
+        regression testing.
+      </p>
 
       <h3>UI/UX</h3>
-      <p><!-- Overall --></p>
-      <div class="card">
-        <h3>LibreOffice Assistant</h3>
-        <p><!-- Evaluation --></p>
-      </div>
-      <div class="card">
-        <h3>CodeHelper</h3>
-        <p><!-- Evaluation --></p>
-      </div>
-      <div class="card">
-        <h3>GIMP Assistant</h3>
-        <p><!-- Evaluation --></p>
-      </div>
-      <div class="card">
-        <h3>Blender Assistant</h3>
-        <p><!-- Evaluation --></p>
-      </div>
+      <p>
+        The unified interface is a strong usability improvement because it gives the project a single
+        consistent entry point instead of multiple disconnected tools. CodeHelper currently offers the
+        clearest and simplest user journey. The more specialised modes benefit from the same shell but
+        still need clearer setup guidance, richer onboarding, and more polish around error recovery and
+        workflow explanation.
+      </p>
 
       <h3>Project Management</h3>
-      <p><!-- Reflect on how well the project was managed, deadlines, team communication --></p>
+      <p>
+        Project management was shaped by several major technical pivots. Although this increased
+        complexity, the pivots were not arbitrary: they were responses to real deployment, packaging, and
+        hardware constraints. In hindsight, that adaptability was a strength, because it led to a more
+        coherent and deployable final direction. The main cost was that some polish work had to happen
+        later than ideal because foundational architecture decisions were still evolving during the
+        implementation period.
+      </p>
 
     </section>
 
-    <!-- Individual Contribution Tables -->
     <section id="contributions">
       <h2>Individual Contributions</h2>
+      <p>
+        The final percentage allocation should be agreed by the team before submission. These tables are
+        kept here because the assessment requires separate contribution breakdowns for the system
+        artefacts and the website report. Each row should sum to 100% once the final figures are added.
+      </p>
 
       <h3>System Artefacts</h3>
       <table>
         <thead>
           <tr>
             <th>Work Package</th>
-            <th><!-- Member 1 --></th>
-            <th><!-- Member 2 --></th>
-            <th><!-- Member 3 --></th>
+            <th>Member 1 (TBC)</th>
+            <th>Member 2 (TBC)</th>
+            <th>Member 3 (TBC)</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>Research and Experiments</td>
-            <td><!-- % --></td>
-            <td><!-- % --></td>
-            <td><!-- % --></td>
+            <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td>UI Design</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td>Coding</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td>Testing</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td><strong>Overall Contribution</strong></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
         </tbody>
       </table>
@@ -346,136 +482,164 @@
         <thead>
           <tr>
             <th>Work Package</th>
-            <th><!-- Member 1 --></th>
-            <th><!-- Member 2 --></th>
-            <th><!-- Member 3 --></th>
+            <th>Member 1 (TBC)</th>
+            <th>Member 2 (TBC)</th>
+            <th>Member 3 (TBC)</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>Website Template and Setup</td>
-            <td><!-- % --></td>
-            <td><!-- % --></td>
-            <td><!-- % --></td>
+            <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td>Home</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td>Video</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td>Requirements</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td>Research</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td>UI Design</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td>System Design</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td>Implementation</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td>Testing</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td>Evaluation and Future Work</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td>User and Deployment Manuals</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td>Legal Issues</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td>Blog and Monthly Video</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td><strong>Overall Contribution</strong></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
         </tbody>
       </table>
 
     </section>
 
-    <!-- Future Work -->
     <section id="future-work">
       <h2>Future Work</h2>
-      <p><!-- Brief intro --></p>
+      <p>
+        The next stage of work should focus less on adding brand-new ideas and more on turning the
+        current platform into a more polished, better-measured, and easier-to-deploy system. The
+        architecture is now strong enough that future effort can concentrate on reliability, workflow
+        depth, and accessibility.
+      </p>
 
       <h3>Short-Term Improvements</h3>
       <div class="card">
-        <h3>LibreOffice Assistant</h3>
-        <p><!-- Concrete improvements --></p>
+        <h3>CodeHelper</h3>
+        <p>
+          Move beyond a detached chat-box workflow by improving context injection, project awareness,
+          and support for richer coding interactions while preserving the simple offline model.
+        </p>
       </div>
       <div class="card">
-        <h3>CodeHelper</h3>
-        <p><!-- Concrete improvements --></p>
+        <h3>LibreOffice Assistant</h3>
+        <p>
+          Expand the breadth and robustness of office workflows, especially around structured tool usage,
+          clearer summaries of actions taken, and smoother recovery from missing prerequisites.
+        </p>
       </div>
       <div class="card">
         <h3>GIMP Assistant</h3>
-        <p><!-- Concrete improvements --></p>
+        <p>
+          Reduce setup friction, broaden the range of reliable image-editing operations, and improve the
+          clarity of edit summaries and undo behaviour.
+        </p>
       </div>
       <div class="card">
         <h3>Blender Assistant</h3>
-        <p><!-- Concrete improvements --></p>
+        <p>
+          Deepen scene introspection, strengthen documentation retrieval quality, and improve the flow
+          between natural-language guidance and concrete Blender actions.
+        </p>
       </div>
 
       <h3>Long-Term Vision</h3>
       <div class="card">
         <h3>Additional Assistants</h3>
-        <p><!-- What other tools could SmolPC support e.g. Inkscape, Kdenlive --></p>
+        <p>
+          The shared-engine and provider-based architecture makes it realistic to support more local
+          educational tools in future, such as other creative or productivity applications that benefit
+          from guided offline assistance.
+        </p>
       </div>
       <div class="card">
         <h3>Deeper Integration</h3>
-        <p><!-- How the four assistants could work together more closely --></p>
+        <p>
+          Over time, the platform could move from separate assistant modes toward stronger cross-tool
+          continuity, shared context, and a more seamless workflow between coding, documents, graphics,
+          and 3D tasks.
+        </p>
       </div>
       <div class="card">
-        <h3>Performance Improvements</h3>
-        <p><!-- How the AI model performance could be improved --></p>
+        <h3>Performance, Accessibility, and Deployment</h3>
+        <p>
+          A future release should complete the benchmark migration, expand hardware validation, add more
+          accessibility options, and improve packaging so that local deployment is as smooth as the
+          underlying architecture now promises.
+        </p>
       </div>
 
     </section>
@@ -485,7 +649,7 @@
 
   <footer>
     <div class="footer-links">
-    <a href="mailto:<!-- team email -->">Email</a>
+    <span>Email to be added</span>
     <a href="https://github.com/SmolPC-2-0/smolpc-codehelper" target="_blank">GitHub</a>
   </div>
 
