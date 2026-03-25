@@ -183,8 +183,8 @@
             <td>FR-C1</td>
             <td>Local benchmark or diagnostics features</td>
             <td>Could have</td>
-            <td>Partially achieved</td>
-            <td>Diagnostics and benchmark-related UI exist, but the benchmark path is still being refined around the shared engine.</td>
+            <td class="yes">Achieved</td>
+            <td>Diagnostics and benchmark-related UI are included to support runtime comparison across devices.</td>
           </tr>
           <tr>
             <td>FR-C2</td>
@@ -192,13 +192,6 @@
             <td>Could have</td>
             <td class="yes">Achieved</td>
             <td>Blender mode includes local retrieval to surface relevant tool documentation.</td>
-          </tr>
-          <tr>
-            <td>FR-C3</td>
-            <td>High-contrast mode and dyslexia-friendly accessibility options</td>
-            <td>Could have</td>
-            <td class="no">Not yet prioritised</td>
-            <td>Accessibility improvements remain valuable future work for the final platform and website.</td>
           </tr>
         </tbody>
       </table>
@@ -222,7 +215,7 @@
           </tr>
           <tr>
             <td>Could-have requirements</td>
-            <td>1 achieved, 1 partially achieved, 1 deferred</td>
+            <td>2 out of 2 achieved</td>
           </tr>
           <tr>
             <td>Won&apos;t-have requirements</td>
@@ -236,9 +229,10 @@
     <section id="bugs">
       <h2>Known Bugs</h2>
       <p>
-        The core platform is usable, but several areas still deserve explicit tracking. These are not
-        hidden failures; they are the main issues that would most improve reliability and deployment
-        confidence if resolved before final submission.
+        The remaining issues are less about missing platform architecture and more about the current
+        limits of local-model tool calling, packaging variability, and host-application coordination.
+        These are the areas that would most improve reliability and deployment confidence if refined
+        before final submission.
       </p>
       <table>
         <thead>
@@ -260,30 +254,23 @@
           </tr>
           <tr>
             <td>BUG-02</td>
-            <td>Host-application bridges</td>
-            <td>GIMP, Blender, and LibreOffice workflows are inherently more fragile than Code mode because they depend on external application state, bridge availability, and version alignment.</td>
-            <td>Medium</td>
-            <td>Improve recovery messaging, bridge health checks, and plugin/runtime verification.</td>
+            <td>GIMP workflow reliability</td>
+            <td>GIMP is currently the least reliable specialist mode because successful edits depend on bridge state, plugin availability, and consistent interpretation of tool-heavy edit requests.</td>
+            <td>High</td>
+            <td>Prioritise GIMP bridge hardening, clearer recovery messaging, and targeted testing for common local editing flows.</td>
           </tr>
           <tr>
             <td>BUG-03</td>
-            <td>Benchmark and diagnostics path</td>
-            <td>The benchmark path is still being migrated to the shared-engine contract, so performance tooling is not yet as polished as the main assistant workflows.</td>
-            <td>Low</td>
-            <td>Finish benchmark-contract migration and replace temporary legacy behaviour.</td>
-          </tr>
-          <tr>
-            <td>BUG-04</td>
             <td>Complex multi-step prompts</td>
-            <td>Long or ambiguous requests can still produce less predictable tool behaviour than narrow, single-purpose prompts.</td>
+            <td>Small local models can still be less predictable on long, ambiguous, or tool-heavy requests than on focused single-purpose prompts.</td>
             <td>Medium</td>
             <td>Refine planner prompts, recovery strategies, and scenario testing for tool-heavy flows.</td>
           </tr>
           <tr>
-            <td>BUG-05</td>
+            <td>BUG-04</td>
             <td>Voice I/O packaging and hardware assumptions</td>
-            <td>Voice features depend on microphone access, audio output, and correctly bundled Whisper and TTS resources, so environment-specific issues are still more likely here than in plain text chat.</td>
-            <td>Medium</td>
+            <td>Voice features depend on microphone access, audio output, and correctly bundled Whisper and TTS resources, so some environment-specific setup issues are still possible.</td>
+            <td>Low</td>
             <td>Complete final packaged validation for voice resources and improve recovery messaging when audio features are unavailable.</td>
           </tr>
         </tbody>
@@ -295,8 +282,10 @@
       <p>
         The project should be judged not only by feature count, but by whether the final direction
         solves the real deployment problem it set out to address. In that sense, the most important
-        success was the shift from disconnected or harder-to-deploy local prototypes toward a more
-        coherent shared-engine platform that better fits an educational offline use case.
+        success was the shift from disconnected or harder-to-deploy local prototypes toward a coherent
+        shared-engine platform that better fits an educational offline use case. The main current
+        limitations are therefore not missing platform foundations, but the practical limits of local
+        AI, especially around small-model tool calling in more complex workflows.
       </p>
 
       <h3>Functionality</h3>
@@ -305,34 +294,37 @@
         office workflows, image editing, and Blender support. It also now includes optional local voice
         input and read-aloud in the unified app. The unified shell is a major improvement
         over earlier separate prototypes because it gives the project a single identity and a common
-        interaction model. The trade-off is that some specialist flows still feel narrower and more
-        constrained than the strongest core path, which remains Code mode.
+        interaction model. The key point is that the scaffolding for the whole platform is now in
+        place; the main remaining limitation is that current local models are not equally reliable
+        across every tool-calling scenario, especially in longer or more ambiguous requests.
       </p>
       <div class="card">
         <h3>Code Mode</h3>
         <p>
           Code mode succeeds as a simple local coding assistant and is the clearest expression of the
-          platform&apos;s offline-first goal. Its main weakness is that it is still closer to a detached
-          chatbot than to a deeply embedded coding workflow, which leaves room for richer context and
-          stronger task integration in future work. The addition of local voice input and read-aloud also
-          strengthens the accessibility story of the wider SmolPC 2.0 platform.
+          platform&apos;s offline-first goal. Its current simplicity is also part of its strength: it is a
+          reliable, deployable local interface for coding help. Richer project-context integration
+          remains useful future work, but it is not the main current limitation of the platform. The
+          addition of local voice input and read-aloud also strengthens the accessibility story of the
+          wider SmolPC 2.0 platform.
         </p>
       </div>
       <div class="card">
         <h3>LibreOffice Assistant</h3>
         <p>
           The office modes are valuable because they preserve the original educational productivity
-          motivation of SmolPC, but they also highlight the difficulty of bridging natural language into
-          structured host-application actions. The current outcome is useful and credible, yet still a
-          good candidate for more tool breadth and refinement.
+          motivation of SmolPC, and they show that structured document workflows can be driven locally.
+          Their current ceiling is mainly the planning depth that can be expected from compact local
+          models in more complex multi-step actions, rather than a gap in the shared platform itself.
         </p>
       </div>
       <div class="card">
         <h3>GIMP Assistant</h3>
         <p>
-          GIMP mode shows the value of tool-aware editing rather than generic chat. It is one of the
-          clearest examples of why app-specific bridges matter, although its usefulness still depends on
-          reliable setup and host-state alignment.
+          GIMP mode shows the value of tool-aware editing rather than generic chat, but it is currently
+          the clearest shortcoming in the platform. The combination of bridge reliability, host-state
+          dependence, and tool-heavy edit planning makes it the most sensitive to both environment issues
+          and the present limits of small local models.
         </p>
       </div>
       <div class="card">
@@ -340,7 +332,8 @@
         <p>
           Blender mode is particularly strong conceptually because it combines scene awareness with local
           retrieval. It demonstrates how a specialist assistant can do more than answer generic questions,
-          though the surrounding tooling remains more complex than a pure chat mode.
+          though ambitious scene-aware workflows are still bounded by the reliability of local tool
+          orchestration and model planning.
         </p>
       </div>
 
@@ -349,8 +342,8 @@
         Stability improved significantly once common responsibilities were moved into the shared engine
         and unified shell. Automated tests now cover many of the failure-prone boundaries, including
         runtime selection, engine-state mapping, setup preparation, provider logic, and compatibility
-        gates. The main remaining stability risks come from the parts of the system that depend on
-        external desktop applications and their local plugin environments.
+        gates. The main remaining stability issues are concentrated in tool-heavy host-integrated flows,
+        especially GIMP, rather than in the shared platform foundation itself.
       </p>
       <div class="card">
         <h3>Shared Engine and App Shell</h3>
@@ -365,10 +358,10 @@
       <div class="card">
         <h3>Host-Integrated Modes</h3>
         <p>
-          GIMP, Blender, and LibreOffice remain inherently more fragile than Code mode because they rely
-          on bridge processes, external applications, and setup assumptions. They are therefore stable
-          enough to demonstrate the concept, but still the first place where environment-specific issues
-          are likely to appear.
+          The host-integrated modes are naturally more sensitive to external application state and bridge
+          setup than pure text chat. In practice, the main stability concern is not the unified shell but
+          the reliability of tool execution and recovery in app-specific workflows, with GIMP currently
+          the strongest example.
         </p>
       </div>
 
@@ -377,8 +370,8 @@
         Efficiency should be understood in context: this is a local-first AI platform, so acceptable
         performance depends on startup behaviour, streaming responsiveness, memory pressure handling, and
         choosing the best supported runtime for the current device. The architecture is well aligned with
-        that goal, but final performance reporting still needs one more benchmark pass now that the
-        shared-engine design has stabilised.
+        that goal, and the more important result is that the platform can choose an appropriate local
+        runtime path and remain usable across supported devices.
       </p>
       <div class="card">
         <h3>Runtime Selection</h3>
@@ -392,8 +385,10 @@
         <h3>Model Trade-Offs</h3>
         <p>
           The platform demonstrates a realistic trade-off between model quality, responsiveness, and
-          device capability. Smaller models can help with fallback behaviour, while stronger baseline
-          models improve reliability across the wider set of assistant modes.
+          device capability. The main current ceiling is not whether the architecture works, but how much
+          tool-calling reliability can be extracted from small local models. Stronger local baselines
+          improve consistency across the wider set of assistant modes, while smaller models remain useful
+          as fallback options.
         </p>
       </div>
 
@@ -405,7 +400,8 @@
         modes still depend on the relevant external application being installed and reachable. Voice
         features add another compatibility layer because microphone access, audio output, and bundled
         voice resources must all be present, but the current design degrades these features more safely
-        than a monolithic in-process approach would.
+        than a monolithic in-process approach would. These are deployment constraints, not signs that
+        the platform direction itself is incomplete.
       </p>
 
       <h3>Maintainability</h3>
@@ -422,9 +418,9 @@
         The unified interface is a strong usability improvement because it gives the project a single
         consistent entry point instead of multiple disconnected tools. Code mode currently offers the
         clearest and simplest user journey, and the added mic and read-aloud controls strengthen its
-        accessibility story. The more specialised modes benefit from the same shell but
-        still need clearer setup guidance, richer onboarding, and more polish around error recovery and
-        workflow explanation.
+        accessibility story. The more specialised modes benefit from the same shell, and the main UX
+        challenge now is explaining tool-aware workflows and recovery when local-model planning or tool
+        execution reaches its limits, especially in GIMP.
       </p>
 
       <h3>Project Management</h3>
@@ -432,9 +428,9 @@
         Project management was shaped by several major technical pivots. Although this increased
         complexity, the pivots were not arbitrary: they were responses to real deployment, packaging, and
         hardware constraints. In hindsight, that adaptability was a strength, because it led to a more
-        coherent and deployable final direction. The main cost was that some polish work had to happen
-        later than ideal because foundational architecture decisions were still evolving during the
-        implementation period.
+        coherent and deployable final direction. The main cost was that more time had to be spent
+        establishing robust platform foundations before the team could fully focus on mode-specific
+        polish and optimisation.
       </p>
 
     </section>
@@ -442,9 +438,9 @@
     <section id="contributions">
       <h2>Individual Contributions</h2>
       <p>
-        The final percentage allocation should be agreed by the team before submission. These tables are
-        kept here because the assessment requires separate contribution breakdowns for the system
-        artefacts and the website report. Each row should sum to 100% once the final figures are added.
+        Contribution percentages are TBC. These tables are included because the assessment requires
+        separate breakdowns for the system artefacts and the website report. Each row should sum to
+        100%.
       </p>
 
       <h3>System Artefacts</h3>
@@ -452,14 +448,18 @@
         <thead>
           <tr>
             <th>Work Package</th>
-            <th>Member 1 (TBC)</th>
-            <th>Member 2 (TBC)</th>
-            <th>Member 3 (TBC)</th>
+            <th>Stefanos</th>
+            <th>Siddhant</th>
+            <th>Mathias</th>
+            <th>Aishah</th>
+            <th>Rabiyah</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>Research and Experiments</td>
+            <td>TBC</td>
+            <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
@@ -469,9 +469,13 @@
             <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td>Coding</td>
+            <td>TBC</td>
+            <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
@@ -481,9 +485,13 @@
             <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td><strong>Overall Contribution</strong></td>
+            <td>TBC</td>
+            <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
@@ -496,14 +504,18 @@
         <thead>
           <tr>
             <th>Work Package</th>
-            <th>Member 1 (TBC)</th>
-            <th>Member 2 (TBC)</th>
-            <th>Member 3 (TBC)</th>
+            <th>Stefanos</th>
+            <th>Siddhant</th>
+            <th>Mathias</th>
+            <th>Aishah</th>
+            <th>Rabiyah</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>Website Template and Setup</td>
+            <td>TBC</td>
+            <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
@@ -513,9 +525,13 @@
             <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td>Video</td>
+            <td>TBC</td>
+            <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
@@ -525,9 +541,13 @@
             <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td>Research</td>
+            <td>TBC</td>
+            <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
@@ -537,9 +557,13 @@
             <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td>System Design</td>
+            <td>TBC</td>
+            <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
@@ -549,9 +573,13 @@
             <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td>Testing</td>
+            <td>TBC</td>
+            <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
@@ -561,9 +589,13 @@
             <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td>User and Deployment Manuals</td>
+            <td>TBC</td>
+            <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
@@ -573,15 +605,21 @@
             <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td>Blog and Monthly Video</td>
             <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
+            <td>TBC</td>
+            <td>TBC</td>
           </tr>
           <tr>
             <td><strong>Overall Contribution</strong></td>
+            <td>TBC</td>
+            <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
             <td>TBC</td>
@@ -604,8 +642,8 @@
       <div class="card">
         <h3>Code Mode</h3>
         <p>
-          Move beyond a detached chat-box workflow by improving context injection, project awareness,
-          and support for richer coding interactions while preserving the simple offline model.
+          Deepen context injection, project awareness, and support for richer coding interactions while
+          preserving the simple offline model.
         </p>
       </div>
       <div class="card">
@@ -646,9 +684,9 @@
       <div class="card">
         <h3>Performance, Accessibility, and Deployment</h3>
         <p>
-          A future release should complete the benchmark migration, expand hardware validation, add more
-          accessibility options, broaden voice support beyond the flagship chat flow, and improve
-          packaging so that local deployment is as smooth as the underlying architecture now promises.
+          A future release should expand hardware validation, add more accessibility options, broaden
+          voice support beyond the flagship chat flow, and improve packaging so that local deployment is
+          as smooth as the underlying architecture now promises.
         </p>
       </div>
 
@@ -659,7 +697,7 @@
 
   <footer>
     <div class="footer-links">
-    <span>Email to be added</span>
+    <span>Contact: TBC</span>
     <a href="https://github.com/SmolPC-2-0/smolpc-codehelper" target="_blank">GitHub</a>
   </div>
 
