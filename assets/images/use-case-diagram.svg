@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 920" role="img" aria-labelledby="title desc">
+  <title id="title">SmolPC 2.0 use case diagram</title>
+  <desc id="desc">A UML-style use case diagram showing Student and Teacher specializing User, interacting with SmolPC 2.0 features for chat, voice, coding, LibreOffice, GIMP, Blender, and conversation history.</desc>
+  <defs>
+    <style>
+      .title { font: 700 26px Arial, sans-serif; fill: #081849; }
+      .label { font: 600 18px Arial, sans-serif; fill: #081849; }
+      .small { font: 500 14px Arial, sans-serif; fill: #4b4b68; }
+      .actor-text { font: 600 20px Arial, sans-serif; fill: #081849; }
+      .system-title { font: 700 24px Arial, sans-serif; fill: #213885; }
+      .uc-text { font: 600 17px Arial, sans-serif; fill: #081849; text-anchor: middle; }
+      .uc-sub { font: 500 14px Arial, sans-serif; fill: #4b4b68; text-anchor: middle; }
+      .system-box { fill: #f8f9ff; stroke: #213885; stroke-width: 3; rx: 18; ry: 18; }
+      .actor-box { fill: #ffffff; stroke: #5f3475; stroke-width: 2; rx: 12; ry: 12; }
+      .uc-core { fill: #eef3ff; stroke: #213885; stroke-width: 2.2; }
+      .uc-voice { fill: #ecfbf6; stroke: #198f71; stroke-width: 2.2; }
+      .uc-mode { fill: #faf1ff; stroke: #893172; stroke-width: 2.2; }
+      .uc-history { fill: #f3f4f8; stroke: #687189; stroke-width: 2.2; }
+      .assoc { stroke: #4b4b68; stroke-width: 2.2; fill: none; }
+      .extend { stroke: #5f3475; stroke-width: 2.2; fill: none; stroke-dasharray: 8 6; }
+      .inherit { stroke: #4b4b68; stroke-width: 2; fill: none; }
+    </style>
+  </defs>
+
+  <rect x="1" y="1" width="1398" height="918" fill="#ffffff" stroke="#e0e3ef" stroke-width="2" rx="20" ry="20" />
+  <text x="700" y="42" class="title" text-anchor="middle">SmolPC 2.0 Use Case Diagram</text>
+
+  <rect x="270" y="80" width="850" height="760" class="system-box" />
+  <text x="695" y="118" class="system-title" text-anchor="middle">SmolPC 2.0</text>
+
+  <!-- Left-side actors -->
+  <g transform="translate(120 160)">
+    <circle cx="0" cy="0" r="18" fill="none" stroke="#081849" stroke-width="3" />
+    <line x1="0" y1="18" x2="0" y2="80" class="assoc" />
+    <line x1="-34" y1="40" x2="34" y2="40" class="assoc" />
+    <line x1="0" y1="80" x2="-26" y2="120" class="assoc" />
+    <line x1="0" y1="80" x2="26" y2="120" class="assoc" />
+    <text x="0" y="152" class="actor-text" text-anchor="middle">Student</text>
+  </g>
+
+  <g transform="translate(120 395)">
+    <circle cx="0" cy="0" r="18" fill="none" stroke="#081849" stroke-width="3" />
+    <line x1="0" y1="18" x2="0" y2="80" class="assoc" />
+    <line x1="-34" y1="40" x2="34" y2="40" class="assoc" />
+    <line x1="0" y1="80" x2="-26" y2="120" class="assoc" />
+    <line x1="0" y1="80" x2="26" y2="120" class="assoc" />
+    <text x="0" y="152" class="actor-text" text-anchor="middle">User</text>
+  </g>
+
+  <g transform="translate(120 630)">
+    <circle cx="0" cy="0" r="18" fill="none" stroke="#081849" stroke-width="3" />
+    <line x1="0" y1="18" x2="0" y2="80" class="assoc" />
+    <line x1="-34" y1="40" x2="34" y2="40" class="assoc" />
+    <line x1="0" y1="80" x2="-26" y2="120" class="assoc" />
+    <line x1="0" y1="80" x2="26" y2="120" class="assoc" />
+    <text x="0" y="152" class="actor-text" text-anchor="middle">Teacher</text>
+  </g>
+
+  <!-- Actor inheritance -->
+  <line x1="154" y1="278" x2="190" y2="360" class="inherit" />
+  <polygon points="177,347 194,369 167,367" fill="#ffffff" stroke="#4b4b68" stroke-width="2" />
+  <line x1="154" y1="748" x2="190" y2="430" class="inherit" />
+  <polygon points="179,445 194,421 167,425" fill="#ffffff" stroke="#4b4b68" stroke-width="2" />
+
+  <!-- Core use cases -->
+  <ellipse cx="705" cy="185" rx="175" ry="40" class="uc-core" />
+  <text x="705" y="180" class="uc-text">Interact with assistant</text>
+  <text x="705" y="201" class="uc-sub">Text chat across SmolPC modes</text>
+
+  <ellipse cx="570" cy="305" rx="145" ry="34" class="uc-voice" />
+  <text x="570" y="300" class="uc-text">Use local voice input</text>
+  <text x="570" y="320" class="uc-sub">Optional speech-to-text</text>
+
+  <ellipse cx="935" cy="305" rx="165" ry="34" class="uc-voice" />
+  <text x="935" y="300" class="uc-text">Listen to spoken response</text>
+  <text x="935" y="320" class="uc-sub">Optional local read-aloud</text>
+
+  <ellipse cx="545" cy="440" rx="145" ry="36" class="uc-mode" />
+  <text x="545" y="435" class="uc-text">Get coding help</text>
+  <text x="545" y="456" class="uc-sub">Code mode workflow</text>
+
+  <ellipse cx="925" cy="430" rx="190" ry="40" class="uc-mode" />
+  <text x="925" y="425" class="uc-text">Create or edit document</text>
+  <text x="925" y="446" class="uc-sub">Writer mode workflow</text>
+
+  <ellipse cx="930" cy="545" rx="205" ry="40" class="uc-mode" />
+  <text x="930" y="540" class="uc-text">Create or edit presentation</text>
+  <text x="930" y="561" class="uc-sub">Slides mode workflow</text>
+
+  <ellipse cx="535" cy="545" rx="120" ry="36" class="uc-mode" />
+  <text x="535" y="540" class="uc-text">Edit image</text>
+  <text x="535" y="561" class="uc-sub">GIMP mode workflow</text>
+
+  <ellipse cx="550" cy="670" rx="145" ry="36" class="uc-mode" />
+  <text x="550" y="665" class="uc-text">Get Blender help</text>
+  <text x="550" y="686" class="uc-sub">Scene-aware workflow</text>
+
+  <ellipse cx="930" cy="670" rx="200" ry="40" class="uc-history" />
+  <text x="930" y="665" class="uc-text">Resume previous conversation</text>
+  <text x="930" y="686" class="uc-sub">Continue saved local work</text>
+
+  <!-- User associations -->
+  <line x1="155" y1="435" x2="530" y2="185" class="assoc" />
+  <line x1="155" y1="435" x2="400" y2="440" class="assoc" />
+  <line x1="155" y1="435" x2="735" y2="430" class="assoc" />
+  <line x1="155" y1="435" x2="725" y2="545" class="assoc" />
+  <line x1="155" y1="435" x2="415" y2="545" class="assoc" />
+  <line x1="155" y1="435" x2="405" y2="670" class="assoc" />
+  <line x1="155" y1="435" x2="730" y2="670" class="assoc" />
+
+  <!-- Extend relationships -->
+  <line x1="615" y1="274" x2="650" y2="224" class="extend" />
+  <text x="594" y="255" class="small">&lt;&lt;extend&gt;&gt;</text>
+
+  <line x1="885" y1="274" x2="820" y2="223" class="extend" />
+  <text x="898" y="254" class="small">&lt;&lt;extend&gt;&gt;</text>
+
+  <!-- External software actors -->
+  <rect x="1190" y="388" width="150" height="56" class="actor-box" />
+  <text x="1265" y="422" class="label" text-anchor="middle">LibreOffice</text>
+
+  <rect x="1190" y="518" width="150" height="56" class="actor-box" />
+  <text x="1265" y="552" class="label" text-anchor="middle">GIMP</text>
+
+  <rect x="1190" y="643" width="150" height="56" class="actor-box" />
+  <text x="1265" y="677" class="label" text-anchor="middle">Blender</text>
+
+  <!-- External associations -->
+  <line x1="1115" y1="430" x2="1190" y2="416" class="assoc" />
+  <line x1="1130" y1="545" x2="1190" y2="416" class="assoc" />
+  <line x1="655" y1="545" x2="1190" y2="546" class="assoc" />
+  <line x1="695" y1="670" x2="1190" y2="671" class="assoc" />
+
+  <!-- Legend -->
+  <rect x="70" y="812" width="210" height="70" fill="#f8f9ff" stroke="#d7dced" stroke-width="1.5" rx="12" ry="12" />
+  <text x="92" y="838" class="label">Legend</text>
+  <line x1="92" y1="855" x2="130" y2="855" class="assoc" />
+  <text x="142" y="860" class="small">Association</text>
+  <line x1="92" y1="875" x2="130" y2="875" class="extend" />
+  <text x="142" y="880" class="small">Optional extension</text>
+</svg>

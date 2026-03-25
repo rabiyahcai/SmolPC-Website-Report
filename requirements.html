@@ -25,13 +25,14 @@
     <!-- partner intros -->
     <section id="partner">
       <h2>Partner Introduction</h2>
+        <p>SmolPC 2.0 sits within a wider partner and ecosystem context, but these organisations were not direct day-to-day implementation contributors to the final build. Their relevance to the project is mainly through platform context, deployment environment, or the technologies that shaped the runtime strategy.</p>
         <h3> Intel </h3>
-        <p>Intel is a global leader in semiconductor and computing technology. SmolPC 2.0 is designed to run on Intel N200-powered laptops, and Intel's support has been instrumental in ensuring our AI pipeline is optimised for low-cost, low-power hardware through OpenVino, Intel's open-source toolkit for efficient AI inference.</p>
+        <p>Intel is relevant to SmolPC 2.0 primarily because OpenVINO and Intel hardware support informed part of the local runtime strategy. The project uses OpenVINO where it is the best supported option on the target Windows device, but Intel was not directly embedded in day-to-day development of the final implementation.</p>
         <h3> Microsoft </h3>
-        <p>Microsoft is one of the world's leading technology companies and a major contributor to open-source software. Microsoft's involvement has supported the development of SmolPC 2.0's accessibility features and its integration with open-source productivity tools used in educational environments</p>
+        <p>Microsoft is relevant mainly because SmolPC 2.0 is a Windows-first desktop application and part of the runtime path relies on Windows-compatible tooling such as DirectML and ONNX Runtime packages. Microsoft did not have direct hands-on involvement in the final implementation.</p>
         <h3> IBM </h3>
         <p>
-IBM is a global technology and research company with a strong commitment to education and open-source innovation. IBM's expertise in AI and enterprise software has informed SmolPC 2.0's approach to building scalable, privacy-first AI tools for real-world deployment.</p>
+IBM forms part of the wider partner context around the project, but it was not a direct technical contributor to the final SmolPC 2.0 implementation. Its role in this report is therefore contextual rather than implementation-specific.</p>
       <p><!-- --></p>
     </section>
 
@@ -40,21 +41,21 @@ IBM is a global technology and research company with a strong commitment to educ
       <h2>Project Background</h2>
       <p>Artificial intelligence is transforming education, yet access to AI-powered learning tools remains deeply unequal. Most mainstream systems still depend on cloud accounts, reliable internet connectivity, and platform lock-in, which makes them difficult to deploy in privacy-sensitive or under-resourced educational settings. According to UNESCO, the majority of primary schools and a significant proportion of secondary schools worldwide lack internet connectivity. [1] At the same time, teachers are under increasing workload pressure [2], and schools risk falling further behind in the emerging AI divide. [3]</p>
       <p>The project began from an earlier SmolPC LibreOffice prototype that demonstrated local AI assistance was possible, but also exposed important limitations. It centred on one application, relied on a more cumbersome local inference setup, and did not translate cleanly into a broader classroom platform. As the project scope expanded to include a dedicated coding workflow together with GIMP and Blender support, it became clear that simply extending the old architecture would create repeated deployment, security, and maintainability problems.</p>
-      <p>Those constraints shaped the final direction of SmolPC 2.0. Rather than remaining a LibreOffice-first prototype, the project evolved into a unified offline AI platform with coding support as the flagship workflow and shared support for writing, presentations, image editing, and 3D workflows. This shift also changed the technical requirements: cross-platform desktop development, local privacy, easier packaging, reduced setup burden, and hardware-aware local inference became core project goals rather than secondary concerns.</p>
+      <p>Those constraints shaped the final direction of SmolPC 2.0. Rather than remaining a LibreOffice-first prototype, the project evolved into a unified offline AI platform with coding support as the flagship workflow and shared support for writing, presentations, image editing, and 3D workflows. This shift also changed the technical requirements: Windows-first packaged deployment, local privacy, easier setup, reduced installation burden, and hardware-aware local inference became core project goals rather than secondary concerns.</p>
 
     </section>
 
     <!-- project goals -->
     <section id="goals">
       <h2>Project Goals</h2>
-      <p>The overarching goal of SmolPC 2.0 is to deliver a free, offline, open-source AI assistant suite that integrates directly into the software students already use, including coding, LibreOffice, GIMP, and Blender workflows, while remaining realistic to deploy on a range of school and personal devices. Rather than promising one fixed hardware target, the system is designed to recognise the best supported local runtime path on the current machine and keep local AI practical without cloud dependence.</p>
+      <p>The overarching goal of SmolPC 2.0 is to deliver a free, offline, open-source AI assistant suite that integrates directly into the software students already use, including coding, LibreOffice, GIMP, and Blender workflows, while remaining realistic to deploy on a range of school and personal devices. Rather than assuming one fixed hardware profile, the system is designed to recognise the best supported local runtime path on the current machine and keep local AI practical without cloud dependence.</p>
       <p>Specifically, SmolPC 2.0 aims to:</p>
       <li>Enable students and teachers to control educational software through natural language, reducing the technical barrier to using complex applications.</li>
       <li>Support coding education through an AI-powered assistant that guides students through programming concepts and helps them debug their work.</li>
       <li>Offer optional local voice input and read-aloud in SmolPC 2.0 so that users can dictate prompts and listen to responses without relying on cloud accessibility services.</li>
       <li>Teach image editing and 3D modelling interactively, through AI assistants embedded directly in GIMP and Blender.</li>
-      <li>Operate entirely offline using locally deployed large language models via OpenVino, ensuring data privacy and removing the dependency on internet connectivity.</li>
-      <li>Adapt to the best supported local runtime path on the user&apos;s device while still remaining usable on a range of affordable hardware.</li>
+      <li>Operate entirely offline in a Windows-first packaged application, using locally managed models to ensure data privacy and avoid dependence on internet connectivity or a separate Ollama installation.</li>
+      <li>Remain hardware-aware on Windows by selecting the best supported runtime path for the current machine and leveraging technologies such as OpenVINO where appropriate.</li>
     </section>
 
     <!-- gathering requirements -->
@@ -64,11 +65,11 @@ IBM is a global technology and research company with a strong commitment to educ
       <ol>
         <li><strong>Legacy baseline:</strong> we reviewed the original SmolPC LibreOffice and Ollama-based prototype to identify what was reusable and what prevented broader adoption.</li>
         <li><strong>Scope expansion:</strong> new project objectives introduced a dedicated coding workflow together with assistants for GIMP and Blender, turning the project from a single-application prototype into a multi-workflow platform.</li>
-        <li><strong>Prototype-driven refinement:</strong> early assistant development exposed problems around cross-platform development, duplicated inference logic, security boundaries, and the deployment overhead of relying on a separately managed model server.</li>
-        <li><strong>Deployment-driven refinement:</strong> as the goal shifted towards realistic school deployment, requirements expanded to include a unified app, a shared local engine, hardware-aware runtime selection, and a setup flow that avoids asking students or teachers to manage local inference infrastructure manually.</li>
+        <li><strong>Prototype-driven refinement:</strong> early assistant development exposed problems around duplicated inference logic, security boundaries, Windows packaging, and the deployment overhead of relying on a separately managed model server.</li>
+        <li><strong>Deployment-driven refinement:</strong> as the goal shifted towards realistic school deployment, requirements expanded to include a unified app, a shared local engine, hardware-aware runtime selection, direct model management inside the product, and a setup flow that avoids asking students or teachers to install Ollama or manage inference infrastructure manually.</li>
       </ol>
       <p>We did not rely on a formal pupil survey. Direct access to school-age users was limited for safeguarding reasons, so requirements were refined through supervisor discussions, teacher-facing feedback, prototype evaluation, and iterative internal testing of realistic workflows.</p>
-      <p>We also conducted a comparative analysis of cloud AI tools against local deployment goals. The comparison reinforced that the decisive requirements were not only AI capability, but privacy, deployability, local control, and practical classroom use.</p>
+      <p>We also compared mainstream cloud AI tools with the deployment assumptions required for SmolPC 2.0. This was not intended as a general product ranking; it was a way to highlight why privacy, offline use, easier deployment, local control, and predictable classroom setup became decisive requirements for this project.</p>
       <p>Later accessibility-oriented implementation work on voice interaction reinforced the same conclusion: if speech input or read-aloud support was included, it still needed to run locally, avoid separate cloud services, and degrade safely when audio hardware or bundled voice resources were unavailable.</p>
       <table class="comparison-table">
         <thead>
@@ -110,13 +111,6 @@ IBM is a global technology and research company with a strong commitment to educ
             <td class="yes">Yes</td>
           </tr>
           <tr>
-            <td>Adapts local inference to available device capabilities</td>
-            <td class="no">No</td>
-            <td class="no">No</td>
-            <td class="no">No</td>
-            <td class="yes">Yes</td>
-          </tr>
-          <tr>
             <td>Open-source and redistributable core stack</td>
             <td class="no">No</td>
             <td class="no">No</td>
@@ -126,7 +120,7 @@ IBM is a global technology and research company with a strong commitment to educ
         </tbody>
       </table>
       <p class="comparison-caption">
-        Table 1. Comparative analysis of cloud AI tools vs. SmolPC v2.0 in the context of local classroom deployment.
+        Table 1. Comparison of deployment assumptions between mainstream cloud AI tools and SmolPC v2.0.
       </p>
     </section>
 
@@ -153,7 +147,8 @@ IBM is a global technology and research company with a strong commitment to educ
     <section id="use-case-diagram">
       <h2>Use Case Diagram</h2>
       <div class="card">
-        <p>The final use case diagram will be added here before submission.</p>
+        <img src="assets/images/use-case-diagram.svg" alt="Use case diagram for SmolPC 2.0 showing Student and Teacher actors, core assistant interaction, optional voice features, coding help, LibreOffice workflows, GIMP image editing, Blender help, and conversation history.">
+        <p class="comparison-caption">Figure 1. High-level use case diagram for SmolPC 2.0 as a unified local AI platform.</p>
       </div>
     </section>
     
@@ -426,11 +421,6 @@ IBM is a global technology and research company with a strong commitment to educ
           <td><span class="badge badge-could">Could Have</span></td>
         </tr>
         <tr>
-          <td>FR-C3</td>
-          <td>The UI could offer a high-contrast mode and dyslexia-friendly font options to further support users with accessibility needs.</td>
-          <td><span class="badge badge-could">Could Have</span></td>
-        </tr>
-        <tr>
           <td>FR-W1</td>
           <td>The system will not use cloud-hosted AI models or transmit any user data to external servers.</td>
           <td><span class="badge badge-wont">Won't Have</span></td>
@@ -499,51 +489,33 @@ IBM is a global technology and research company with a strong commitment to educ
         </tr>
         <tr>
           <td>NF-S1</td>
-          <td>The core application architecture should remain cross-platform and avoid unnecessary platform-specific product logic where possible.</td>
-          <td>Portability</td>
-          <td><span class="badge badge-should">Should Have</span></td>
-        </tr>
-        <tr>
-          <td>NF-S2</td>
           <td>The platform should surface setup status, host application availability, and model or runtime state clearly to the user.</td>
           <td>Usability</td>
           <td><span class="badge badge-should">Should Have</span></td>
         </tr>
         <tr>
-          <td>NF-S3</td>
+          <td>NF-S2</td>
           <td>The hardware-aware runtime selector should choose the best supported backend for the current device automatically.</td>
           <td>Performance</td>
           <td><span class="badge badge-should">Should Have</span></td>
         </tr>
         <tr>
-          <td>NF-S4</td>
+          <td>NF-S3</td>
           <td>The architecture shall be extensible — adding a new tool shall not require changes to the core SmolPC 2.0 codebase.</td>
           <td>Maintainability</td>
           <td><span class="badge badge-should">Should Have</span></td>
         </tr>
         <tr>
-          <td>NF-S5</td>
+          <td>NF-S4</td>
           <td>Response quality and user experience should remain acceptable across a range of supported hardware, even if throughput varies significantly by device.</td>
           <td>Performance</td>
           <td><span class="badge badge-should">Should Have</span></td>
         </tr>
         <tr>
-          <td>NF-S6</td>
+          <td>NF-S5</td>
           <td>Voice features should fail safely: if microphone input, audio output, or bundled voice resources are unavailable, the core text-chat workflow should continue without crashing.</td>
           <td>Reliability / Accessibility</td>
           <td><span class="badge badge-should">Should Have</span></td>
-        </tr>
-        <tr>
-          <td>NF-C1</td>
-          <td>The system could log anonymous local performance metrics to support future optimisation.</td>
-          <td>Maintainability</td>
-          <td><span class="badge badge-could">Could Have</span></td>
-        </tr>
-        <tr>
-          <td>NF-C2</td>
-          <td>The UI could support a high-contrast mode and dyslexia-friendly font options.</td>
-          <td>Accessibility</td>
-          <td><span class="badge badge-could">Could Have</span></td>
         </tr>
       </tbody>
     </table>
@@ -562,7 +534,7 @@ IBM is a global technology and research company with a strong commitment to educ
 
   <footer>
     <div class="footer-links">
-    <span>Email to be added</span>
+    <span>Contact: TBC</span>
     <a href="https://github.com/SmolPC-2-0/smolpc-codehelper" target="_blank">GitHub</a>
   </div>
 

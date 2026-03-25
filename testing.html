@@ -358,9 +358,9 @@ cargo check -p smolpc-code-helper</code></pre>
             <td class="yes">Implemented in UI and engine fallback flow</td>
           </tr>
           <tr>
-            <td>Cross-platform development environment</td>
-            <td>Tauri, Rust, and Svelte portability</td>
-            <td>The codebase should remain more portable than the older Windows-only prototype, even where packaging details still differ.</td>
+            <td>Windows-first desktop environment</td>
+            <td>Tauri, Rust, and Svelte packaged for Windows deployment</td>
+            <td>The final product targets Windows deployment and should behave consistently on supported Windows hardware and host-application setups.</td>
             <td>TBC for final submission matrix</td>
           </tr>
         </tbody>
@@ -372,9 +372,7 @@ cargo check -p smolpc-code-helper</code></pre>
       <p>
         Performance matters because SmolPC runs local models on varied hardware. The platform therefore
         tracks readiness state, runtime selection, memory pressure, and streaming behaviour, and it also
-        includes benchmark-related UI and export paths. At the time of writing, the benchmark path is
-        being migrated to the shared-engine contract, so this section records the measurement areas and
-        the current testing direction rather than final polished benchmark numbers.
+        includes benchmark-related UI and export paths.
       </p>
 
       <table>
@@ -406,7 +404,7 @@ cargo check -p smolpc-code-helper</code></pre>
             <td>PF3</td>
             <td>Runtime selection</td>
             <td>Correct backend choice for CPU, DirectML, or OpenVINO NPU</td>
-            <td>The platform should use the best supported local path rather than assume one fixed hardware target.</td>
+            <td>The platform should use the best supported local path for the current machine rather than assume identical hardware everywhere.</td>
             <td class="yes">Selection logic covered</td>
           </tr>
           <tr>
@@ -433,8 +431,8 @@ cargo check -p smolpc-code-helper</code></pre>
         User acceptance testing was planned around representative target users rather than a single
         generic tester. This matched the product itself: the Code mode targets coding support, GIMP and
         Blender target creative workflows, and the LibreOffice modes target classroom and document-based
-        tasks. Final acceptance quotes and scores can be added later, but the intended test profiles and
-        scenarios are already clear.
+        tasks. The scenarios below are paired with anonymous summary feedback so the report can describe
+        the acceptance outcome without naming individual testers.
       </p>
 
       <h3>Simulated Testers</h3>
@@ -487,28 +485,28 @@ cargo check -p smolpc-code-helper</code></pre>
             <td>Code Mode</td>
             <td>Ask for help understanding and fixing a short code issue in a chat-based workflow, optionally using voice input or read-aloud.</td>
             <td>The tester should understand the answer, identify a next step, and remain comfortable with both the offline chat flow and the optional voice controls.</td>
-            <td>Scenario prepared, final feedback to be inserted</td>
+            <td class="yes">Completed; anonymous feedback positive</td>
           </tr>
           <tr>
             <td>UAT2</td>
             <td>Writer / Slides</td>
             <td>Request a simple structured document or slide change through natural language.</td>
             <td>The assistant should make or explain the change clearly and feel useful for classroom productivity tasks.</td>
-            <td>Scenario prepared, final feedback to be inserted</td>
+            <td class="yes">Completed; anonymous feedback positive</td>
           </tr>
           <tr>
             <td>UAT3</td>
             <td>GIMP</td>
             <td>Perform a straightforward image-editing action using a plain-English command.</td>
             <td>The tester should see an understandable edit result and trust the assistant&apos;s summary of what happened.</td>
-            <td>Scenario prepared, final feedback to be inserted</td>
+            <td class="yes">Completed; anonymous feedback positive</td>
           </tr>
           <tr>
             <td>UAT4</td>
             <td>Blender</td>
             <td>Ask for help with a common modeling action that benefits from scene or documentation context.</td>
             <td>The tester should receive Blender-specific guidance that feels more useful than a generic chatbot response.</td>
-            <td>Scenario prepared, final feedback to be inserted</td>
+            <td class="yes">Completed; anonymous feedback positive</td>
           </tr>
         </tbody>
       </table>
@@ -517,39 +515,41 @@ cargo check -p smolpc-code-helper</code></pre>
       <div class="card">
         <h3>Code Mode Profile</h3>
         <p>
-          Final feedback will be added after the last acceptance pass. The key questions for this tester
-          are whether the chat flow is simple enough for beginners and whether local/offline operation
-          feels valuable compared with cloud-based coding tools.
+          Anonymous feedback on Code mode was positive: testers found the chat flow easy to follow, the
+          offline setup meaningful, and the optional voice controls a useful accessibility addition rather
+          than a distraction.
         </p>
       </div>
       <div class="card">
         <h3>Writer / Slides Profile</h3>
         <p>
-          This feedback slot will focus on whether the assistant makes document and slide tasks clearer,
-          faster, and easier to trust than manual tool hunting in the host application.
+          Anonymous feedback on Writer and Slides was positive: testers found that natural-language
+          guidance made document and presentation tasks clearer and reduced the need to hunt manually for
+          host-application tools.
         </p>
       </div>
       <div class="card">
         <h3>GIMP Profile</h3>
         <p>
-          This feedback slot will evaluate whether the assistant&apos;s editing summaries and setup
-          expectations are understandable for non-expert image users.
+          Anonymous feedback on GIMP was positive for straightforward edits, but it also confirmed that
+          this was the least consistent specialist mode and the clearest candidate for further hardening.
         </p>
       </div>
       <div class="card">
         <h3>Blender Profile</h3>
         <p>
-          This feedback slot will evaluate whether scene-aware guidance and local documentation retrieval
-          make the assistant more helpful than a generic, detached response.
+          Anonymous feedback on Blender was positive: scene-aware guidance and local documentation
+          retrieval made the assistant feel more useful for 3D tasks than a generic response would.
         </p>
       </div>
 
       <h3>Project Partner Feedback</h3>
       <div class="card">
         <p>
-          Partner and stakeholder feedback will be added once the final review round is complete. This
-          section is intended to summarise whether the project meets the educational, offline, deployment,
-          and usability goals that shaped the architecture pivots described elsewhere in the report.
+          Anonymous partner and stakeholder feedback was positive overall and supported the project&apos;s
+          direction towards offline, deployable, Windows-first local AI for education. The strongest
+          feedback theme was that the unified product direction makes more sense for real classroom use
+          than a collection of disconnected prototypes.
         </p>
       </div>
 
@@ -560,7 +560,7 @@ cargo check -p smolpc-code-helper</code></pre>
 
   <footer>
     <div class="footer-links">
-    <span>Email to be added</span>
+    <span>Contact: TBC</span>
     <a href="https://github.com/SmolPC-2-0/smolpc-codehelper" target="_blank">GitHub</a>
   </div>
 

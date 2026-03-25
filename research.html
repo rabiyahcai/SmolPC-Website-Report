@@ -37,7 +37,7 @@
           <li><strong>Speak &amp; See 3D</strong> — Generates 3D assets from spoken prompts using Whisper, Flux.1, and TripoSR.</li>
           <li><strong>AI Assistant for TextEditor</strong> — QOwnNotes enhancement with summarisation, translation, and RAG-based Q&amp;A.</li>
         </ul>
-        <p><strong>What we learned:</strong> The original SmolPC proved that capable, privacy-preserving AI is achievable on low-cost Intel hardware using OpenVino and locally-deployed LLMs. However, the six tools were developed independently with no unified launcher or shared interface, and the project targeted business users rather than schools. There were no educational features, no accessibility considerations, and no support for tools like GIMP or Blender. SmolPC 2.0 addresses all of these gaps: it adds a unified Home hub, pivots the focus entirely to education, and extends the suite to cover the creative and coding tools used in UK classrooms.</p>
+        <p><strong>What we learned:</strong> The original SmolPC proved that capable, privacy-preserving AI is achievable on low-cost Intel hardware using OpenVINO and locally-deployed LLMs. However, the six tools were developed independently with no unified launcher or shared interface, and the project targeted business users rather than schools. It was not primarily designed around classroom workflows, accessibility, or tools like GIMP and Blender. SmolPC 2.0 addresses these gaps by adding a unified Home hub, pivoting the focus to education, and extending the suite to cover the creative and coding tools used in UK classrooms.</p>
       </div>
 
       <h3>Previous SmolPC LibreOffice Prototype</h3>
@@ -61,10 +61,10 @@
 
     <section id="technology-review">
       <h2>Technology Review</h2>
-      <p>The technology research evolved alongside the implementation. Early experiments prioritised rapid prototyping; later decisions prioritised packaging, cross-platform development, security, runtime ownership, and predictable local deployment. The final architecture therefore reflects a series of deliberate pivots rather than one fixed plan from the start [4], [5], [12].</p>
+      <p>The technology research evolved alongside the implementation. Early experiments prioritised rapid prototyping; later decisions prioritised packaging, Windows deployment, security, runtime ownership, and predictable local setup. The final architecture therefore reflects a series of deliberate pivots rather than one fixed plan from the start [4], [5], [12].</p>
 
       <h3>Inference Runtime Ownership</h3>
-      <p>One of the most important technical pivots was how local inference should be owned. Early experimentation used Ollama because it made local prototyping quick, but a separate model server still introduces extra setup and makes it harder to present the system as one product. The final direction was therefore a shared SmolPC engine that owns startup, readiness, backend selection, and inference for the whole suite [3], [5], [12].</p>
+      <p>One of the most important technical pivots was how local inference should be owned. Early experimentation used Ollama because it made local prototyping quick, but a separate model server still introduces extra setup and makes it harder to present the system as one product. The final direction was therefore a shared SmolPC engine that owns startup, readiness, backend selection, inference, and model/runtime management for the whole suite, making a single packaged application more realistic [3], [5], [12].</p>
       <table>
         <thead>
           <tr>
@@ -124,7 +124,7 @@
       </table>
 
       <h3>Device and Runtime Strategy</h3>
-      <p>We deliberately moved away from framing the system around one fixed laptop specification. Local AI performance depends heavily on the hardware and drivers available on the machine, so the more realistic goal was to recognise the supported runtime path and use the best available local lane rather than promise identical behaviour everywhere. ONNX Runtime execution providers make this kind of backend selection practical, and OpenVINO provides a stronger path on supported Intel hardware [6], [7].</p>
+      <p>We deliberately moved away from framing the system around one fixed laptop specification. Local AI performance depends heavily on the hardware and drivers available on the machine, so the more realistic goal was to recognise the supported runtime path and use the best available local lane rather than promise identical behaviour everywhere. ONNX Runtime execution providers make this kind of backend selection practical, and OpenVINO provides a stronger path on supported Intel hardware [6], [7]. In the current codebase, the Windows runtime stack relies heavily on ONNX Runtime and ONNX Runtime GenAI, with the Rust <code>ort</code> crate used in the Tauri application and shared runtime-bundle management used in the engine to support DirectML-backed execution and dynamic runtime loading [4], [6].</p>
       <table>
         <thead>
           <tr>
@@ -190,7 +190,7 @@
       </table>
 
       <h3>Voice Interaction and Accessibility</h3>
-      <p>As the unified shell matured, voice interaction became a practical accessibility improvement for SmolPC 2.0 as a whole. The key research question was not whether speech APIs existed, but how to add dictation and read-aloud without breaking the project&apos;s offline and single-product goals. The chosen direction keeps both speech-to-text and text-to-speech local, and exposes them through the same shared engine surface as the rest of the assistant platform [13].</p>
+      <p>As the unified shell matured, voice interaction became a practical accessibility improvement for SmolPC 2.0 as a whole, especially for users who may find typing difficult or prefer dictation. The key research question was not whether speech APIs existed, but how to add dictation and read-aloud without breaking the project&apos;s offline and single-product goals. The chosen direction keeps both speech-to-text and text-to-speech local, and exposes them through the same shared engine surface as the rest of the assistant platform [13].</p>
       <table>
         <thead>
           <tr>
@@ -224,7 +224,7 @@
       <p>Research and implementation also ruled out a naive in-process TTS design. The final voice architecture keeps Whisper transcription inside the engine host, but isolates TTS in a separate sidecar because that was the safest way to avoid runtime conflicts with the main inference stack while still presenting one unified API to the app [13].</p>
 
       <h3>Desktop Application Stack</h3>
-      <p>The move from the older prototype toward a cross-platform packaged desktop application made the application framework decision especially important. Tauri was chosen because it matched the project priorities around packaging, native backend control, and a lighter-weight desktop footprint while still allowing a modern web-based UI [9].</p>
+      <p>The move from the older prototype toward a Windows-first packaged desktop application made the application framework decision especially important. Tauri was chosen because it matched the project priorities around packaging, native backend control, and a lighter-weight desktop footprint while still allowing a modern web-based UI [9].</p>
       <table>
         <thead>
           <tr>
@@ -250,7 +250,7 @@
           <tr>
             <td>Python desktop application stack</td>
             <td>Fast experimentation and strong AI tooling ecosystem</td>
-            <td>Weaker long-term fit for a bundled cross-platform desktop product with shared engine ownership</td>
+            <td>Weaker long-term fit for a bundled Windows-first desktop product with shared engine ownership</td>
             <td class="no">No</td>
           </tr>
         </tbody>
@@ -371,7 +371,7 @@
           <tr>
             <td>Desktop framework</td>
             <td>Tauri with Rust backend</td>
-            <td>Better aligned with cross-platform packaging, native backend control, and a lighter desktop footprint</td>
+            <td>Better aligned with Windows-first packaged delivery, native backend control, and a lighter desktop footprint</td>
           </tr>
           <tr>
             <td>Frontend framework</td>
@@ -419,7 +419,7 @@
   </main>
   <footer>
     <div class="footer-links">
-    <span>Email to be added</span>
+    <span>Contact: TBC</span>
     <a href="https://github.com/SmolPC-2-0/smolpc-codehelper" target="_blank">GitHub</a>
   </div>
 
