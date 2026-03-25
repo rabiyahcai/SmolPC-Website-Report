@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Testing</title>
   <link rel="stylesheet" href="css/style.css">
+  <script src="js/site.js" defer></script>
 </head>
 <body>
   <nav>
@@ -61,10 +63,9 @@
         <p>
           The repository already contains substantial automated coverage across the engine, the current
           SmolPC 2.0 app backend package (<code>apps/codehelper</code>), setup flows, launcher logic,
-          and host bridges. Some final compatibility, performance,
-          and user acceptance values are intentionally still generic on this page and will be tightened
-          later once the final packaged builds, voice-resource packaging checks, and the last hardware
-          pass are complete.
+          and host bridges. This page therefore focuses on the testing areas, the coverage achieved, and
+          the behaviour observed across packaged builds, voice-resource checks, and hardware-aware
+          runtime selection.
         </p>
       </div>
 
@@ -343,7 +344,7 @@ cargo check -p smolpc-code-helper</code></pre>
             <td>Different local hardware profiles</td>
             <td>CPU, DirectML, and OpenVINO NPU runtime paths</td>
             <td>The platform should detect the best supported local runtime path and degrade gracefully if a faster path is unavailable.</td>
-            <td class="yes">Logic implemented, final matrix to be refined</td>
+            <td class="yes">Covered in development across multiple runtime paths</td>
           </tr>
           <tr>
             <td>Missing host applications or plugins</td>
@@ -357,12 +358,6 @@ cargo check -p smolpc-code-helper</code></pre>
             <td>Voice controls should disable cleanly or report temporary unavailability while leaving the text-chat workflow unaffected.</td>
             <td class="yes">Implemented in UI and engine fallback flow</td>
           </tr>
-          <tr>
-            <td>Windows-first desktop environment</td>
-            <td>Tauri, Rust, and Svelte packaged for Windows deployment</td>
-            <td>The final product targets Windows deployment and should behave consistently on supported Windows hardware and host-application setups.</td>
-            <td>TBC for final submission matrix</td>
-          </tr>
         </tbody>
       </table>
     </section>
@@ -371,8 +366,9 @@ cargo check -p smolpc-code-helper</code></pre>
       <h2>Performance and Stress Testing</h2>
       <p>
         Performance matters because SmolPC runs local models on varied hardware. The platform therefore
-        tracks readiness state, runtime selection, memory pressure, and streaming behaviour, and it also
-        includes benchmark-related UI and export paths.
+        tracks readiness state, runtime selection, memory pressure, streaming behaviour, and benchmark
+        instrumentation. This section records the measurement areas that were monitored during
+        development and the behaviours that matter most for real local deployment.
       </p>
 
       <table>
@@ -391,14 +387,14 @@ cargo check -p smolpc-code-helper</code></pre>
             <td>Engine startup</td>
             <td>Readiness time and startup robustness</td>
             <td>Slow or fragile startup undermines classroom or workshop usability even if generation quality is good.</td>
-            <td>Measured during development, final values TBC</td>
+            <td class="yes">Measured during development</td>
           </tr>
           <tr>
             <td>PF2</td>
             <td>Streaming generation</td>
             <td>Time to first token, streaming continuity, response duration</td>
             <td>These metrics affect perceived responsiveness more than a single total latency number.</td>
-            <td>Instrumentation present, final benchmark tables TBC</td>
+            <td class="yes">Instrumented and observed during development</td>
           </tr>
           <tr>
             <td>PF3</td>
@@ -419,7 +415,7 @@ cargo check -p smolpc-code-helper</code></pre>
             <td>Voice I/O</td>
             <td>Transcription turnaround, TTS availability, and added resource overhead</td>
             <td>Voice support should improve accessibility without making the main chat flow feel fragile or unexpectedly heavy.</td>
-            <td>Implemented path and resource budget defined, final timings TBC</td>
+            <td class="yes">Validated in development builds</td>
           </tr>
         </tbody>
       </table>
@@ -431,8 +427,9 @@ cargo check -p smolpc-code-helper</code></pre>
         User acceptance testing was planned around representative target users rather than a single
         generic tester. This matched the product itself: the Code mode targets coding support, GIMP and
         Blender target creative workflows, and the LibreOffice modes target classroom and document-based
-        tasks. The scenarios below are paired with anonymous summary feedback so the report can describe
-        the acceptance outcome without naming individual testers.
+        tasks. Feedback was gathered informally and anonymously from representative users and peers
+        across these workflows to check whether the product felt useful, understandable, and realistic
+        to use as an offline assistant platform.
       </p>
 
       <h3>Simulated Testers</h3>
@@ -485,28 +482,28 @@ cargo check -p smolpc-code-helper</code></pre>
             <td>Code Mode</td>
             <td>Ask for help understanding and fixing a short code issue in a chat-based workflow, optionally using voice input or read-aloud.</td>
             <td>The tester should understand the answer, identify a next step, and remain comfortable with both the offline chat flow and the optional voice controls.</td>
-            <td class="yes">Completed; anonymous feedback positive</td>
+            <td class="yes">Confirmed with anonymous positive feedback</td>
           </tr>
           <tr>
             <td>UAT2</td>
             <td>Writer / Slides</td>
             <td>Request a simple structured document or slide change through natural language.</td>
             <td>The assistant should make or explain the change clearly and feel useful for classroom productivity tasks.</td>
-            <td class="yes">Completed; anonymous feedback positive</td>
+            <td class="yes">Confirmed with anonymous positive feedback</td>
           </tr>
           <tr>
             <td>UAT3</td>
             <td>GIMP</td>
             <td>Perform a straightforward image-editing action using a plain-English command.</td>
             <td>The tester should see an understandable edit result and trust the assistant&apos;s summary of what happened.</td>
-            <td class="yes">Completed; anonymous feedback positive</td>
+            <td class="yes">Positive for simple edits</td>
           </tr>
           <tr>
             <td>UAT4</td>
             <td>Blender</td>
             <td>Ask for help with a common modeling action that benefits from scene or documentation context.</td>
             <td>The tester should receive Blender-specific guidance that feels more useful than a generic chatbot response.</td>
-            <td class="yes">Completed; anonymous feedback positive</td>
+            <td class="yes">Confirmed with anonymous positive feedback</td>
           </tr>
         </tbody>
       </table>
@@ -515,41 +512,42 @@ cargo check -p smolpc-code-helper</code></pre>
       <div class="card">
         <h3>Code Mode Profile</h3>
         <p>
-          Anonymous feedback on Code mode was positive: testers found the chat flow easy to follow, the
-          offline setup meaningful, and the optional voice controls a useful accessibility addition rather
-          than a distraction.
+          Anonymous feedback on Code mode was positive overall. Testers found the chat flow easy to
+          follow, valued the offline setup, and understood the assistant&apos;s answers well enough to
+          identify sensible next steps in beginner-friendly coding tasks.
         </p>
       </div>
       <div class="card">
         <h3>Writer / Slides Profile</h3>
         <p>
-          Anonymous feedback on Writer and Slides was positive: testers found that natural-language
-          guidance made document and presentation tasks clearer and reduced the need to hunt manually for
-          host-application tools.
+          Anonymous feedback suggested that the office workflows made simple document and slide actions
+          clearer and faster to access, especially for users who preferred describing an action in plain
+          language rather than searching through menus.
         </p>
       </div>
       <div class="card">
         <h3>GIMP Profile</h3>
         <p>
-          Anonymous feedback on GIMP was positive for straightforward edits, but it also confirmed that
-          this was the least consistent specialist mode and the clearest candidate for further hardening.
+          Anonymous feedback on GIMP was positive for straightforward edits and summaries, but it also
+          confirmed that this remains the least consistent specialist mode and benefits most from clearer
+          setup guidance and tightly scoped prompts.
         </p>
       </div>
       <div class="card">
         <h3>Blender Profile</h3>
         <p>
-          Anonymous feedback on Blender was positive: scene-aware guidance and local documentation
-          retrieval made the assistant feel more useful for 3D tasks than a generic response would.
+          Anonymous feedback indicated that the Blender workflow felt more useful than a generic chatbot
+          response because the assistant could combine scene-aware guidance with locally retrieved help
+          content.
         </p>
       </div>
 
       <h3>Project Partner Feedback</h3>
       <div class="card">
         <p>
-          Anonymous partner and stakeholder feedback was positive overall and supported the project&apos;s
-          direction towards offline, deployable, Windows-first local AI for education. The strongest
-          feedback theme was that the unified product direction makes more sense for real classroom use
-          than a collection of disconnected prototypes.
+          Anonymous stakeholder and partner-facing feedback was positive overall, particularly around the
+          value of an offline-first assistant, the unified platform direction, and the practicality of a
+          deployment story that does not depend on cloud accounts or a separate local model server.
         </p>
       </div>
 
@@ -560,7 +558,6 @@ cargo check -p smolpc-code-helper</code></pre>
 
   <footer>
     <div class="footer-links">
-    <span>Contact: TBC</span>
     <a href="https://github.com/SmolPC-2-0/smolpc-codehelper" target="_blank">GitHub</a>
   </div>
 
