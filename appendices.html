@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Appendices</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -24,18 +25,24 @@
 
     <section id="user-manual">
       <h2>User Manual</h2>
-      <p><!-- how to use this manual --></p>
+      <p>This manual is intended for testers and assessors using the current SmolPC 2.0 unified desktop shell. The steps below describe the user-facing flow after the application has been installed or started from source. The Deployment Manual later in this appendix covers the developer or tester setup path in more detail.</p>
 
       <h3>Installation</h3>
-      <p><!-- How to install SmolPC --></p>
-      <img src="assets/images/manual/install.png" alt="Installation screenshot">
+      <p>For a packaged Windows build, install SmolPC Code Helper through the provided NSIS installer or offline bundle. The installer places the application in the normal local programs area and the current packaging direction keeps shared models under <code>%LOCALAPPDATA%\SmolPC\models\</code>. If you are running from source for assessment or development, follow the Deployment Manual below instead of these end-user packaging steps.</p>
+      <div class="card">
+        <h3>Screenshot Pending</h3>
+        <p>The packaged installation screenshot will be inserted here once the team exports the final installer capture.</p>
+      </div>
 
       <h3>Getting Started</h3>
-      <p><!-- How to launch SmolPC 2.0 for the first time --></p>
-      <img src="assets/images/manual/getting-started.png" alt="Getting started screenshot">
+      <p>On first launch, the unified shell checks local models, runtime resources, and the availability of supported host applications. If no models are available yet, the setup flow can guide the user through local provisioning from an offline bundle or a download path. Once the engine is ready, the interface transitions into the normal chat workspace.</p>
+      <div class="card">
+        <h3>Screenshot Pending</h3>
+        <p>The first-launch and startup-loading screenshot will be inserted here once the team exports the final capture.</p>
+      </div>
 
       <h3>LibreOffice Assistant</h3>
-      <p><!-- How to use the LibreOffice assistant --></p>
+      <p>Writer and Slides are accessed through the same shared shell as the other modes. They rely on the LibreOffice provider family in the backend, so setup availability and host-launch controls are part of the normal user flow. The assistant is designed for short natural-language requests such as creating headings, adding sections, or inserting slides, with the result summarised back into the same conversation.</p>
 
       <h3>Starting SmolPC</h3>
       <ol>
@@ -45,7 +52,7 @@
       </ol>
       <div class="card">
         <h3>Screenshot</h3>
-        <p>TBC: startup screen and initial unified app shell screenshot.</p>
+        <p>Pending team screenshot export: startup screen and initial unified app shell.</p>
       </div>
 
       <h3>General Navigation</h3>
@@ -64,7 +71,7 @@
       </ol>
       <div class="card">
         <h3>Screenshot</h3>
-        <p>TBC: Code mode welcome state and coding conversation screenshot.</p>
+        <p>Pending team screenshot export: Code mode welcome state and coding conversation.</p>
       </div>
 
       <h3>LibreOffice Writer and Slides</h3>
@@ -76,7 +83,7 @@
       </ol>
       <div class="card">
         <h3>Screenshot</h3>
-        <p>TBC: Writer or Slides workflow screenshot.</p>
+        <p>Pending team screenshot export: Writer or Slides workflow.</p>
       </div>
 
       <h3>GIMP Assistant</h3>
@@ -88,7 +95,7 @@
       </ol>
       <div class="card">
         <h3>Screenshot</h3>
-        <p>TBC: GIMP mode, setup state, and example image-editing prompt screenshot.</p>
+        <p>Pending team screenshot export: GIMP mode, setup state, and an example image-editing prompt.</p>
       </div>
 
       <h3>Blender Assistant</h3>
@@ -100,7 +107,7 @@
       </ol>
       <div class="card">
         <h3>Screenshot</h3>
-        <p>TBC: Blender mode with a scene-aware prompt and response screenshot.</p>
+        <p>Pending team screenshot export: Blender mode with a scene-aware prompt and response.</p>
       </div>
 
       <h3>Known User-Facing Limitations</h3>
@@ -190,16 +197,21 @@ cargo test -p smolpc-engine-core -p smolpc-engine-client -p smolpc-engine-host</
       <h3>Current Packaging Direction</h3>
       <p>
         The codebase also includes offline-bundle and Windows-local packaging scripts. These are part of
-        the project&apos;s move toward a single-install local deployment path rather than requiring users to
-        operate a separate model server manually.
+        the move toward a single-install local deployment path rather than requiring users to operate a
+        separate model server manually. The documented direction is an online installer, an offline USB
+        bundle with prebuilt model archives, and a portable-style path for more locked-down machines.
       </p>
-      <pre><code>npm run package:offline
+      <pre><code>cd app
+npm run package:offline
 npm run package:offline:bundle</code></pre>
 
       <h3>Step 5: Run SmolPC 2.0</h3>
-      <p><!-- How to launch the application --></p>
-      <pre><code><!-- e.g. python main.py --></code></pre>
-      <img src="assets/images/manual/deploy-run.png" alt="Running SmolPC 2.0 screenshot">
+      <p>For development or testing from source, run the unified app from the repository root after the setup commands above have completed. For a packaged Windows build, launch the installed SmolPC Code Helper shortcut and let the startup flow finish before using a mode.</p>
+      <pre><code>npm run tauri:dev</code></pre>
+      <div class="card">
+        <h3>Screenshot Pending</h3>
+        <p>The deployed application launch screenshot will be inserted here once the team exports the final capture.</p>
+      </div>
 
       <h3>Troubleshooting</h3>
       <div class="card">
@@ -235,7 +247,7 @@ npm run package:offline:bundle</code></pre>
       </p>
 
       <h3>Data Collection</h3>
-      <p><!-- What data SmolPC 2.0 collects if any --></p>
+      <p>SmolPC 2.0 does not rely on cloud telemetry, remote prompt logging, or account-based analytics during normal use. The system stores local chats, settings, setup state, engine tokens, runtime logs, and packaged resource metadata on the device so that the application can function offline. Temporary microphone audio is processed locally for speech-to-text and is used only to generate the transcription that the user sees back in the composer.</p>
 
       <h3>Data Storage</h3>
       <p>
@@ -267,7 +279,7 @@ npm run package:offline:bundle</code></pre>
       </p>
 
       <h3>Offline Operation</h3>
-      <p><!-- Since SmolPC 2.0 is offline, explain the privacy benefits of this --></p>
+      <p>Once runtime resources and models are present, the normal chat, tool, and voice workflows are designed to operate fully offline. This has clear privacy benefits: prompts, generated responses, and tool actions remain on the local machine instead of being routed through a third-party inference provider. The main qualification is that first-time provisioning may still use the internet if the user is not installing from the offline bundle, but this is a setup decision rather than a requirement of daily use.</p>
 
     </section>
 
@@ -292,13 +304,13 @@ npm run package:offline:bundle</code></pre>
       <h2>Development Blog</h2>
       <div class="card">
         <h3>Development Blog</h3>
-        <p>TBC: public development blog URL.</p>
+        <p>The public development blog URL is pending final publication by the team and will be inserted here once confirmed.</p>
       </div>
     </section>
 
     <section id="monthly-videos">
       <h2>Monthly Videos</h2>
-      <p>TBC: monthly progress video titles and links.</p>
+      <p>The monthly progress video titles and links are pending final publication by the team. The table below keeps the required monthly structure so links can be inserted as soon as they are available.</p>
 
       <table>
         <thead>
@@ -311,28 +323,28 @@ npm run package:offline:bundle</code></pre>
         <tbody>
           <tr>
             <td>November 2025</td>
-            <td>TBC</td>
-            <td>TBC</td>
+            <td>Pending upload</td>
+            <td>Pending publication</td>
           </tr>
           <tr>
             <td>December 2025</td>
-            <td>TBC</td>
-            <td>TBC</td>
+            <td>Pending upload</td>
+            <td>Pending publication</td>
           </tr>
           <tr>
             <td>January 2026</td>
-            <td>TBC</td>
-            <td>TBC</td>
+            <td>Pending upload</td>
+            <td>Pending publication</td>
           </tr>
           <tr>
             <td>February 2026</td>
-            <td>TBC</td>
-            <td>TBC</td>
+            <td>Pending upload</td>
+            <td>Pending publication</td>
           </tr>
           <tr>
             <td>March 2026</td>
-            <td>TBC</td>
-            <td>TBC</td>
+            <td>Pending upload</td>
+            <td>Pending publication</td>
           </tr>
         </tbody>
       </table>

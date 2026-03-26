@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">SmolPC unified shell navigation map</title>
+  <desc id="desc">A navigation map showing the shared SmolPC application shell, its persistent navigation areas, and the mode-specific flows available inside the same window.</desc>
+  <style>
+    .bg { fill: #f7f5ef; }
+    .panel { fill: #ffffff; stroke: #16324f; stroke-width: 3; rx: 18; ry: 18; }
+    .primary { fill: #d8ecff; }
+    .accent { fill: #e8f5dd; }
+    .secondary { fill: #fff0d7; }
+    .text { font: 600 24px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #0d2033; }
+    .small { font: 500 18px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #32475b; }
+    .tiny { font: 500 16px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #32475b; }
+    .arrow { stroke: #16324f; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+    .dashed { stroke-dasharray: 10 8; }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#16324f"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1200" height="760"/>
+
+  <rect class="panel primary" x="410" y="270" width="380" height="180"/>
+  <text class="text" x="600" y="330" text-anchor="middle">Unified SmolPC App Shell</text>
+  <text class="small" x="600" y="368" text-anchor="middle">Shared conversation view, composer,</text>
+  <text class="small" x="600" y="396" text-anchor="middle">startup screen, setup banner, overlays</text>
+
+  <rect class="panel accent" x="60" y="110" width="250" height="120"/>
+  <text class="text" x="185" y="165" text-anchor="middle">Sidebar</text>
+  <text class="tiny" x="185" y="198" text-anchor="middle">Saved chats and conversation history</text>
+
+  <rect class="panel accent" x="60" y="500" width="250" height="120"/>
+  <text class="text" x="185" y="555" text-anchor="middle">Setup Surfaces</text>
+  <text class="tiny" x="185" y="588" text-anchor="middle">Setup panel, wizard, startup checks</text>
+
+  <rect class="panel secondary" x="890" y="100" width="250" height="120"/>
+  <text class="text" x="1015" y="154" text-anchor="middle">Mode Selector</text>
+  <text class="tiny" x="1015" y="188" text-anchor="middle">Code, GIMP, Blender, Writer, Slides</text>
+
+  <rect class="panel secondary" x="890" y="520" width="250" height="120"/>
+  <text class="text" x="1015" y="575" text-anchor="middle">Help and Status</text>
+  <text class="tiny" x="1015" y="608" text-anchor="middle">Mode help, model info, hardware panel</text>
+
+  <rect class="panel" x="430" y="40" width="340" height="110"/>
+  <text class="text" x="600" y="92" text-anchor="middle">Workspace Header</text>
+  <text class="tiny" x="600" y="124" text-anchor="middle">Host launch buttons, diagnostics, controls</text>
+
+  <rect class="panel" x="430" y="590" width="340" height="110"/>
+  <text class="text" x="600" y="642" text-anchor="middle">Mode-Specific Flow</text>
+  <text class="tiny" x="600" y="674" text-anchor="middle">Direct engine chat or provider-assisted tooling</text>
+
+  <path class="arrow" d="M310 170 C360 170 380 220 410 300"/>
+  <path class="arrow" d="M310 560 C360 560 390 520 430 420"/>
+  <path class="arrow" d="M770 300 C830 250 850 210 890 170"/>
+  <path class="arrow" d="M770 420 C830 500 860 545 890 575"/>
+  <path class="arrow" d="M600 150 L600 270"/>
+  <path class="arrow" d="M600 450 L600 590"/>
+
+  <path class="arrow dashed" d="M1015 220 C1015 290 980 330 790 340"/>
+  <path class="arrow dashed" d="M1015 520 C1015 470 960 430 790 400"/>
+  <path class="arrow dashed" d="M185 500 C185 420 290 380 410 370"/>
+  <path class="arrow dashed" d="M185 230 C185 280 300 320 410 340"/>
+</svg>

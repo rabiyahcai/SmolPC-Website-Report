@@ -62,17 +62,17 @@
         <h3>Evidence And Limitations</h3>
         <p>
           The repository already contains substantial automated coverage across the engine, the current
-          SmolPC 2.0 app backend package (<code>apps/codehelper</code>), setup flows, launcher logic,
-          and host bridges. This page therefore focuses on the testing areas, the coverage achieved, and
-          the behaviour observed across packaged builds, voice-resource checks, and hardware-aware
-          runtime selection.
+          Tauri backend under <code>app/src-tauri</code>, setup flows, connector crates, and host-app
+          bridges. This page therefore focuses on the testing areas, the coverage achieved, and the
+          behaviour observed across packaged builds, voice-resource checks, and hardware-aware runtime
+          selection.
         </p>
       </div>
 
       <pre><code>npm run check
 npm run boundary:check
 cargo test -p smolpc-engine-core -p smolpc-engine-client -p smolpc-engine-host
-cargo check -p smolpc-code-helper</code></pre>
+cargo test -p smolpc-desktop -p smolpc-connector-gimp -p smolpc-connector-blender -p smolpc-connector-libreoffice</code></pre>
     </section>
 
     <section id="unit-testing">
@@ -171,10 +171,10 @@ cargo check -p smolpc-code-helper</code></pre>
         <tbody>
           <tr>
             <td>IT1</td>
-            <td><!-- e.g. SmolPC 2.0 Core + LibreOffice --></td>
-            <td><!-- Description --></td>
-            <td><!-- Expected --></td>
-            <td><!-- Pass/Fail --></td>
+            <td>Startup loading flow + setup state + engine readiness</td>
+            <td>Launch the unified app, let the startup loading screen complete, refresh setup state, and confirm that engine readiness and mode availability are reflected in the main shell.</td>
+            <td>The app should move from startup into the normal workspace only when the engine and setup state are coherent, with unavailable modes clearly flagged instead of failing silently.</td>
+            <td class="yes">Covered</td>
           </tr>
           <tr>
             <td>IT2</td>
@@ -183,30 +183,6 @@ cargo check -p smolpc-code-helper</code></pre>
             <td>Each mode should invoke the correct provider family without leaking behaviour across assistants.</td>
             <td class="yes">Covered</td>
           </tr>
-          <tr>
-            <td>IT6</td>
-            <td>Composer mic control + audio commands + engine voice endpoints</td>
-            <td>Record a short prompt fragment, transcribe it locally into the composer, send the prompt, and request read-aloud on the response.</td>
-            <td>The dictated text should appear in the chat input, and local playback should work or fail cleanly without breaking the text workflow.</td>
-            <td class="yes">Covered in development builds</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3>Automated Integration Tests</h3>
-      <p><!-- Describe your automated tests and how they were run --></p>
-      <pre><code><!-- Code snippet of automated test --></code></pre>
-
-    </section>
-
-    <!-- Prompt Testing -->
-    <section id="prompt-testing">
-      <h2>Prompt Testing</h2>
-      <p><!-- Why prompt testing is important for SmolPC 2.0 and how you approached it --></p>
-
-      <h3>LibreOffice Assistant</h3>
-      <table>
-        <thead>
           <tr>
             <td>IT3</td>
             <td>GIMP bridge + tool execution</td>
@@ -228,24 +204,41 @@ cargo check -p smolpc-code-helper</code></pre>
             <td>Valid requests should execute through the office runtime, while unsupported routes should fail clearly and safely.</td>
             <td class="yes">Covered</td>
           </tr>
+          <tr>
+            <td>IT6</td>
+            <td>Composer mic control + audio commands + engine voice endpoints</td>
+            <td>Record a short prompt fragment, transcribe it locally into the composer, send the prompt, and request read-aloud on the response.</td>
+            <td>The dictated text should appear in the chat input, and local playback should work or fail cleanly without breaking the text workflow.</td>
+            <td class="yes">Covered in development builds</td>
+          </tr>
         </tbody>
       </table>
 
-      <h3>Automated Integration Checks</h3>
+      <h3>Automated Integration Tests</h3>
       <p>
-        The repository includes automated checks around compatibility gates, engine-status mapping,
-        runtime-mode restoration, setup preparation, and provider-specific execution paths. This is
-        important because the project is not just a static website or a single library: regression risk
-        appears most often at the boundaries between the engine, the Tauri commands, and the mode
-        providers.
+        The repository includes automated checks around engine-status mapping, runtime-mode restoration,
+        setup preparation, memory-pressure classification, connector execution, and audio request
+        contracts. These tests matter because regression risk appears most often at the boundaries
+        between the engine, the Tauri commands, and the mode providers rather than inside isolated UI
+        widgets.
       </p>
-      <pre><code>Representative automated integration coverage includes:
-- engine readiness and startup-mode mapping
-- launcher engine API compatibility gates
-- mode-specific executor and provider tests
-- setup preparation and resource staging checks
-- fallback behaviour for malformed tool responses
-- voice request contract checks and TTS sidecar resolution checks</code></pre>
+      <pre><code>Representative commands used during development:
+npm run check
+npm run boundary:check
+cargo test -p smolpc-engine-client
+cargo test -p smolpc-engine-host
+cargo test -p smolpc-desktop
+cargo test -p smolpc-connector-gimp
+cargo test -p smolpc-connector-blender
+cargo test -p smolpc-connector-libreoffice
+
+Representative named tests cited on this page:
+- runtime_env_overrides_parse_force_ep_tokens
+- classify_memory_level_uses_warning_and_critical_thresholds
+- audio_speech_request_defaults
+- detects_rotate_fast_path
+- retrieve_context_returns_top_match
+- summary_failure_falls_back_to_local_summary</code></pre>
     </section>
 
     <section id="prompt-testing">

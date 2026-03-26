@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Code mode generation sequence</title>
+  <desc id="desc">A sequence diagram showing a Code mode request travelling from the user to the Svelte frontend, Tauri backend, engine supervisor, shared engine, and back as a streamed response.</desc>
+  <style>
+    .bg { fill: #f7f5ef; }
+    .lane { stroke: #7c8b99; stroke-width: 2; stroke-dasharray: 8 8; }
+    .head { fill: #d8ecff; stroke: #16324f; stroke-width: 2.5; rx: 16; ry: 16; }
+    .text { font: 600 22px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #0d2033; }
+    .small { font: 500 17px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #203549; }
+    .arrow { stroke: #16324f; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#16324f"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1200" height="760"/>
+
+  <rect class="head" x="60" y="40" width="160" height="60"/>
+  <rect class="head" x="270" y="40" width="180" height="60"/>
+  <rect class="head" x="510" y="40" width="180" height="60"/>
+  <rect class="head" x="750" y="40" width="180" height="60"/>
+  <rect class="head" x="980" y="40" width="160" height="60"/>
+
+  <text class="text" x="140" y="78" text-anchor="middle">User</text>
+  <text class="text" x="360" y="78" text-anchor="middle">Svelte UI</text>
+  <text class="text" x="600" y="78" text-anchor="middle">Tauri Backend</text>
+  <text class="text" x="840" y="78" text-anchor="middle">Supervisor</text>
+  <text class="text" x="1060" y="78" text-anchor="middle">Engine Host</text>
+
+  <line class="lane" x1="140" y1="110" x2="140" y2="700"/>
+  <line class="lane" x1="360" y1="110" x2="360" y2="700"/>
+  <line class="lane" x1="600" y1="110" x2="600" y2="700"/>
+  <line class="lane" x1="840" y1="110" x2="840" y2="700"/>
+  <line class="lane" x1="1060" y1="110" x2="1060" y2="700"/>
+
+  <path class="arrow" d="M140 170 H360"/>
+  <text class="small" x="250" y="156" text-anchor="middle">1. Submit Code mode prompt</text>
+
+  <path class="arrow" d="M360 250 H600"/>
+  <text class="small" x="480" y="236" text-anchor="middle">2. invoke assistant / inference command</text>
+
+  <path class="arrow" d="M600 330 H840"/>
+  <text class="small" x="720" y="316" text-anchor="middle">3. ensure engine started and model ready</text>
+
+  <path class="arrow" d="M840 410 H1060"/>
+  <text class="small" x="950" y="396" text-anchor="middle">4. call /engine status + /v1/chat/completions</text>
+
+  <path class="arrow" d="M1060 490 H600"/>
+  <text class="small" x="830" y="476" text-anchor="middle">5. stream tokens and status updates</text>
+
+  <path class="arrow" d="M600 570 H360"/>
+  <text class="small" x="480" y="556" text-anchor="middle">6. forward partial events through Tauri channel</text>
+
+  <path class="arrow" d="M360 650 H140"/>
+  <text class="small" x="250" y="636" text-anchor="middle">7. render streamed assistant response</text>
+</svg>
