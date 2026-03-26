@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmolPC Code Helper – UI Wireframe</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-deepest: #0d1117;
+    --bg-sidebar: #0f1319;
+    --bg-main: #161b22;
+    --bg-card: #1c2129;
+    --bg-elevated: #21262d;
+    --bg-hover: #262c36;
+    --border: #2d333b;
+    --text-primary: #e6edf3;
+    --text-secondary: #8b949e;
+    --text-muted: #545d68;
+    --accent-green: #3fb950;
+    --accent-green-bg: #12261e;
+    --accent-blue: #388bfd;
+    --accent-blue-bg: #1a3352;
+    --accent-orange: #d29922;
+    --accent-orange-bg: #2a1f0e;
+    --accent-teal: #39d2c0;
+    --accent-teal-bg: #0f2b28;
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --font-ui: 'DM Sans', -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  body {
+    font-family: var(--font-ui);
+    background: #000;
+    color: var(--text-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .window {
+    width: 1380px;
+    height: 880px;
+    background: var(--bg-deepest);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+  }
+
+  /* ===== TITLE BAR ===== */
+  .title-bar {
+    height: 32px;
+    background: var(--bg-deepest);
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    flex-shrink: 0;
+  }
+  .title-bar .app-icon {
+    width: 14px; height: 14px;
+    background: var(--accent-teal);
+    border-radius: 3px;
+    margin-right: 8px;
+    opacity: 0.7;
+  }
+  .title-bar span {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    font-weight: 500;
+    letter-spacing: 0.2px;
+  }
+  .title-bar .spacer { flex: 1; }
+  .window-controls { display: flex; gap: 2px; }
+  .window-controls button {
+    width: 36px; height: 24px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 12px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 3px;
+    transition: background 0.15s;
+  }
+  .window-controls button:hover { background: var(--bg-elevated); color: var(--text-secondary); }
+  .window-controls .close:hover { background: #c93c37; color: #fff; }
+
+  /* ===== BODY ===== */
+  .body-row {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar {
+    width: 242px;
+    background: var(--bg-sidebar);
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(255,255,255,0.04);
+    flex-shrink: 0;
+  }
+  .sidebar-header {
+    padding: 14px 14px 8px;
+  }
+  .sidebar-header h2 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .sidebar-header h2 .icon-badge {
+    width: 20px; height: 20px;
+    background: linear-gradient(135deg, var(--accent-teal), var(--accent-blue));
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+  }
+  .sidebar-header p {
+    font-size: 10.5px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    padding-left: 26px;
+  }
+  .sidebar-actions { padding: 6px 12px 10px; }
+  .btn-new-chat {
+    width: 100%;
+    height: 38px;
+    background: linear-gradient(135deg, #1a6b4a, #1a8f5e);
+    border: none;
+    border-radius: var(--radius-md);
+    color: #fff;
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.2px;
+  }
+  .btn-new-chat:hover { filter: brightness(1.15); transform: translateY(-1px); }
+
+  .search-box {
+    margin: 0 12px 10px;
+    height: 34px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    gap: 6px;
+    transition: border-color 0.2s;
+  }
+  .search-box:hover { border-color: var(--text-muted); }
+  .search-box .icon { font-size: 12px; color: var(--text-muted); }
+  .search-box span { font-size: 11px; color: var(--text-muted); }
+
+  .chat-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 8px 12px;
+  }
+  .chat-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 1.2px;
+    padding: 12px 6px 6px;
+    text-transform: uppercase;
+  }
+  .chat-item {
+    padding: 9px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .chat-item:hover { background: var(--bg-hover); }
+  .chat-item.active { background: var(--bg-elevated); }
+  .chat-item .chat-title {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 175px;
+  }
+  .chat-item.active .chat-title { color: var(--text-primary); }
+  .chat-item .chat-date {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .chat-item .actions {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .chat-item:hover .actions { opacity: 1; }
+  .chat-item .actions span {
+    font-size: 12px;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 2px;
+  }
+
+  /* ===== MAIN CONTENT ===== */
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-main);
+    min-width: 0;
+  }
+
+  /* Top nav */
+  .top-nav {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    flex-shrink: 0;
+  }
+  .top-nav .page-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+  .top-nav .spacer { flex: 1; }
+
+  .mode-tabs {
+    display: flex;
+    align-items: center;
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: 3px;
+    gap: 2px;
+  }
+  .mode-tabs .label {
+    font-size: 11px;
+    color: var(--text-muted);
+    padding: 0 8px;
+    font-weight: 500;
+  }
+  .mode-tab {
+    padding: 5px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .mode-tab:hover { background: var(--bg-hover); color: var(--text-primary); }
+  .mode-tab.active {
+    background: var(--accent-blue-bg);
+    color: var(--accent-blue);
+    font-weight: 600;
+  }
+  .mode-tab .dot { font-size: 9px; }
+
+  .nav-pill {
+    padding: 5px 12px;
+    background: var(--bg-card);
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .nav-pill:hover { background: var(--bg-elevated); }
+
+  .model-info {
+    text-align: right;
+  }
+  .model-info .model-name {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .model-info .gpu-status {
+    font-size: 9px;
+    color: var(--accent-green);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+  }
+  .model-info .gpu-dot {
+    width: 6px; height: 6px;
+    background: var(--accent-green);
+    border-radius: 50%;
+    display: inline-block;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* Sub bar */
+  .sub-bar {
+    height: 38px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .context-badge {
+    padding: 4px 12px;
+    background: var(--accent-green-bg);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: var(--radius-sm);
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--accent-green);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .sub-bar .spacer { flex: 1; }
+  .theme-group { display: flex; gap: 3px; }
+  .theme-btn {
+    padding: 4px 12px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .theme-btn:hover { color: var(--text-secondary); background: var(--bg-card); }
+  .theme-btn.active { background: var(--accent-blue-bg); color: var(--accent-blue); }
+
+  /* Setup banner */
+  .setup-banner {
+    margin: 4px 20px 0;
+    padding: 10px 16px;
+    background: var(--bg-card);
+    border: 1px solid rgba(210,153,34,0.15);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .setup-banner .tag {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent-orange);
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .setup-banner .desc {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    flex: 1;
+  }
+  .setup-banner .btn-setup {
+    padding: 6px 14px;
+    background: var(--accent-blue-bg);
+    border: 1px solid rgba(56,139,253,0.2);
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-blue);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .setup-banner .btn-setup:hover { background: rgba(56,139,253,0.2); }
+
+  /* Center hero */
+  .center-hero {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 40px;
+    gap: 18px;
+  }
+  .code-badge {
+    padding: 6px 16px;
+    background: var(--accent-teal-bg);
+    border: 1px solid rgba(57,210,192,0.15);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent-teal);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .hero-heading {
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-align: center;
+    line-height: 1.25;
+    letter-spacing: -0.5px;
+    max-width: 580px;
+  }
+  .hero-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    text-align: center;
+    line-height: 1.6;
+    max-width: 560px;
+  }
+
+  /* Example prompts */
+  .prompts-card {
+    margin-top: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px 18px 14px;
+    width: 720px;
+  }
+  .prompts-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .prompts-header h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .prompts-header span {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .prompts-header .close-btn {
+    font-size: 16px;
+    color: var(--text-muted);
+    cursor: pointer;
+    margin-left: 12px;
+    line-height: 1;
+  }
+  .prompts-row {
+    display: flex;
+    gap: 8px;
+  }
+  .prompt-chip {
+    flex: 1;
+    padding: 11px 14px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+    line-height: 1.35;
+  }
+  .prompt-chip:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: var(--text-muted);
+    transform: translateY(-1px);
+  }
+
+  /* Input bar */
+  .input-area {
+    padding: 12px 20px 16px;
+    flex-shrink: 0;
+  }
+  .input-bar {
+    display: flex;
+    align-items: center;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 6px 6px 6px 18px;
+    gap: 8px;
+    max-width: 760px;
+    margin: 0 auto;
+    transition: border-color 0.2s;
+  }
+  .input-bar:hover { border-color: var(--text-muted); }
+  .input-bar:focus-within { border-color: var(--accent-blue); box-shadow: 0 0 0 2px rgba(56,139,253,0.1); }
+  .input-bar input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: var(--font-ui);
+    font-size: 14px;
+    color: var(--text-primary);
+  }
+  .input-bar input::placeholder { color: var(--text-muted); }
+  .input-btn {
+    width: 38px; height: 38px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .btn-mic {
+    background: var(--bg-elevated);
+    color: var(--text-muted);
+  }
+  .btn-mic:hover { background: var(--bg-hover); color: var(--text-secondary); }
+  .btn-send {
+    background: var(--accent-blue);
+    color: #fff;
+  }
+  .btn-send:hover { filter: brightness(1.15); transform: scale(1.05); }
+
+  .input-hint {
+    text-align: center;
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+  .input-hint kbd {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    background: var(--bg-card);
+    padding: 1px 4px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+  }
+
+  /* ===== ANNOTATIONS LAYER ===== */
+  .annotation-tag {
+    position: absolute;
+    background: #ff6b35;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+    pointer-events: none;
+    z-index: 100;
+    font-family: var(--font-mono);
+    box-shadow: 0 2px 6px rgba(255,107,53,0.4);
+  }
+</style>
+</head>
+<body>
+
+<div class="window">
+  <!-- TITLE BAR -->
+  <div class="title-bar">
+    <div class="app-icon"></div>
+    <span>SmolPC Code Helper</span>
+    <div class="spacer"></div>
+    <div class="window-controls">
+      <button>—</button>
+      <button>☐</button>
+      <button class="close">✕</button>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body-row">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h2>
+          <span class="icon-badge">⚡</span>
+          SmolPC Helper
+        </h2>
+        <p>Offline coding assistant workspace</p>
+      </div>
+
+      <div class="sidebar-actions">
+        <button class="btn-new-chat">New Chat</button>
+      </div>
+
+      <div class="search-box">
+        <span class="icon">🔍</span>
+        <span>Search chats, model, content</span>
+      </div>
+
+      <div class="chat-list">
+        <div class="chat-section-label">Today</div>
+        <div class="chat-item active">
+          <div class="chat-title">New Chat</div>
+          <div class="chat-date">8:01 PM</div>
+          <div class="actions"><span>📌</span><span>⋯</span></div>
+        </div>
+
+        <div class="chat-section-label">Yesterday</div>
+        <div class="chat-item">
+          <div class="chat-title">Fix this bug and explain the ro...</div>
+          <div class="chat-date">Mar 25</div>
+          <div class="actions"><span>📌</span><span>⋯</span></div>
+        </div>
+
+        <div class="chat-section-label">Older</div>
+        <div class="chat-item">
+          <div class="chat-title">Create a simple calculator prog...</div>
+          <div class="chat-date">Mar 17</div>
+          <div class="actions"><span>📌</span><span>⋯</span></div>
+        </div>
+        <div class="chat-item">
+          <div class="chat-title">Show me how to use for loops ...</div>
+          <div class="chat-date">Mar 17</div>
+          <div class="actions"><span>📌</span><span>⋯</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+
+      <!-- TOP NAV -->
+      <div class="top-nav">
+        <div class="page-title">New Chat</div>
+        <div class="spacer"></div>
+
+        <div class="mode-tabs">
+          <span class="label">Modes:</span>
+          <div class="mode-tab active"><span class="dot">&lt;&gt;</span> Code</div>
+          <div class="mode-tab">🖌 GIMP</div>
+          <div class="mode-tab">🔶 Blender</div>
+          <div class="mode-tab">✏️ Writer</div>
+          <div class="mode-tab">📊 Slides</div>
+        </div>
+
+        <div class="spacer"></div>
+
+        <div class="nav-pill">⬇️</div>
+        <div class="nav-pill">⚙️</div>
+        <div class="nav-pill">💻 CPU Only</div>
+
+        <div class="model-info">
+          <div class="model-name">qwen2.5-1.5b-instruct</div>
+          <div class="gpu-status"><span class="gpu-dot"></span> DirectML GPU · Click for settings</div>
+        </div>
+      </div>
+
+      <!-- SUB BAR -->
+      <div class="sub-bar">
+        <div class="context-badge">📎 Context On</div>
+        <div class="spacer"></div>
+        <div class="theme-group">
+          <div class="theme-btn active">⚙ System</div>
+          <div class="theme-btn">☀ Light</div>
+          <div class="theme-btn">🌙 Dark</div>
+          <div class="theme-btn">❓ Help</div>
+        </div>
+      </div>
+
+      <!-- SETUP BANNER -->
+      <div class="setup-banner">
+        <div class="tag">SETUP NEEDS ATTENTION</div>
+        <div class="desc">Bundled Python payload is staged and can be prepared into app-local setup state</div>
+        <div class="btn-setup">Open setup</div>
+      </div>
+
+      <!-- CENTER HERO -->
+      <div class="center-hero">
+        <div class="code-badge">CODE MODE</div>
+        <h1 class="hero-heading">Ask for help with code, bugs, or new ideas.</h1>
+        <p class="hero-desc">
+          This mode is for reading code, explaining it clearly, finding bugs, and writing new functions.<br>
+          You can paste code or ask a plain-English question.
+        </p>
+
+        <div class="prompts-card">
+          <div class="prompts-header">
+            <div>
+              <h3>Example prompts</h3>
+              <span>Choose one and change it to fit your task.</span>
+            </div>
+            <span class="close-btn">✕</span>
+          </div>
+          <div class="prompts-row">
+            <div class="prompt-chip">Fix this bug and explain the root cause</div>
+            <div class="prompt-chip">Write a function from this prompt</div>
+            <div class="prompt-chip">Review this snippet for mistakes</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- INPUT BAR -->
+      <div class="input-area">
+        <div class="input-bar">
+          <input type="text" placeholder="Ask a coding question (Shift+Enter for new line)...">
+          <button class="input-btn btn-mic">🎤</button>
+          <button class="input-btn btn-send">➤</button>
+        </div>
+        <div class="input-hint">
+          <kbd>↵</kbd> Enter to send, <kbd>Shift+Enter</kbd> newline
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
