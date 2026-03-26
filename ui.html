@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>UI</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -34,7 +35,14 @@
 
       <div class="card">
         <h3>Simplicity</h3>
-        <p><!-- How you applied simplicity in SmolPC 2.0's design --></p>
+        <p>
+          Simplicity was applied by keeping the product inside one persistent shell with one main input
+          pattern. The user always sees the same sidebar, conversation area, composer, and workspace
+          header, while more advanced information such as hardware details, model status, and setup
+          troubleshooting is pushed into overlays or drawers instead of crowding the main flow. This
+          means that switching from Code to GIMP or Writer changes the task context without forcing the
+          user to relearn the whole interface.
+        </p>
       </div>
 
       <div class="card">
@@ -120,6 +128,11 @@
             <td>Keeps important system state visible without cluttering the main conversation area.</td>
           </tr>
           <tr>
+            <td>Startup loading screen</td>
+            <td>Explains that the app is checking setup and waiting for engine readiness before normal use.</td>
+            <td>Prevents the interface from appearing broken while local runtime preparation is still in progress.</td>
+          </tr>
+          <tr>
             <td>Setup banner and setup panel</td>
             <td>Warns the user when a mode is unavailable or missing prerequisites.</td>
             <td>Essential for host-integrated tools such as GIMP, Blender, and LibreOffice.</td>
@@ -138,6 +151,11 @@
             <td>Per-message voice controls</td>
             <td>Allow the user to play or stop local read-aloud on assistant responses.</td>
             <td>Supports accessibility and hands-free use without sending content to a cloud TTS service.</td>
+          </tr>
+          <tr>
+            <td>Model recommendation banner</td>
+            <td>Warns when a tool-backed mode is likely to perform badly on the currently selected small model.</td>
+            <td>Helps users make a sensible performance-quality tradeoff without exposing raw backend details first.</td>
           </tr>
           <tr>
             <td>Help drawer and overlays</td>
@@ -165,21 +183,22 @@
         <h3>Implemented UI Decisions</h3>
         <p>
           This mode emphasises a clean conversation view, clear prompt starters, visible runtime status,
-          and low-friction onboarding. The welcome state explains what Code mode is for and encourages
-          users to ask for code explanations, debugging help, or new code in plain language. It is also
-          a clear example of how the optional voice controls work inside SmolPC 2.0: a microphone button
-          in the composer for local dictation and a read-aloud control on assistant messages for local playback.
+          and low-friction onboarding. The welcome state explains what Code mode is for, the shared
+          conversation view streams responses progressively, and the same shell exposes keyboard
+          shortcuts, model information, and hardware status when needed. Code mode is also the clearest
+          example of how optional voice controls work inside SmolPC 2.0: a microphone button in the
+          composer for local dictation and a read-aloud control on assistant messages for local playback.
         </p>
       </div>
 
       <div class="card">
         <h3>Hand-Drawn Sketches</h3>
-        <p>TBC: sketches showing the empty state, an active coding conversation, loading feedback, the microphone control, and the shared shell layout.</p>
+        <p>Pending team artefact upload: sketches for the empty state, an active coding conversation, loading feedback, the microphone control, and the shared shell layout.</p>
       </div>
 
       <div class="card">
         <h3>High-Fidelity Wireframe</h3>
-        <p>TBC: high-fidelity wireframe or Figma export for the shared shell with Code mode as the flagship workflow.</p>
+        <p>Pending team artefact upload: the high-fidelity wireframe or Figma export for the shared shell with Code mode as the flagship workflow.</p>
       </div>
 
     </section>
@@ -195,20 +214,21 @@
       <div class="card">
         <h3>Implemented UI Decisions</h3>
         <p>
-          Writer and Slides use mode-specific welcome copy, host-app launch controls, and setup
-          messaging that make it clear the user is working with a real desktop tool rather than a generic
-          chatbot. The same shared layout helps users transfer knowledge across office tasks.
+          Writer and Slides use mode-specific welcome copy, a shared LibreOffice launch control, and
+          setup messaging that makes it clear the user is working with a real desktop tool rather than a
+          generic chatbot. The UI also warns when a stronger tool-capable model would be more suitable,
+          which helps these modes stay understandable on lower-spec machines.
         </p>
       </div>
 
       <div class="card">
         <h3>Hand-Drawn Sketches</h3>
-        <p>TBC: sketches showing mode switching, setup state, and a document- or slide-oriented prompt flow.</p>
+        <p>Pending team artefact upload: sketches showing mode switching, setup state, and a document- or slide-oriented prompt flow.</p>
       </div>
 
       <div class="card">
         <h3>High-Fidelity Wireframe</h3>
-        <p>TBC: wireframe showing the LibreOffice-specific welcome state, host-app control, and example task flow.</p>
+        <p>Pending team artefact upload: the wireframe showing the LibreOffice-specific welcome state, host-app control, and example task flow.</p>
       </div>
     </section>
 
@@ -223,20 +243,22 @@
       <div class="card">
         <h3>Implemented UI Decisions</h3>
         <p>
-          The mode-specific copy encourages direct plain-English image-editing prompts, while setup and
-          help surfaces explain what needs to be ready before the assistant can act. This keeps the
-          workflow approachable for users who may not know GIMP&apos;s menu structure well.
+          The mode-specific copy encourages direct plain-English image-editing prompts, while setup
+          surfaces explain what needs to be ready before the assistant can act. The shared shell then
+          reuses the same conversation view and launch controls, which keeps the workflow approachable
+          for users who may not know GIMP&apos;s menu structure well but still need clear recovery guidance
+          if the bridge or host app is unavailable.
         </p>
       </div>
 
       <div class="card">
         <h3>Hand-Drawn Sketches</h3>
-        <p>TBC: sketches showing the shared shell, the GIMP launch control, and the user flow for simple image-editing requests.</p>
+        <p>Pending team artefact upload: sketches showing the shared shell, the GIMP launch control, and the user flow for simple image-editing requests.</p>
       </div>
 
       <div class="card">
         <h3>High-Fidelity Wireframe</h3>
-        <p>TBC: wireframe showing edit summaries, setup status, and host-application controls inside the unified interface.</p>
+        <p>Pending team artefact upload: the wireframe showing edit summaries, setup status, and host-application controls inside the unified interface.</p>
       </div>
     </section>
 
@@ -252,27 +274,28 @@
       <div class="card">
         <h3>Implemented UI Decisions</h3>
         <p>
-          Blender mode keeps the shared shell but places extra importance on clear troubleshooting and
-          contextual guidance. This is because the user is often moving between the assistant and a live
-          3D environment, making clarity and state awareness especially important.
+          Blender mode keeps the shared shell but places extra importance on clear troubleshooting,
+          contextual guidance, and mode help. This is because the user is often moving between the
+          assistant and a live 3D environment, so the design needs to keep scene-aware guidance
+          discoverable without overwhelming the main conversation area.
         </p>
       </div>
 
       <div class="card">
         <h3>Hand-Drawn Sketches</h3>
-        <p>TBC: sketches showing scene-based help, Blender launching, and the relationship between the assistant shell and the active 3D workflow.</p>
+        <p>Pending team artefact upload: sketches showing scene-based help, Blender launching, and the relationship between the assistant shell and the active 3D workflow.</p>
       </div>
 
       <div class="card">
         <h3>High-Fidelity Wireframe</h3>
-        <p>TBC: wireframe focusing on scene-aware onboarding, help content, and a representative Blender conversation.</p>
+        <p>Pending team artefact upload: the wireframe focusing on scene-aware onboarding, help content, and a representative Blender conversation.</p>
       </div>
 
     </section>
 
     <section id="artefacts">
       <h2>Design Artefacts Status</h2>
-      <p>TBC: hand-drawn sketches, exported wireframes, and any Figma links.</p>
+      <p>The implementation-backed UI narrative on this page now reflects the current shipped shell. The remaining missing artefacts are team-supplied design exports: hand-drawn sketches, exported wireframes, and any shareable Figma links. These should be inserted into the placeholder cards above once they are exported.</p>
     </section>
 
   </main>

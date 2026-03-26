@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>System</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -24,72 +25,76 @@
 
     <section id="architecture">
       <h2>System Architecture</h2>
-      <p><!-- Brief overview of how SmolPC 2.0 is structured and how the four assistants fit together --></p>
+      <p>SmolPC 2.0 is implemented as one unified Tauri desktop application in <code>app/</code>, backed by a shared Rust inference engine in <code>engine/</code> and host-application connector crates in <code>connectors/</code>. The frontend never owns inference or tool execution directly. Instead, the Svelte shell calls Tauri commands, the Tauri backend resolves the active mode, and the backend either streams text through the shared engine or dispatches to a host-aware provider. This architecture keeps lifecycle, backend selection, authentication, and offline runtime state in one place while still allowing GIMP, Blender, Writer, and Slides to use different execution paths.</p>
 
       <h3>High-Level Architecture Diagram</h3>
       <img src="assets/images/high-level-architecture.svg" alt="SmolPC 2.0 high-level system architecture diagram" style="width:100%;max-width:900px;display:block;margin:1.5rem auto;">
-      <p><!-- Description of each component in the diagram --></p>
+      <p>The implemented stack is layered. The Svelte frontend provides the shared shell, conversation view, overlays, and setup surfaces. The Tauri backend owns command handling, setup status, host launching, and provider routing. The shared engine owns startup, health, runtime selection, model loading, chat generation, transcription, and text-to-speech proxying. Connector crates bridge the unified shell to external tools such as GIMP, Blender, and LibreOffice without pushing host-specific logic into the frontend.</p>
 
       <h3>Core Components</h3>
 
       <div class="card">
-        <h3>SmolPC 2.0 Core</h3>
-        <p><!-- Describe the core/shared infrastructure --></p>
+        <h3>Unified App Shell</h3>
+        <p>The live integrated app is the Tauri 2 + Svelte 5 shell under <code>app/</code>. It exposes one interface for Code, GIMP, Blender, Writer, and Slides, and reuses shared UI components such as the sidebar, mode dropdown, setup banner, setup panel, help drawer, model and hardware overlays, startup loading screen, conversation view, and composer bar.</p>
       </div>
 
       <div class="card">
         <h3>Shared SmolPC Engine</h3>
-        <p>The shared engine is split into <code>smolpc-engine-core</code>, <code>smolpc-engine-host</code>, and <code>smolpc-engine-client</code>. It owns startup lifecycle, readiness, backend and model selection, generation, cancellation, and the localhost API contract. It also now exposes local audio endpoints for speech-to-text and text-to-speech support. This keeps model/runtime ownership out of individual assistants and makes it possible to reuse the same local runtime across multiple modes.</p>
+        <p>The shared engine is split into <code>smolpc-engine-core</code>, <code>smolpc-engine-host</code>, and <code>smolpc-engine-client</code>. It owns startup lifecycle, health checks, backend selection, model readiness, generation, cancellation, and the localhost API contract. The same engine now also exposes the local audio endpoints used for speech-to-text and text-to-speech.</p>
       </div>
 
       <div class="card">
         <h3>Mode Provider Layer</h3>
-        <p>The backend uses a registry of tool providers to map each mode to its corresponding orchestration logic. Code uses a local provider, GIMP uses a dedicated provider, Blender uses a scene-aware provider, and the LibreOffice workflows share one office provider family. This design keeps the frontend unaware of host-specific implementation details and makes the mode system extensible.</p>
+        <p>The Tauri backend uses a mode registry to map each mode to a provider family. Code uses the direct local generation path, GIMP uses an MCP-backed provider, Blender uses a hybrid provider with bridge and retrieval support, and Writer plus Slides share one LibreOffice provider family. This keeps the frontend unaware of host-specific orchestration details.</p>
       </div>
 
       <div class="card">
-        <h3>Host Application Bridges</h3>
-        <p>External applications are not controlled directly by the chat UI. Instead, each workflow uses an application-specific bridge. GIMP uses a bundled MCP bridge, Blender uses a local bridge and addon for scene-aware access, and LibreOffice uses an MCP-backed runtime and helper bridge. These bridges allow the assistant layer to call structured tools rather than relying on unstructured text only.</p>
+        <h3>Connector and Host-App Bridges</h3>
+        <p>Connector crates under <code>connectors/</code> own the host-specific integration logic. GIMP provides heuristic tool routing and execution through a bridge, Blender combines bridge state with local retrieval, and LibreOffice shares one provider family for Writer and Slides. Each connector encapsulates setup, discovery, execution, and fallback behaviour for its host application.</p>
       </div>
 
       <div class="card">
-        <h3>Launcher and Setup Layer</h3>
-        <p>The current branch also contains launcher-oriented orchestration and manifest support. At the moment this is still transitional rather than a fully separate standalone launcher application, but it already supports manifest-driven launch or focus behaviour and contributes to the longer-term single-suite packaging direction. The setup layer also checks runtime resources and host-app availability so the UI can gate modes when prerequisites are missing.</p>
+        <h3>Supervisor and Setup Layer</h3>
+        <p>The engine lifecycle is managed by an EngineSupervisor task that owns spawning, health monitoring, restart-on-crash behaviour, and desired-model restoration through message passing. Setup logic in the app backend checks runtime resources, bundled Python, local models, and host-app availability so the UI can gate modes and guide the user instead of failing silently.</p>
       </div>
 
       <div class="card">
         <h3>Voice I/O Layer</h3>
-        <p>Voice input and read-aloud are part of SmolPC 2.0&apos;s shared application layer rather than a separate product. The Tauri app captures microphone audio locally, resamples it, and sends it to <code>/v1/audio/transcriptions</code>. Read-aloud requests go to <code>/v1/audio/speech</code>. Speech-to-text is handled inside the engine host through Whisper on CPU, while text-to-speech is isolated in a detached <code>smolpc-tts-server</code> sidecar so that voice failures do not take down the core chat path.</p>
+        <p>Voice features are part of the shared platform rather than a separate assistant. The Tauri app captures microphone audio locally with <code>cpal</code>, resamples it with <code>rubato</code>, and sends it to <code>/v1/audio/transcriptions</code>. Read-aloud calls go to <code>/v1/audio/speech</code>, which the engine proxies to a detached <code>smolpc-tts-server</code> sidecar. Speech-to-text stays inside the engine host through Whisper on CPU, while TTS is isolated so voice failures do not destabilise the main chat path.</p>
       </div>
     </section>
 
-    <!-- Site Map -->
     <section id="sitemap">
       <h2>Site Map</h2>
-      <p><!-- Brief description of the application's navigation structure --></p>
-      <img src="assets/images/diagrams/sitemap.png" alt="SmolPC 2.0 site map">
+      <p>Because the product is a single-window desktop application, the most useful equivalent of a traditional sitemap is the navigation map of the unified shell. The diagram below shows how the user moves between the persistent sidebar, mode selector, setup surfaces, host-launch controls, and overlays while staying inside one shared application frame.</p>
+      <img src="assets/images/diagrams/mode-navigation-map.svg" alt="Navigation map for the SmolPC 2.0 unified application shell" style="width:100%;max-width:980px;display:block;margin:1.5rem auto;">
+      <p class="comparison-caption">Figure 4. Navigation map for the single-window SmolPC 2.0 shell.</p>
     </section>
 
     <section id="sequence-diagrams">
       <h2>Interaction Flows</h2>
-      <p>The final diagrams for this page should focus on the main architectural flows rather than repeating very similar assistant-specific pictures. Two sequence diagrams are especially important: a pure text-generation flow and a host-assisted tool-execution flow.</p>
+      <p>The most important runtime flows are the direct engine path used by Code mode and the provider path used by host-assisted modes. Together they show why SmolPC 2.0 is more than a simple local chatbot: one path stays entirely within the shared engine, while the other combines the engine with structured tool execution in an external desktop application.</p>
 
       <h3>Text Generation Flow</h3>
-      <p>In Code mode, the user writes a request in the Svelte frontend. The frontend sends this through a Tauri command to the backend, which ensures the engine is running and ready. The backend then calls the shared engine client, which communicates with the localhost engine host. Tokens are streamed back to the frontend and appended to the active chat. This flow demonstrates the clean boundary between UI, Tauri backend, and shared engine.</p>
-
-      <h3>Voice Interaction Flow</h3>
-      <p>In the current SmolPC 2.0 voice flow, the user presses the microphone button in the composer. The Tauri layer captures device-native audio locally, resamples it to the format required by Whisper, and sends it to the engine&apos;s transcription endpoint. The returned text is inserted back into the composer so the user can review it before sending. When the user presses read aloud on an assistant message, the frontend requests speech from the engine, which proxies the request to a detached TTS sidecar and returns WAV audio for local playback.</p>
+      <img src="assets/images/diagrams/code-generation-sequence.svg" alt="Sequence diagram showing Code mode text generation through the shared engine" style="width:100%;max-width:980px;display:block;margin:1.5rem auto;">
+      <p class="comparison-caption">Figure 5. Code mode request flow from Svelte UI to the shared engine and back.</p>
+      <p>In Code mode, the user writes a request in the shared shell. The frontend sends a Tauri command, the backend ensures that the engine is started and ready, and the engine client calls the localhost engine host. Tokens are streamed back through the same path and appended to the active conversation. This flow is deliberately simple because Code mode is the reference interaction for the rest of the product.</p>
 
       <h3>Host-Assisted Mode Flow</h3>
-      <p>In GIMP, Blender, and LibreOffice modes, the frontend still sends one assistant request, but the backend first resolves the correct provider from the mode registry. The provider then checks the relevant bridge, gathers tool status or context, and may use the shared engine to plan or phrase the response before executing structured host actions. This is the key flow that distinguishes the unified assistant platform from a plain local chatbot.</p>
+      <img src="assets/images/diagrams/host-assisted-sequence.svg" alt="Sequence diagram showing a host-assisted workflow through the provider registry and connector bridge" style="width:100%;max-width:980px;display:block;margin:1.5rem auto;">
+      <p class="comparison-caption">Figure 6. Host-assisted workflow for GIMP, Blender, Writer, or Slides.</p>
+      <p>In GIMP, Blender, Writer, and Slides, the frontend still sends one unified assistant request, but the backend first resolves the correct provider from the registry. The provider can inspect bridge status, retrieve context, call the shared engine for planning or phrasing, execute a structured tool call through the connector, and then return a user-facing summary to the same conversation view.</p>
+
+      <h3>Voice Interaction Flow</h3>
+      <p>When the user presses the microphone button, the Tauri layer captures device-native audio locally, converts it to the 16kHz mono format expected by Whisper, and sends it to the engine&apos;s transcription endpoint. The returned text is inserted back into the composer so the user can review it before sending. When the user presses read aloud on an assistant message, the frontend requests speech from the engine, which proxies the request to the detached TTS sidecar and returns WAV audio for local playback.</p>
 
       <h3>Availability and Launch Flow</h3>
-      <p>On startup, the app checks runtime resources, engine readiness, and host application availability. These checks drive the setup UI and the mode availability state shown to the user. When supported, host applications can be launched or focused through command-based orchestration rather than requiring the user to manage every dependency manually.</p>
+      <p>On startup, the app checks runtime resources, engine readiness, and host application availability. These checks drive the startup loading screen, setup wizard, setup banner, and mode-availability messaging. When a supported host application is ready, the same shell can launch or focus it through a backend command, so the workflow remains centred on one desktop application instead of several disconnected tools.</p>
     </section>
 
     <section id="data-storage">
       <h2>Data Storage and State</h2>
-      <p>This project does not centre around a relational database, so a traditional ER diagram is not the most useful design artefact. The more relevant design question is where lightweight user state, runtime resources, and shared engine assets are stored.</p>
+      <p>This project does not centre around a relational database, so a traditional ER diagram is not the most useful design artefact. The more important design question is where user state, runtime assets, and offline resources live during normal desktop use.</p>
       <table>
         <thead>
           <tr>
@@ -101,33 +106,38 @@
         <tbody>
           <tr>
             <td>Chats and active conversation state</td>
-            <td>Frontend localStorage</td>
-            <td>Stores per-mode chats and restores the user&rsquo;s recent conversation history inside the desktop UI</td>
+            <td>Frontend <code>localStorage</code></td>
+            <td>Stores per-mode chats and restores recent conversation history inside the desktop UI.</td>
           </tr>
           <tr>
             <td>Settings and runtime preferences</td>
-            <td>Frontend localStorage</td>
-            <td>Persists selected model, runtime preference, context settings, and theme</td>
+            <td>Frontend <code>localStorage</code></td>
+            <td>Persists selected model, runtime preference, theme, and related UI options.</td>
+          </tr>
+          <tr>
+            <td>Engine token, status, and logs</td>
+            <td><code>%LOCALAPPDATA%\\SmolPC\\engine-runtime\\</code></td>
+            <td>Coordinates secure localhost access, engine startup state, and diagnostics.</td>
+          </tr>
+          <tr>
+            <td>Shared model artifacts</td>
+            <td><code>%LOCALAPPDATA%\\SmolPC\\models\\</code></td>
+            <td>Allows the same local model set to be reused across Code, GIMP, Blender, Writer, and Slides.</td>
           </tr>
           <tr>
             <td>App-local provider resources</td>
             <td>Tauri app-local-data directory and bundled resources</td>
-            <td>Stores provider-specific runtime data and allows packaged resource resolution in development and release modes</td>
+            <td>Stores staged runtime files such as bridge resources, prompts, and packaged support data.</td>
           </tr>
           <tr>
-            <td>Shared engine token, status, and runtime files</td>
-            <td>Shared local runtime directory</td>
-            <td>Coordinates engine startup, health, and secure localhost access</td>
+            <td>Provisioning breadcrumb and offline bundle hints</td>
+            <td><code>%LOCALAPPDATA%\\SmolPC\\installer-source.txt</code> and installer-local bundle folders</td>
+            <td>Helps the setup flow rediscover offline model archives and resume provisioning without cloud dependency.</td>
           </tr>
           <tr>
-            <td>Shared model artifacts and runtime bundles</td>
-            <td>Shared local model/runtime directories</td>
-            <td>Allows cross-mode reuse of local models and backend runtimes instead of duplicating them per assistant</td>
-          </tr>
-          <tr>
-            <td>Voice models, TTS binaries, and audio support files</td>
-            <td>Bundled resources and shared local model directories</td>
-            <td>Supports Whisper transcription and detached TTS playback without relying on cloud services</td>
+            <td>Voice models and TTS support files</td>
+            <td>Bundled resources and shared model directories</td>
+            <td>Supports Whisper transcription and detached TTS playback without third-party services.</td>
           </tr>
         </tbody>
       </table>
@@ -135,21 +145,26 @@
 
     <section id="design-patterns">
       <h2>Design Patterns</h2>
-      <p>The most important design patterns in this project are architectural rather than purely object-oriented. The system is designed around strong boundaries between inference ownership, application orchestration, and host-specific tooling.</p>
+      <p>The most important design patterns in SmolPC 2.0 are architectural rather than purely object-oriented. The system is designed around strict boundaries between inference ownership, application orchestration, and host-specific tool execution.</p>
 
       <div class="card">
         <h3>Contract-First Boundary</h3>
-        <p>Applications talk to the engine through the typed engine client or the documented localhost HTTP API instead of depending on engine internals. This makes the engine reusable across products and reduces the chance that one assistant becomes tightly coupled to one runtime implementation.</p>
+        <p>Applications talk to the engine through the typed engine client or the documented localhost HTTP API instead of depending on engine internals. This makes the engine reusable across products and reduces the risk of one workflow becoming tightly coupled to one runtime implementation.</p>
       </div>
 
       <div class="card">
         <h3>Provider Registry / Strategy Pattern</h3>
-        <p>The mode registry chooses the correct provider family for each mode. This is effectively a strategy-style design: the frontend sends a unified request, and the backend delegates behaviour to the provider that knows how to handle that mode&rsquo;s tools, context, and bridge logic.</p>
+        <p>The mode registry chooses the correct provider family for each mode. The frontend sends one unified request, and the backend delegates behaviour to the provider that knows how to handle that mode&apos;s tools, context, and bridge logic.</p>
+      </div>
+
+      <div class="card">
+        <h3>Supervisor / Actor Pattern</h3>
+        <p>The EngineSupervisor is a single background task that owns the full lifecycle of the engine host. Tauri commands interact with it through message passing and watch channels rather than shared mutable state, which makes startup, crash recovery, and restart behaviour easier to reason about.</p>
       </div>
 
       <div class="card">
         <h3>Command Boundary Through Tauri</h3>
-        <p>The Tauri command layer acts as a stable boundary between the Svelte frontend and the Rust backend. This keeps the UI code focused on user interaction while backend commands handle engine startup, assistant execution, mode status, setup preparation, and launch orchestration.</p>
+        <p>The Tauri command layer acts as the stable boundary between the Svelte frontend and the Rust backend. This keeps the UI focused on interaction and presentation while backend commands handle engine startup, mode execution, setup preparation, and host launching.</p>
       </div>
     </section>
 
@@ -167,34 +182,44 @@
         </thead>
         <tbody>
           <tr>
+            <td><code>app/</code></td>
+            <td>Current unified desktop shell with Svelte frontend and Tauri backend</td>
+            <td>User-facing SmolPC 2.0 application</td>
+          </tr>
+          <tr>
             <td><code>smolpc-engine-core</code></td>
             <td>Runtime and model domain logic</td>
             <td>Shared engine layer</td>
           </tr>
           <tr>
             <td><code>smolpc-engine-host</code></td>
-            <td>Localhost API host for readiness, model loading, and generation</td>
+            <td>Localhost API host for readiness, model loading, chat, and audio endpoints</td>
             <td>Shared engine layer</td>
           </tr>
           <tr>
             <td><code>smolpc-engine-client</code></td>
-            <td>Typed client used by the app to communicate with the engine</td>
-            <td>Current SmolPC 2.0 app backend and future suite integrations</td>
+            <td>Typed client used by the app backend to communicate with the engine</td>
+            <td>Tauri backend and future app integrations</td>
           </tr>
           <tr>
-            <td><code>apps/codehelper</code></td>
-            <td>Current integrated SmolPC 2.0 app package and Tauri shell</td>
-            <td>User-facing unified app implementation</td>
+            <td><code>connectors/gimp</code></td>
+            <td>GIMP bridge, heuristics, executor, and provider behaviour</td>
+            <td>GIMP mode</td>
+          </tr>
+          <tr>
+            <td><code>connectors/blender</code></td>
+            <td>Blender bridge, retrieval, and hybrid provider behaviour</td>
+            <td>Blender mode</td>
+          </tr>
+          <tr>
+            <td><code>connectors/libreoffice</code></td>
+            <td>Writer and Slides integration through one provider family</td>
+            <td>LibreOffice modes</td>
           </tr>
           <tr>
             <td><code>smolpc-tts-server</code></td>
             <td>Detached local text-to-speech sidecar</td>
             <td>Voice read-aloud path behind the engine API</td>
-          </tr>
-          <tr>
-            <td><code>launcher</code> and launcher modules</td>
-            <td>Manifest, launch-or-focus orchestration, and suite-level entry logic</td>
-            <td>Current transitional launcher layer</td>
           </tr>
         </tbody>
       </table>
@@ -210,39 +235,39 @@
         </thead>
         <tbody>
           <tr>
-            <td><code>/engine/*</code> localhost API</td>
-            <td>Engine health, startup, status, model readiness, load, unload, and shutdown</td>
-            <td>Shared engine integration and diagnostics</td>
+            <td><code>/engine/health</code> and <code>/engine/status</code></td>
+            <td>Health checks, readiness, lane status, and backend diagnostics</td>
+            <td>Supervisor, startup UI, and diagnostics</td>
+          </tr>
+          <tr>
+            <td><code>/engine/ensure-started</code>, <code>/engine/load</code>, <code>/engine/check-model</code></td>
+            <td>Startup handshake, model loading, and readiness checks</td>
+            <td>Tauri backend and setup flow</td>
           </tr>
           <tr>
             <td><code>/v1/chat/completions</code></td>
             <td>OpenAI-compatible local generation surface with streaming support</td>
-            <td>Generation flows that use the shared engine</td>
+            <td>Code mode and provider planning/summarisation</td>
           </tr>
           <tr>
             <td><code>/v1/audio/transcriptions</code></td>
             <td>Local Whisper speech-to-text endpoint</td>
-            <td>Voice input from the current SmolPC 2.0 app shell</td>
+            <td>Microphone input from the current app shell</td>
           </tr>
           <tr>
             <td><code>/v1/audio/speech</code></td>
             <td>Local text-to-speech proxy endpoint</td>
-            <td>Per-message read-aloud in the current SmolPC 2.0 app shell</td>
+            <td>Per-message read-aloud in the shared shell</td>
           </tr>
           <tr>
             <td>Tauri command interface</td>
-            <td>Connects frontend actions to backend features such as assistant execution, setup, launcher, and mode status</td>
+            <td>Connects frontend actions to backend features such as assistant execution, setup, mode status, and host launching</td>
             <td>Unified desktop UI</td>
           </tr>
           <tr>
             <td><code>ToolProvider</code> interface</td>
-            <td>Defines the common contract for connect, status, list-tools, execute-tool, undo, and disconnect operations</td>
-            <td>Code, GIMP, Blender, and LibreOffice provider families</td>
-          </tr>
-          <tr>
-            <td>Host-app bridge interfaces</td>
-            <td>Connect the assistant layer to GIMP, Blender, and LibreOffice functionality</td>
-            <td>Mode-specific orchestration</td>
+            <td>Common contract for connect, status, list-tools, execute-tool, undo, and disconnect operations</td>
+            <td>GIMP, Blender, and LibreOffice provider families</td>
           </tr>
         </tbody>
       </table>
@@ -250,7 +275,7 @@
 
     <section id="applicability">
       <h2>Applicability of Template Items</h2>
-      <p>Some standard report-template items are less central to this project than the architecture and API boundaries above. A traditional website sitemap is not the best fit because the product is a single-window desktop app with mode switching rather than a multi-page web application. Likewise, a relational ER diagram is not central because the system does not use a database as a core architectural component. The most relevant artefacts for this project are the high-level architecture diagram, one or two strong sequence diagrams, provider boundaries, and API contracts.</p>
+      <p>Some standard report-template items are less central to this project than the architecture and API boundaries above. A traditional multi-page web sitemap is not the best fit because the product is a single-window desktop app with mode switching and overlays rather than a browser-style page hierarchy. Likewise, a relational ER diagram is not central because the system does not use a database as a core architectural component. The most relevant artefacts for SmolPC 2.0 are the high-level architecture diagram, strong sequence diagrams, provider boundaries, and the concrete engine API contract.</p>
     </section>
 
   </main>
@@ -281,7 +306,7 @@
     <p>COMP0016 Team 1 &copy; 2025</p>
   </footer>
 
-   
+
   <script src="js/main.js"></script>
 </body>
 </html>

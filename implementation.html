@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Implementation</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -24,62 +25,76 @@
 
     <section id="overview">
       <h2>Overview</h2>
-      <p>The implementation moved from separate prototypes toward a unified desktop product built around one shared engine and one integrated application shell. The strongest implementation theme is therefore not four isolated assistants, but the interaction between the shared engine, the Tauri backend, the Svelte frontend, and the mode-specific providers that adapt the platform to different workflows.</p>
+      <p>The implementation moved from separate assistant prototypes toward one unified desktop product built around one shared engine, one shipped application shell, and host-specific connector crates. The most important implementation story is therefore not four isolated assistants, but the way the Svelte frontend, Tauri backend, engine supervisor, and mode providers work together to deliver multiple workflows through one offline desktop application.</p>
     </section>
 
-    <!-- Shared Infrastructure -->
     <section id="shared-infrastructure">
       <h2>Shared Infrastructure</h2>
-      <p><!-- Describe how SmolPC 2.0 ties all four assistants together, shared components, common code --></p>
+      <p>The shared infrastructure is what turns SmolPC 2.0 into a platform instead of a collection of demos. The live app is the unified shell in <code>app/</code>, while runtime ownership sits in the shared engine and host-specific tool integrations sit in connector crates. Root workspace scripts proxy common development commands into the app workspace, while packaging and release preparation live under app-local PowerShell scripts.</p>
 
       <h3>Project Structure</h3>
       <pre><code>.
+app/
+  src/
+  src-tauri/
+connectors/
+  blender/
+  gimp/
+  libreoffice/
 engine/
   crates/
     smolpc-engine-core
     smolpc-engine-host
     smolpc-engine-client
-apps/
-  codehelper/
-launcher/
-docs/</code></pre>
+docs/
+scripts/</code></pre>
 
       <h3>Shared Engine Integration</h3>
-      <p>The shared engine is responsible for startup, readiness, backend selection, model loading, generation, and cancellation. The frontend does not talk to inference libraries directly. Instead, the Svelte app uses Tauri commands, and those commands delegate to the shared engine client. This design removes per-assistant runtime ownership and makes the local inference path reusable across multiple modes.</p>
+      <p>The shared engine is responsible for startup, readiness, backend selection, model loading, generation, cancellation, and audio endpoints. The frontend does not talk to inference libraries directly. Instead, the Svelte app uses Tauri commands, and those commands call the shared engine client or the documented localhost API. This removes per-mode runtime ownership and makes the local inference path reusable across the whole product.</p>
+
+      <h3>EngineSupervisor Lifecycle Control</h3>
+      <p>The current backend uses an EngineSupervisor task to own the full lifecycle of the engine host. It spawns the process, performs health checks, broadcasts lifecycle changes to the frontend, and restarts the engine on crash with bounded retry behaviour. This replaced a more fragile shared-state approach and is one of the most important implementation improvements in the current codebase because it makes startup, error recovery, and model restoration explicit.</p>
 
       <h3>Runtime and Model Selection</h3>
-      <p>The backend supports multiple local runtime lanes and resolves the best supported path for the current machine. This is important because the product is intended for offline local use across varying hardware rather than one fixed benchmark device. The implementation therefore includes startup/readiness handling, runtime mode selection, model registry support, and lane-specific status reporting.</p>
+      <p>The backend supports multiple local runtime lanes and resolves the best supported path for the current machine. The implemented engine contract exposes lane-based readiness information for CPU, DirectML, and OpenVINO NPU paths, and the app uses that data to gate startup, explain failures, and recommend better model choices when a tool-backed mode is likely to struggle on the currently selected small model.</p>
+
+      <h3>Setup and Provisioning</h3>
+      <p>The implementation includes setup preparation for bundled Python, runtime dependencies, host-app availability, and local model provisioning. Root scripts such as <code>npm run runtime:setup:openvino</code>, <code>npm run runtime:setup:python</code>, <code>npm run model:setup:qwen25-instruct</code>, and <code>npm run model:setup:qwen3-4b</code> prepare the common environment. App-local scripts then handle DirectML runtime setup, engine staging, and offline bundle packaging.</p>
 
       <h3>Communication Between Components</h3>
-      <p>The communication path is layered. The user interacts with the Svelte frontend, which calls a Tauri command. The Tauri backend either routes the request to the shared engine or to a mode-specific provider. The provider may then call the engine, a host-app bridge, or both. This is the key implementation pattern that ties together the unified product.</p>
+      <p>The communication path is intentionally layered. The user interacts with the Svelte frontend, which calls a Tauri command. The Tauri backend either routes the request to the shared engine or to a mode-specific provider. The provider may then call the engine, a host-app bridge, or both. This layered path is the core implementation pattern that ties the whole platform together.</p>
     </section>
 
     <section id="unified-shell">
       <h2>Unified App Shell</h2>
-      <p>The current integrated application lives in <code>apps/codehelper</code>. Although Code mode is the flagship workflow, the SmolPC 2.0 app shell now supports multiple workflows in one interface, including Code, GIMP, Blender, and LibreOffice modes such as Writer and Slides.</p>
+      <p>The current integrated application lives in <code>app/</code>. Although Code mode remains the clearest baseline workflow, the shipped shell now supports Code, GIMP, Blender, Writer, and Slides inside one consistent interface. The same component tree handles chat, setup, diagnostics, host-app launching, and voice controls across all of these modes.</p>
 
       <h3>Mode Configuration and Switching</h3>
-      <p>Modes are configured as structured frontend objects with labels, capability flags, suggestions, and provider types. The UI does not hard-code one assistant flow; instead, it loads mode metadata and presents the appropriate controls for the selected mode. This was an important step in turning a single assistant UI into a platform shell.</p>
+      <p>Modes are configured as structured frontend objects with labels, suggestions, and availability state. On the backend, the mode registry maps each mode to a provider kind: Code uses a local path, GIMP uses MCP, Blender uses a hybrid path, and Writer plus Slides share the LibreOffice MCP family. This was the key step that turned a single assistant UI into a mode-driven platform shell.</p>
+
+      <h3>Shared UI Components</h3>
+      <p>The live shell is built from reusable components such as <code>Sidebar</code>, <code>WorkspaceHeader</code>, <code>WorkspaceControls</code>, <code>AppModeDropdown</code>, <code>ConversationView</code>, <code>ComposerBar</code>, <code>SetupBanner</code>, <code>SetupPanel</code>, <code>SetupWizard</code>, <code>ModeHelpDrawer</code>, <code>HardwarePanel</code>, <code>ModelInfoPanel</code>, and a startup loading screen. This gives every mode the same visual language even when the underlying execution path is very different.</p>
 
       <h3>Streaming Chat Flow</h3>
-      <p>Assistant requests are sent through a unified frontend API using Tauri channels for streaming events. This allows the interface to display partial tokens, completion, cancellation, and assistant-specific error events in one consistent conversation view. The streaming behaviour is especially important for making local generation feel responsive even when running heavier models.</p>
+      <p>Assistant requests are sent through a unified frontend API using Tauri channels for streaming events. This lets the interface display partial tokens, completion, cancellation, and error events in one consistent conversation view. Streaming is particularly important for local generation because it keeps the product responsive even when heavier models are running on modest hardware.</p>
 
       <h3>Local Persistence</h3>
-      <p>The frontend stores chats, current mode chat IDs, and settings in localStorage. Chats are organised per mode rather than as one global list, which allows the user to switch between workflows without losing context. Settings such as runtime preference, selected model, and theme are also persisted locally.</p>
+      <p>The frontend stores chats, current mode chat IDs, and settings in <code>localStorage</code>. Chats are organised per mode rather than as one global list, allowing the user to switch between workflows without losing context. Settings such as runtime preference, selected model, and theme are also persisted locally.</p>
 
       <h3>Setup and Availability Gating</h3>
-      <p>The UI does not assume that every host application is installed or ready. Instead, startup and setup checks expose whether GIMP, Blender, or LibreOffice are available, and the frontend maps those results into mode availability. This implementation detail is important because the platform is designed to operate across different machines with different installed applications.</p>
+      <p>The UI does not assume that every host application is installed or ready. Startup and setup checks map host availability into per-mode availability, so GIMP, Blender, Writer, and Slides can be shown as unavailable with a clear reason rather than appearing broken. The same setup state also drives the setup wizard and the startup loading flow.</p>
     </section>
 
     <section id="assistant-routing">
       <h2>Assistant Routing and Providers</h2>
-      <p>A major implementation feature is the provider registry in the Rust backend. The assistant request layer receives a unified assistant request and then dispatches it to the correct provider family based on the selected mode. This keeps the UI simple while still allowing each mode to have different execution behaviour.</p>
+      <p>A major implementation feature is the provider registry in the Rust backend. The assistant request layer receives one unified request and then dispatches it to the correct provider family based on the selected mode. This keeps the UI simple while still allowing each workflow to have a different execution model.</p>
 
       <table>
         <thead>
           <tr>
             <th>Provider Family</th>
             <th>Modes</th>
+            <th>Provider Kind</th>
             <th>Implementation Role</th>
           </tr>
         </thead>
@@ -87,22 +102,26 @@ docs/</code></pre>
           <tr>
             <td>Code provider</td>
             <td>Code</td>
-            <td>Direct text generation through the shared engine</td>
+            <td>Local</td>
+            <td>Direct text generation through the shared engine and chat streaming path</td>
           </tr>
           <tr>
             <td>GIMP provider</td>
             <td>GIMP</td>
+            <td>MCP</td>
             <td>Bridge management, tool discovery, tool execution, and undo support</td>
           </tr>
           <tr>
             <td>Blender provider</td>
             <td>Blender</td>
-            <td>Scene bridge management, local RAG retrieval, and scene-aware tool support</td>
+            <td>Hybrid</td>
+            <td>Scene bridge management, local retrieval, and scene-aware assistance</td>
           </tr>
           <tr>
             <td>LibreOffice provider</td>
-            <td>Writer, Slides, and related office workflows</td>
-            <td>Shared office-mode runtime handling, tool filtering, and office workflow orchestration</td>
+            <td>Writer and Slides</td>
+            <td>LibreOffice MCP</td>
+            <td>Shared office runtime handling, tool filtering, planner-assisted execution, and summaries</td>
           </tr>
         </tbody>
       </table>
@@ -110,17 +129,17 @@ docs/</code></pre>
 
     <section id="codehelper">
       <h2>Code Mode and Core Chat Experience</h2>
-      <p>Code mode is the simplest implementation path and the foundation of the unified app shell. It uses the shared engine for local text generation and presents the result through the same conversation UI that the other modes reuse. It is also currently one of the clearest places where the platform&apos;s voice features are surfaced to the user.</p>
+      <p>Code mode is the simplest implementation path and the foundation of the unified shell. It uses the shared engine for local text generation and presents the result through the same conversation UI that other modes reuse. It is also the clearest place where the shared shell&apos;s voice controls are exposed to the user.</p>
 
       <h3>Key Implementation Features</h3>
-      <p><strong>Blocking engine startup handshake:</strong> the inference store ensures that the engine is started and ready before normal generation begins, and then refreshes backend status so the UI can show the active runtime state.</p>
-      <p><strong>Streaming generation:</strong> responses are streamed token by token through the Tauri command boundary, which allows the frontend to update the active assistant message incrementally.</p>
-      <p><strong>Memory and runtime awareness:</strong> the inference layer also exposes runtime mode, backend status, and memory-pressure information so the UI can react to constrained devices more gracefully.</p>
+      <p><strong>Blocking engine startup handshake:</strong> startup is mediated by the supervisor and the readiness contract rather than direct process assumptions, which makes the interface safer on slow or partially configured machines.</p>
+      <p><strong>Streaming generation:</strong> responses are streamed token by token through the Tauri command boundary, allowing the frontend to update the active assistant message incrementally.</p>
+      <p><strong>Memory and runtime awareness:</strong> the inference layer exposes backend status, active model, and memory-pressure information so the UI can warn the user when a selected model is likely to perform badly for tool-backed modes.</p>
     </section>
 
     <section id="voice-io">
       <h2>Voice Input and Read-Aloud</h2>
-      <p>Voice features were implemented as an extension of the existing SmolPC 2.0 chat workflow rather than as a separate subsystem from the user&apos;s perspective. In the current unified app shell, these features are exposed through an optional microphone button in the composer and a read-aloud control on assistant responses.</p>
+      <p>Voice features were implemented as an extension of the existing SmolPC chat workflow rather than as a separate subsystem from the user&apos;s point of view. In the current unified shell, these features appear as an optional microphone button in the composer and a read-aloud control on assistant messages.</p>
 
       <h3>Frameworks and Libraries</h3>
       <table>
@@ -140,12 +159,12 @@ docs/</code></pre>
           <tr>
             <td><code>rubato</code></td>
             <td>Audio resampling</td>
-            <td>Used to convert recorded audio into the 16kHz mono format expected by the local Whisper transcription path</td>
+            <td>Used to convert recorded audio into the 16kHz mono format expected by the local Whisper path</td>
           </tr>
           <tr>
-            <td>Shared engine + WhisperPipeline</td>
+            <td>Whisper base.en INT8 via OpenVINO</td>
             <td>Local speech-to-text</td>
-            <td>Used to transcribe microphone audio through the engine&apos;s <code>/v1/audio/transcriptions</code> endpoint</td>
+            <td>Used through the engine&apos;s <code>/v1/audio/transcriptions</code> endpoint on CPU</td>
           </tr>
           <tr>
             <td><code>rodio</code></td>
@@ -155,15 +174,15 @@ docs/</code></pre>
           <tr>
             <td><code>smolpc-tts-server</code> and KittenTTS</td>
             <td>Local text-to-speech</td>
-            <td>Used as a detached sidecar behind the engine&apos;s <code>/v1/audio/speech</code> proxy so that text-to-speech stays offline without complicating the main inference process</td>
+            <td>Used as a detached sidecar behind <code>/v1/audio/speech</code> so TTS stays offline without complicating the main inference process</td>
           </tr>
         </tbody>
       </table>
 
       <h3>Key Features Implementation</h3>
-      <p><strong>Microphone capture and transcription insertion:</strong> the app records locally, mixes and resamples the audio where needed, sends it to the engine, and inserts the resulting text back into the composer so the user can review it before sending.</p>
-      <p><strong>Per-message read-aloud:</strong> assistant responses can be synthesized on demand and played back locally, with the UI tracking loading, playing, and stop states through a dedicated voice store.</p>
-      <p><strong>Detached TTS boundary:</strong> text-to-speech is intentionally isolated behind a sidecar process and the engine API so that voice-output problems degrade to an unavailable control instead of destabilising the main chat or runtime-selection path.</p>
+      <p><strong>Microphone capture and transcription insertion:</strong> the app records locally, resamples the audio, sends it to the engine, and inserts the resulting text back into the composer so the user can review it before sending.</p>
+      <p><strong>Per-message read-aloud:</strong> assistant responses can be synthesised on demand and played back locally, with the UI tracking loading, playing, and stop states through a dedicated voice store.</p>
+      <p><strong>Detached TTS boundary:</strong> text-to-speech is isolated behind a sidecar process and the engine API so voice-output problems degrade to an unavailable control instead of destabilising the main chat or runtime-selection path.</p>
     </section>
 
     <section id="gimp">
@@ -188,25 +207,25 @@ docs/</code></pre>
           <tr>
             <td>MCP client layer</td>
             <td>Structured tool communication</td>
-            <td>Used to connect to the GIMP MCP bridge, list tools, and execute actions</td>
+            <td>Used to connect to the GIMP bridge, list tools, and execute actions</td>
           </tr>
           <tr>
             <td>Shared engine</td>
-            <td>Local text generation</td>
-            <td>Used when natural-language requests need planning or text generation support</td>
+            <td>Local planning and summarisation</td>
+            <td>Used when natural-language requests need planning or text support before or after a tool action</td>
           </tr>
         </tbody>
       </table>
 
       <h3>Key Features Implementation</h3>
-      <p><strong>Bundled runtime preparation:</strong> the provider prepares or validates the required GIMP-side runtime resources before trying to connect, which reduces manual setup for the user.</p>
-      <p><strong>Connection and tool discovery:</strong> the provider connects to the GIMP bridge, stores discovered tools, and exposes mode state back to the frontend.</p>
-      <p><strong>Undo support:</strong> GIMP mode is one of the few modes in the unified app that explicitly exposes undo through the provider interface.</p>
+      <p><strong>Bundled runtime preparation:</strong> setup logic prepares or validates the required GIMP-side runtime resources before trying to connect, reducing manual setup for the user.</p>
+      <p><strong>Connection and tool discovery:</strong> the provider connects to the bridge, stores discovered tools, and exposes mode state back to the frontend.</p>
+      <p><strong>Undo support:</strong> GIMP mode is one of the few workflows in the unified app that explicitly exposes undo through the provider interface.</p>
     </section>
 
     <section id="blender">
       <h2>Blender Mode</h2>
-      <p>Blender mode combines a host bridge with local context retrieval. This makes it different from both Code mode and GIMP mode: it is not just a tool executor, and it is not just a plain text assistant. Instead, it is designed to answer scene-aware questions and support Blender workflows using both bridge state and local retrieval assets.</p>
+      <p>Blender mode combines a host bridge with local retrieval. This makes it different from both Code mode and GIMP mode: it is not just a tool executor, and it is not just a plain text assistant. Instead, it is designed to answer scene-aware questions and support Blender workflows using both bridge state and local reference material.</p>
 
       <h3>Frameworks and Libraries</h3>
       <table>
@@ -239,12 +258,12 @@ docs/</code></pre>
       <h3>Key Features Implementation</h3>
       <p><strong>Scene bridge startup:</strong> the provider starts or connects to a local scene bridge and stores runtime state so Blender mode can remain scene-aware across requests.</p>
       <p><strong>RAG-backed assistance:</strong> the provider loads a local retrieval index and combines it with live scene information, allowing responses to use both static reference material and current workspace context.</p>
-      <p><strong>Hybrid execution path:</strong> Blender mode can gather scene state, retrieve reference context, and use the shared engine for generated explanations within one request flow.</p>
+      <p><strong>Hybrid execution path:</strong> Blender mode can gather scene state, retrieve context, and use the shared engine for generated explanations within one request flow.</p>
     </section>
 
     <section id="libreoffice">
       <h2>LibreOffice Modes</h2>
-      <p>The LibreOffice workflows are implemented through one shared provider family. This reflects the system design decision that office features should share runtime management and tool orchestration instead of being implemented as completely separate products.</p>
+      <p>The LibreOffice workflows are implemented through one shared provider family. This reflects the system design decision that office features should share runtime management and tool orchestration instead of being built as completely separate products.</p>
 
       <h3>Frameworks and Libraries</h3>
       <table>
@@ -269,7 +288,7 @@ docs/</code></pre>
           <tr>
             <td>Shared engine planner and streamer</td>
             <td>Planning and summarisation</td>
-            <td>Used to decide whether to call a tool and to produce short user-facing summaries after a successful office action</td>
+            <td>Used to decide whether a tool call is needed and to produce short user-facing summaries after a successful office action</td>
           </tr>
         </tbody>
       </table>
@@ -277,16 +296,16 @@ docs/</code></pre>
       <h3>Key Features Implementation</h3>
       <p><strong>Mode-specific tool filtering:</strong> the provider filters the raw office tool list based on the selected mode so that each office workflow only exposes the tools appropriate to that task.</p>
       <p><strong>Planner then tool execution:</strong> the office executor first uses the engine to decide whether a tool call is needed, then executes the chosen office action, and finally generates a short summary for the user.</p>
-      <p><strong>Shared provider family:</strong> the office workflows are grouped under one provider family, which reduces duplication and fits the unified product architecture.</p>
+      <p><strong>Shared provider family:</strong> Writer and Slides are grouped under one provider family, which reduces duplication and fits the unified platform architecture.</p>
     </section>
 
     <section id="launcher-setup">
-      <h2>Launcher and Setup Features</h2>
-      <p>The project also includes implementation work for setup preparation and launch orchestration. These pieces are important because the product goal is not only local AI, but local AI that is practical to run.</p>
+      <h2>Packaging, Launch, and Setup Features</h2>
+      <p>The project also includes substantial implementation work for setup preparation, provisioning, and packaging. These pieces matter because the project goal is not only local AI, but local AI that is practical to deploy on school or lab machines.</p>
 
-      <p><strong>Setup commands:</strong> the backend exposes commands for reading setup status and preparing local resources, which allows the frontend to guide the user when runtimes or host apps are missing.</p>
-      <p><strong>Mode open/focus behaviour:</strong> the backend can detect and launch host applications such as GIMP, Blender, and LibreOffice, making the unified shell more than a passive chat window.</p>
-      <p><strong>Manifest-driven launcher direction:</strong> launcher modules and manifest handling are already present in the codebase, supporting the longer-term goal of a cohesive suite and easier deployment.</p>
+      <p><strong>Root development commands:</strong> the workspace exposes <code>npm run check</code>, <code>npm run boundary:check</code>, <code>npm run tauri:dev</code>, <code>npm run runtime:setup:openvino</code>, <code>npm run runtime:setup:python</code>, and the model setup scripts as shared entry points.</p>
+      <p><strong>App-local packaging scripts:</strong> the app workspace adds <code>runtime:setup:dml</code>, <code>engine:build:release</code>, <code>package:offline</code>, and <code>package:offline:bundle</code> for release preparation and offline deployment artefacts.</p>
+      <p><strong>Offline-first provisioning direction:</strong> the current packaging design supports an online installer, offline USB bundles, and a portable-style path, with model discovery and provisioning intended to happen locally rather than through a permanently online dependency.</p>
     </section>
 
   </main>
