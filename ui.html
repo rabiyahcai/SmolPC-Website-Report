@@ -8,15 +8,15 @@
 <body>
   <nav>
     <a href="index.html" class="nav-logo"> <img src="assets/images/smolpc.png" alt="SmolPC 2.0"> </a>
-    <a href="index.html">Home</a>
-    <a href="requirements.html">Requirements</a>
-    <a href="research.html">Research</a>
-    <a href="ui.html">UI Design</a>
-    <a href="system.html">System Design</a>
-    <a href="implementation.html">Implementation</a>
-    <a href="testing.html">Testing</a>
-    <a href="evaluation.html">Evaluation</a>
-    <a href="appendices.html">Appendices</a>
+    <div class="nav-item"><a href="index.html">Home</a><div class="nav-dropdown"><a href="index.html#abstract">Abstract</a><a href="index.html#video">Video</a><a href="index.html#team">Team Members</a><a href="index.html#gantt">Project Timeline</a></div></div>
+    <div class="nav-item"><a href="requirements.html">Requirements</a><div class="nav-dropdown"><a href="requirements.html#partner">Partner Introduction</a><a href="requirements.html#background">Background</a><a href="requirements.html#goals">Project Goals</a><a href="requirements.html#gathering">Requirements Gathering</a><a href="requirements.html#personas">Personas</a><a href="requirements.html#use-case-diagram">Use Case Diagram</a><a href="requirements.html#moscow">MoSCoW List</a></div></div>
+    <div class="nav-item"><a href="research.html">Research</a><div class="nav-dropdown"><a href="research.html#requirements-discovery">Requirements Discovery</a><a href="research.html#related-projects">Related Projects</a><a href="research.html#technology-review">Technology Review</a><a href="research.html#summary">Summary</a><a href="research.html#consent-forms">Consent Forms</a></div></div>
+    <div class="nav-item"><a href="ui.html">UI Design</a><div class="nav-dropdown"><a href="ui.html#design-principles">Design Principles</a><a href="ui.html#overall-layout">Overall Layout</a><a href="ui.html#codehelper">CodeHelper</a><a href="ui.html#libreoffice">LibreOffice</a><a href="ui.html#gimp">GIMP</a><a href="ui.html#blender">Blender</a><a href="ui.html#artefacts">Artefacts</a></div></div>
+    <div class="nav-item"><a href="system.html">System Design</a><div class="nav-dropdown"><a href="system.html#architecture">Architecture</a><a href="system.html#sequence-diagrams">Sequence Diagrams</a><a href="system.html#data-storage">Data Storage</a><a href="system.html#design-patterns">Design Patterns</a><a href="system.html#packages-apis">Packages &amp; APIs</a></div></div>
+    <div class="nav-item"><a href="implementation.html">Implementation</a><div class="nav-dropdown"><a href="implementation.html#overview">Overview</a><a href="implementation.html#shared-infrastructure">Shared Infrastructure</a><a href="implementation.html#unified-shell">Unified Shell</a><a href="implementation.html#codehelper">CodeHelper</a><a href="implementation.html#gimp">GIMP</a><a href="implementation.html#blender">Blender</a><a href="implementation.html#libreoffice">LibreOffice</a></div></div>
+    <div class="nav-item"><a href="testing.html">Testing</a><div class="nav-dropdown"><a href="testing.html#strategy">Strategy</a><a href="testing.html#unit-testing">Unit Testing</a><a href="testing.html#integration-testing">Integration Testing</a><a href="testing.html#prompt-testing">Prompt Testing</a><a href="testing.html#compatibility-testing">Compatibility</a><a href="testing.html#performance-testing">Performance</a><a href="testing.html#uat">User Acceptance</a></div></div>
+    <div class="nav-item"><a href="evaluation.html">Evaluation</a><div class="nav-dropdown"><a href="evaluation.html#achievements">Achievements</a><a href="evaluation.html#bugs">Known Bugs</a><a href="evaluation.html#critical-evaluation">Critical Evaluation</a><a href="evaluation.html#contributions">Contributions</a><a href="evaluation.html#future-work">Future Work</a></div></div>
+    <div class="nav-item"><a href="appendices.html">Appendices</a><div class="nav-dropdown"><a href="appendices.html#user-manual">User Manual</a><a href="appendices.html#deployment-manual">Deployment Manual</a><a href="appendices.html#gdpr">GDPR</a><a href="appendices.html#license">License</a><a href="appendices.html#blog">Blog</a><a href="appendices.html#monthly-videos">Monthly Videos</a></div></div>
   </nav>
 
   <main>
@@ -192,18 +192,19 @@
       </div>
 
       <div class="card">
-        <h3>Early Sketch Themes</h3>
-        <p>The earliest Code mode sketches focused on five recurring states: the empty welcome view, an active coding conversation, loading and streaming feedback, microphone-driven input, and the shared shell layout used across modes. Even where the final interface evolved during implementation, those sketches established the priorities that remained constant: readable conversation space, low-friction input, and visible system status.</p>
+        <h3>Hand-Drawn Sketch</h3>
+        <img src="assets/images/sketch unified ui.jpeg" alt="Hand-drawn sketch of the unified SmolPC 2.0 app shell showing mode tabs, chat history sidebar, conversation area and input bar" style="width:100%;border-radius:8px;margin-top:0.75rem;">
+        <p>The earliest Code mode sketch focused on five recurring states: the empty welcome view, an active coding conversation, loading and streaming feedback, microphone-driven input, and the shared shell layout used across modes. Even as the final interface evolved during implementation, those priorities stayed constant: readable conversation space, low-friction input, and visible system status.</p>
       </div>
 
       <div class="card">
         <h3>High-Fidelity Wireframe</h3>
+        <img src="assets/images/codehelper wireframe .jpeg" alt="High-fidelity wireframe of the CodeHelper assistant mode" style="width:100%;border-radius:8px;margin-top:0.75rem;">
         <p>
-          The current Code mode wireframe is available as an interactive HTML artefact:
+          The current Code mode wireframe is also available as an interactive HTML artefact:
           <a href="assets/wireframes/codehelper-wireframe.html" target="_blank" rel="noopener noreferrer">CodeHelper Wireframe (open full page)</a>.
-          This preserves the clearest high-fidelity snapshot of the shell design that informed the implemented interface.
+          Together, the image and interactive version preserve the clearest high-fidelity snapshot of the shell design that informed the implemented interface.
         </p>
-        <iframe src="assets/wireframes/codehelper-wireframe.html" width="100%" height="600" style="border: 1px solid #ccc; border-radius: 8px;" title="CodeHelper wireframe"></iframe>
       </div>
 
     </section>
@@ -227,13 +228,9 @@
       </div>
 
       <div class="card">
-        <h3>Early Sketch Themes</h3>
+        <h3>High-Fidelity Wireframe</h3>
+        <img src="assets/images/libreoffice wireframe.jpeg" alt="High-fidelity wireframe of the LibreOffice assistant mode showing Writer, Calc and Impress tabs, document preview panel and macro snippets" style="width:100%;border-radius:8px;margin-top:0.75rem;">
         <p>The LibreOffice design work centred on mode switching, setup readiness, host-application launch controls, and task prompts that feel specific to writing and slides rather than generic chat. Those themes carried through into the implemented welcome copy, availability messaging, and example workflows.</p>
-      </div>
-
-      <div class="card">
-        <h3>High-Fidelity Design Direction</h3>
-        <p>The final report version represents the LibreOffice UI through the implemented shell and the written walkthrough on this page rather than a separate embedded wireframe. The important high-fidelity decisions were the mode-specific onboarding, launch controls, and recovery states that keep Writer and Slides understandable on lower-spec machines.</p>
       </div>
     </section>
 
@@ -257,13 +254,9 @@
       </div>
 
       <div class="card">
-        <h3>Early Sketch Themes</h3>
-        <p>Early GIMP sketches focused on the balance between simplicity and host awareness: a familiar shared shell, a prominent launch control, and clear guidance for straightforward edit requests such as cropping, rotating, and colour adjustments. The final interface kept those ideas by foregrounding setup state and concise edit summaries.</p>
-      </div>
-
-      <div class="card">
-        <h3>High-Fidelity Design Direction</h3>
-        <p>For the report, the GIMP workflow is documented through the shipped interface and implementation-backed screenshots described elsewhere in the site. The key design choice was to keep the conversation model familiar while making host-app readiness and recovery guidance much more explicit than in Code mode.</p>
+        <h3>High-Fidelity Wireframe</h3>
+        <img src="assets/images/gimp wireframe.jpeg" alt="High-fidelity wireframe of the GIMP assistant mode showing image preview panel, layer stack, quick actions and Script-Fu snippets" style="width:100%;border-radius:8px;margin-top:0.75rem;">
+        <p>Early GIMP design work focused on the balance between simplicity and host awareness: a familiar shared shell, a prominent launch control, and clear guidance for straightforward edit requests such as cropping, rotating, and colour adjustments. The final interface kept those ideas by foregrounding setup state and concise edit summaries.</p>
       </div>
     </section>
 
@@ -287,20 +280,47 @@
       </div>
 
       <div class="card">
-        <h3>Early Sketch Themes</h3>
-        <p>Blender design exploration concentrated on scene-based guidance, host launching, and the relationship between the assistant shell and the active 3D workflow. Those sketches shaped the later emphasis on contextual help, strong troubleshooting cues, and welcome content that steers users toward scene-aware questions.</p>
-      </div>
-
-      <div class="card">
-        <h3>High-Fidelity Design Direction</h3>
-        <p>The Blender UI is represented in this repo version through the implemented shell narrative rather than a separate exported mock-up. The most important high-fidelity decisions were the scene-aware onboarding language, persistent help surfaces, and a layout that supports quick movement between the conversation and the live modelling environment.</p>
+        <h3>High-Fidelity Wireframe</h3>
+        <img src="assets/images/blender wireframe.jpeg" alt="High-fidelity wireframe of the Blender assistant mode showing 3D scene context panel, outliner, key shortcuts and scene-aware conversation" style="width:100%;border-radius:8px;margin-top:0.75rem;">
+        <p>Blender design exploration concentrated on scene-based guidance, host launching, and the relationship between the assistant shell and the active 3D workflow. That work shaped the later emphasis on contextual help, strong troubleshooting cues, and welcome content that steers users toward scene-aware questions.</p>
       </div>
 
     </section>
 
     <section id="artefacts">
-      <h2>Design Artefacts Status</h2>
-      <p>The repository-backed version of this page combines one interactive high-fidelity wireframe for Code mode with implementation-grounded design summaries for the remaining modes. Together they capture the shared shell, the mode-specific onboarding patterns, and the main UI decisions that survived into the shipped interface.</p>
+      <h2>Design Artefacts Summary</h2>
+      <p>This repo-backed page now combines the unified shell sketch, high-fidelity wireframes for each major mode, and the implemented UI decisions that carried through into the shipped interface.</p>
+      <table style="width:100%;border-collapse:collapse;margin-top:1rem;">
+        <thead>
+          <tr style="background:#1a1f5e;color:white;">
+            <th style="padding:0.75rem;text-align:left;">Mode</th>
+            <th style="padding:0.75rem;text-align:left;">Hand-Drawn Sketch</th>
+            <th style="padding:0.75rem;text-align:left;">High-Fidelity Wireframe</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #ddd;">
+            <td style="padding:0.75rem;">Unified App Shell</td>
+            <td style="padding:0.75rem;">Completed</td>
+            <td style="padding:0.75rem;">Completed (CodeHelper)</td>
+          </tr>
+          <tr style="border-bottom:1px solid #ddd;background:#f9f9f9;">
+            <td style="padding:0.75rem;">LibreOffice Assistant</td>
+            <td style="padding:0.75rem;">-</td>
+            <td style="padding:0.75rem;">Completed</td>
+          </tr>
+          <tr style="border-bottom:1px solid #ddd;">
+            <td style="padding:0.75rem;">GIMP Assistant</td>
+            <td style="padding:0.75rem;">-</td>
+            <td style="padding:0.75rem;">Completed</td>
+          </tr>
+          <tr style="background:#f9f9f9;">
+            <td style="padding:0.75rem;">Blender Assistant</td>
+            <td style="padding:0.75rem;">-</td>
+            <td style="padding:0.75rem;">Completed</td>
+          </tr>
+        </tbody>
+      </table>
     </section>
 
   </main>

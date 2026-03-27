@@ -214,6 +214,62 @@ nav a.active {
   box-shadow: var(--glow-subtle);
 }
 
+/* Dropdown nav */
+.nav-item {
+  position: relative;
+}
+
+.nav-item > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.nav-item > a::after {
+  content: '▾';
+  font-size: 0.7rem;
+  opacity: 0.6;
+}
+
+.nav-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  min-width: 200px;
+  background: rgba(255,255,255,0.97);
+  border: 1px solid var(--outline-soft);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(54,72,141,0.13);
+  padding: 0.5rem 0;
+  z-index: 2000;
+  backdrop-filter: blur(16px);
+}
+
+.nav-item:hover .nav-dropdown {
+  display: block;
+}
+
+.nav-dropdown a {
+  display: block;
+  padding: 0.5rem 1.1rem;
+  border-radius: 0;
+  border: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.nav-dropdown a:hover {
+  background: var(--surface-hover);
+  color: var(--primary-strong);
+  transform: none;
+  box-shadow: none;
+  border: none;
+}
+
 main {
   max-width: 1180px;
   margin: 0 auto;
@@ -1293,6 +1349,65 @@ footer p {
   .uc-label {
     width: auto;
   }
+}
+
+/* Flow Diagram */
+.flow-diagram {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  margin: 2rem auto;
+  max-width: 600px;
+}
+.flow-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.flow-step--split {
+  flex-direction: row;
+  justify-content: center;
+  gap: 1.5rem;
+}
+.flow-box {
+  background: #f0f2fa;
+  border: 2px solid #2d3a7c;
+  border-radius: 10px;
+  padding: 0.85rem 1.5rem;
+  text-align: center;
+  font-weight: 600;
+  color: #1a2260;
+  width: 100%;
+  max-width: 420px;
+  font-size: 0.95rem;
+}
+.flow-box small {
+  display: block;
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: #555;
+  margin-top: 0.25rem;
+}
+.flow-box--primary {
+  background: #2d3a7c;
+  color: #fff;
+  border-color: #2d3a7c;
+}
+.flow-box--primary small {
+  color: #c5cce8;
+}
+.flow-box--secondary {
+  background: #e8eaf6;
+  max-width: 180px;
+  font-size: 0.88rem;
+}
+.flow-arrow {
+  font-size: 1.5rem;
+  color: #2d3a7c;
+  line-height: 1.2;
+  padding: 0.15rem 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

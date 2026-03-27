@@ -6,21 +6,135 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <nav>    
+  <nav>
     <a href="index.html" class="nav-logo"> <img src="assets/images/smolpc.png" alt="SmolPC 2.0"> </a>
-    <a href="index.html">Home</a>
-    <a href="requirements.html">Requirements</a>
-    <a href="research.html">Research</a>
-    <a href="ui.html">UI Design</a>
-    <a href="system.html">System Design</a>
-    <a href="implementation.html">Implementation</a>
-    <a href="testing.html">Testing</a>
-    <a href="evaluation.html">Evaluation</a>
-    <a href="appendices.html">Appendices</a>
+    <div class="nav-item"><a href="index.html">Home</a><div class="nav-dropdown"><a href="index.html#abstract">Abstract</a><a href="index.html#video">Video</a><a href="index.html#team">Team Members</a><a href="index.html#gantt">Project Timeline</a></div></div>
+    <div class="nav-item"><a href="requirements.html">Requirements</a><div class="nav-dropdown"><a href="requirements.html#partner">Partner Introduction</a><a href="requirements.html#background">Background</a><a href="requirements.html#goals">Project Goals</a><a href="requirements.html#gathering">Requirements Gathering</a><a href="requirements.html#personas">Personas</a><a href="requirements.html#use-case-diagram">Use Case Diagram</a><a href="requirements.html#moscow">MoSCoW List</a></div></div>
+    <div class="nav-item"><a href="research.html">Research</a><div class="nav-dropdown"><a href="research.html#requirements-discovery">Requirements Discovery</a><a href="research.html#related-projects">Related Projects</a><a href="research.html#technology-review">Technology Review</a><a href="research.html#summary">Summary</a><a href="research.html#consent-forms">Consent Forms</a></div></div>
+    <div class="nav-item"><a href="ui.html">UI Design</a><div class="nav-dropdown"><a href="ui.html#design-principles">Design Principles</a><a href="ui.html#overall-layout">Overall Layout</a><a href="ui.html#codehelper">CodeHelper</a><a href="ui.html#libreoffice">LibreOffice</a><a href="ui.html#gimp">GIMP</a><a href="ui.html#blender">Blender</a><a href="ui.html#artefacts">Artefacts</a></div></div>
+    <div class="nav-item"><a href="system.html">System Design</a><div class="nav-dropdown"><a href="system.html#architecture">Architecture</a><a href="system.html#sequence-diagrams">Sequence Diagrams</a><a href="system.html#data-storage">Data Storage</a><a href="system.html#design-patterns">Design Patterns</a><a href="system.html#packages-apis">Packages &amp; APIs</a></div></div>
+    <div class="nav-item"><a href="implementation.html">Implementation</a><div class="nav-dropdown"><a href="implementation.html#overview">Overview</a><a href="implementation.html#shared-infrastructure">Shared Infrastructure</a><a href="implementation.html#unified-shell">Unified Shell</a><a href="implementation.html#codehelper">CodeHelper</a><a href="implementation.html#gimp">GIMP</a><a href="implementation.html#blender">Blender</a><a href="implementation.html#libreoffice">LibreOffice</a></div></div>
+    <div class="nav-item"><a href="testing.html">Testing</a><div class="nav-dropdown"><a href="testing.html#strategy">Strategy</a><a href="testing.html#unit-testing">Unit Testing</a><a href="testing.html#integration-testing">Integration Testing</a><a href="testing.html#prompt-testing">Prompt Testing</a><a href="testing.html#compatibility-testing">Compatibility</a><a href="testing.html#performance-testing">Performance</a><a href="testing.html#uat">User Acceptance</a></div></div>
+    <div class="nav-item"><a href="evaluation.html">Evaluation</a><div class="nav-dropdown"><a href="evaluation.html#achievements">Achievements</a><a href="evaluation.html#bugs">Known Bugs</a><a href="evaluation.html#critical-evaluation">Critical Evaluation</a><a href="evaluation.html#contributions">Contributions</a><a href="evaluation.html#future-work">Future Work</a></div></div>
+    <div class="nav-item"><a href="appendices.html">Appendices</a><div class="nav-dropdown"><a href="appendices.html#user-manual">User Manual</a><a href="appendices.html#deployment-manual">Deployment Manual</a><a href="appendices.html#gdpr">GDPR</a><a href="appendices.html#license">License</a><a href="appendices.html#blog">Blog</a><a href="appendices.html#monthly-videos">Monthly Videos</a></div></div>
   </nav>
 
   <main>
     <h1>Research</h1>
+
+    <section id="requirements-discovery">
+      <h2>Requirements Discovery</h2>
+      <p>Before any technology decisions were made, we carried out structured requirements discovery to understand real user needs in an educational context. We reached teachers and IT administrators through our project supervisor, Prof. Mohamedally, who facilitated contact with relevant stakeholders. This ensured an authentic educational context while respecting access limitations in schools.</p>
+
+      <h3>Research Method Flow</h3>
+      <div class="flow-diagram">
+        <div class="flow-step">
+          <div class="flow-box flow-box--primary">Project Supervisor<br><small>(Prof. Mohamedally)</small></div>
+          <div class="flow-arrow">↓</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-box">Contact with Teachers &amp; IT Admins<br><small>via educational network</small></div>
+          <div class="flow-arrow">↓</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-box">Key Insights Gathered<br><small>Privacy · Offline access · Budget constraints · Lightweight hardware</small></div>
+          <div class="flow-arrow">↓</div>
+        </div>
+        <div class="flow-step flow-step--split">
+          <div class="flow-box flow-box--secondary">Personas &amp;<br>User Scenarios</div>
+          <div class="flow-box flow-box--secondary">MoSCoW<br>Requirements</div>
+        </div>
+      </div>
+
+      <h3>Cloud AI vs Local AI — Comparative Analysis</h3>
+      <p>A key early research question was whether to build on cloud-based AI infrastructure or commit fully to local inference. The comparison below summarises why local AI was the only viable direction for a school-focused deployment.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Factor</th>
+            <th>Cloud AI (e.g. ChatGPT, Copilot)</th>
+            <th>Local AI (SmolPC 2.0)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Internet required</td>
+            <td>Yes — constant connection needed</td>
+            <td>No — fully offline after setup</td>
+          </tr>
+          <tr>
+            <td>Data privacy</td>
+            <td>Student code sent to external servers — GDPR concern</td>
+            <td>100% on-device, nothing leaves the machine</td>
+          </tr>
+          <tr>
+            <td>Cost</td>
+            <td>Subscription-based, per user</td>
+            <td>Free after initial setup</td>
+          </tr>
+          <tr>
+            <td>School suitability</td>
+            <td>Poor — requires accounts, internet, and cloud trust</td>
+            <td>High — works in any classroom environment</td>
+          </tr>
+          <tr>
+            <td>Hardware requirements</td>
+            <td>Low (cloud does the work)</td>
+            <td>Optimised for 4GB RAM+ budget mini PCs</td>
+          </tr>
+          <tr>
+            <td>Deployment</td>
+            <td>Account management per student</td>
+            <td>Single USB bundle, no admin rights needed</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>HCI Evaluation — Heuristic Analysis</h3>
+      <p>We applied Nielsen's usability heuristics to evaluate our prototype at two stages of development. Problems found in the initial prototype directly informed the design decisions in the final version.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Heuristic</th>
+            <th>Problem in Initial Prototype</th>
+            <th>Solution in Final Prototype</th>
+            <th>Severity</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Visibility of System Status</td>
+            <td>No indicator shown when the AI was processing or generating a response</td>
+            <td>Added a visible "Generating…" loading icon in the sidebar</td>
+            <td>2</td>
+          </tr>
+          <tr>
+            <td>Match Between System and the Real World</td>
+            <td>Prompts used technical jargon unfamiliar to student users</td>
+            <td>Replaced with plain, user-friendly language and icons</td>
+            <td>2</td>
+          </tr>
+          <tr>
+            <td>User Control and Freedom</td>
+            <td>AI output overwrote existing text with no undo option</td>
+            <td>Added confirmation before insertion and enabled undo/redo</td>
+            <td>3</td>
+          </tr>
+          <tr>
+            <td>Consistency and Standards</td>
+            <td>Cluttered layout with action buttons placed away from related content</td>
+            <td>Unified tab-based shell with consistent layout across all assistant modes</td>
+            <td>2</td>
+          </tr>
+          <tr>
+            <td>Recognition Rather Than Recall</td>
+            <td>Icon-only buttons with no labels — not intuitive for new users</td>
+            <td>Labelled controls and contextual help text added near the input bar</td>
+            <td>2</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
 
     <section id="related-projects">
       <h2>Related Projects Review</h2>
@@ -396,6 +510,23 @@
           </tr>
         </tbody>
       </table>
+    </section>
+
+    <section id="consent-forms">
+      <h2>Ethical Approval &amp; Consent Forms</h2>
+      <p>As part of our HCI research process, we conducted pseudo-user testing with coursemates to evaluate our prototype before wider deployment. All participants provided informed consent prior to taking part. All forms were approved under UCL PALS Research Ethics Committee (Project ID: UCLIC-2024_011_COMP0021-COMP0016).</p>
+
+      <h3>Participant 1</h3>
+      <div style="display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:2rem;">
+        <img src="assets/images/consent-form-1-page-1.png" alt="Consent form participant 1 page 1" style="width:48%; min-width:280px; border:1px solid #ddd; border-radius:8px;">
+        <img src="assets/images/consent-form-1-page-2.png" alt="Consent form participant 1 page 2" style="width:48%; min-width:280px; border:1px solid #ddd; border-radius:8px;">
+      </div>
+
+      <h3>Participant 2</h3>
+      <div style="display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:2rem;">
+        <img src="assets/images/consent-form-2-page-1.png" alt="Consent form participant 2 page 1" style="width:48%; min-width:280px; border:1px solid #ddd; border-radius:8px;">
+        <img src="assets/images/consent-form-2-page-2.png" alt="Consent form participant 2 page 2" style="width:48%; min-width:280px; border:1px solid #ddd; border-radius:8px;">
+      </div>
     </section>
 
     <section id="references">
