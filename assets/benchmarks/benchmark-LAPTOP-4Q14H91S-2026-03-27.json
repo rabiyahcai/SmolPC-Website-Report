@@ -1,0 +1,1997 @@
+{
+  "schema_version": "2.0.0",
+  "generated_at": "2026-03-27T06:04:17.388657400+00:00",
+  "tool_version": "0.1.0",
+  "machine": {
+    "label": "LAPTOP-4Q14H91S",
+    "os": "windows x86_64",
+    "hostname": "LAPTOP-4Q14H91S"
+  },
+  "hardware": {
+    "cpu_brand": "11th Gen Intel(R) Core(TM) i5-1135G7",
+    "cpu_cores_physical": 4,
+    "cpu_cores_logical": 8,
+    "gpus": [
+      {
+        "name": "Intel(R) Iris(R) Xe Graphics",
+        "vendor": "Intel",
+        "vram_mb": 1024
+      }
+    ],
+    "npu": "Intel Gaussian Neural Accelerator | 1.0 TOPS",
+    "memory_total_gb": 7.703125
+  },
+  "test_config": {
+    "backends": [
+      "cpu",
+      "openvino_npu"
+    ],
+    "models": [
+      "qwen2.5-1.5b-instruct",
+      "qwen3-4b"
+    ],
+    "runs_per_prompt": 10,
+    "warmup_runs": 2,
+    "temperature": 0.0,
+    "repetition_penalty": 1.0,
+    "prompt_corpus_hash": "1672e3a7311c9f6f"
+  },
+  "results": [
+    {
+      "backend": "cpu",
+      "model_id": "qwen2.5-1.5b-instruct",
+      "cold_start_ttft_ms": 621,
+      "idle_baseline": {
+        "rss_mb": 1924.26953125,
+        "cpu_percent": 0.0
+      },
+      "reliability": {
+        "total_runs": 100,
+        "successful_runs": 100,
+        "failed_runs": 0,
+        "truncation_rate": 0.0,
+        "natural_eos_rate": 0.2,
+        "error_breakdown": {}
+      },
+      "prompts": [
+        {
+          "prompt_id": "short_1",
+          "tier": "short",
+          "max_tokens": 128,
+          "runs": [
+            {
+              "ttft_ms": 437,
+              "tokens_per_second": 8.5683012008667,
+              "tpot_ms": 116.76377952755905,
+              "total_time_ms": 15266,
+              "total_tokens": 128,
+              "peak_memory_mb": 1936.79296875,
+              "mean_cpu_percent": 361.36377,
+              "peak_cpu_percent": 403.53,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 296,
+              "tokens_per_second": 8.072502136230469,
+              "tpot_ms": 123.94488188976378,
+              "total_time_ms": 16037,
+              "total_tokens": 128,
+              "peak_memory_mb": 1936.8125,
+              "mean_cpu_percent": 356.84656,
+              "peak_cpu_percent": 410.61,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 436,
+              "tokens_per_second": 8.631874084472656,
+              "tpot_ms": 115.91338582677166,
+              "total_time_ms": 15157,
+              "total_tokens": 128,
+              "peak_memory_mb": 1936.84765625,
+              "mean_cpu_percent": 362.1239,
+              "peak_cpu_percent": 403.6,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 387,
+              "tokens_per_second": 8.1519136428833,
+              "tpot_ms": 122.73228346456693,
+              "total_time_ms": 15974,
+              "total_tokens": 128,
+              "peak_memory_mb": 1936.8671875,
+              "mean_cpu_percent": 358.98923,
+              "peak_cpu_percent": 407.14,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 325,
+              "tokens_per_second": 8.400466918945312,
+              "tpot_ms": 119.09448818897638,
+              "total_time_ms": 15450,
+              "total_tokens": 128,
+              "peak_memory_mb": 1936.87109375,
+              "mean_cpu_percent": 363.10287,
+              "peak_cpu_percent": 425.22,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 280,
+              "tokens_per_second": 8.529231071472168,
+              "tpot_ms": 117.30708661417323,
+              "total_time_ms": 15178,
+              "total_tokens": 128,
+              "peak_memory_mb": 1936.875,
+              "mean_cpu_percent": 362.30762,
+              "peak_cpu_percent": 418.01,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 379,
+              "tokens_per_second": 8.337018966674805,
+              "tpot_ms": 120.01574803149606,
+              "total_time_ms": 15621,
+              "total_tokens": 128,
+              "peak_memory_mb": 1936.8828125,
+              "mean_cpu_percent": 363.40594,
+              "peak_cpu_percent": 410.81,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 402,
+              "tokens_per_second": 8.031759262084961,
+              "tpot_ms": 124.56692913385827,
+              "total_time_ms": 16222,
+              "total_tokens": 128,
+              "peak_memory_mb": 1936.89453125,
+              "mean_cpu_percent": 357.16235,
+              "peak_cpu_percent": 410.43,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 320,
+              "tokens_per_second": 8.488570213317871,
+              "tpot_ms": 117.85826771653544,
+              "total_time_ms": 15288,
+              "total_tokens": 128,
+              "peak_memory_mb": 1937.0234375,
+              "mean_cpu_percent": 363.54745,
+              "peak_cpu_percent": 406.89,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 282,
+              "tokens_per_second": 8.565680503845215,
+              "tpot_ms": 116.81889763779527,
+              "total_time_ms": 15118,
+              "total_tokens": 128,
+              "peak_memory_mb": 1937.03515625,
+              "mean_cpu_percent": 360.62094,
+              "peak_cpu_percent": 396.58,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            }
+          ],
+          "stats": {
+            "ttft": {
+              "mean": 354.4,
+              "median": 352.0,
+              "p90": 436.1,
+              "p95": 436.55,
+              "std_dev": 58.00896482441313,
+              "min": 280.0,
+              "max": 437.0
+            },
+            "tokens_per_second": {
+              "mean": 8.377731800079346,
+              "median": 8.444518566131592,
+              "p90": 8.574658489227295,
+              "p95": 8.603266286849976,
+              "std_dev": 0.20916436141341802,
+              "min": 8.031759262084961,
+              "max": 8.631874084472656
+            },
+            "tpot": {
+              "mean": 119.50157480314961,
+              "median": 118.47637795275591,
+              "p90": 124.00708661417322,
+              "p95": 124.28700787401576,
+              "std_dev": 3.022449021968142,
+              "min": 115.91338582677166,
+              "max": 124.56692913385827
+            },
+            "total_time": {
+              "mean": 15531.1,
+              "median": 15369.0,
+              "p90": 16055.5,
+              "p95": 16138.75,
+              "std_dev": 388.4269429377936,
+              "min": 15118.0,
+              "max": 16222.0
+            },
+            "peak_memory_mb": {
+              "mean": 1936.890234375,
+              "median": 1936.873046875,
+              "p90": 1937.024609375,
+              "p95": 1937.0298828125,
+              "std_dev": 0.07567344942095362,
+              "min": 1936.79296875,
+              "max": 1937.03515625
+            },
+            "mean_cpu_percent": {
+              "mean": 360.9470642089844,
+              "median": 361.74383544921875,
+              "p90": 363.4200958251953,
+              "p95": 363.48377532958983,
+              "std_dev": 2.3652274476681483,
+              "min": 356.8465576171875,
+              "max": 363.5474548339844
+            },
+            "peak_cpu_percent": {
+              "mean": 409.28200073242186,
+              "median": 408.7850036621094,
+              "p90": 418.7310089111328,
+              "p95": 421.97550506591796,
+              "std_dev": 7.5672693831133895,
+              "min": 396.5799865722656,
+              "max": 425.2200012207031
+            }
+          }
+        },
+        {
+          "prompt_id": "short_2",
+          "tier": "short",
+          "max_tokens": 128,
+          "runs": [
+            {
+              "ttft_ms": 1091,
+              "tokens_per_second": 8.148527145385742,
+              "tpot_ms": 122.78740157480316,
+              "total_time_ms": 16685,
+              "total_tokens": 128,
+              "peak_memory_mb": 1939.55078125,
+              "mean_cpu_percent": 360.37238,
+              "peak_cpu_percent": 418.69,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 438,
+              "tokens_per_second": 8.437264442443848,
+              "tpot_ms": 118.58267716535433,
+              "total_time_ms": 15498,
+              "total_tokens": 128,
+              "peak_memory_mb": 1940.36328125,
+              "mean_cpu_percent": 362.54532,
+              "peak_cpu_percent": 407.14,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 414,
+              "tokens_per_second": 8.601469039916992,
+              "tpot_ms": 116.32283464566929,
+              "total_time_ms": 15187,
+              "total_tokens": 128,
+              "peak_memory_mb": 1940.36328125,
+              "mean_cpu_percent": 362.0883,
+              "peak_cpu_percent": 403.41,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 290,
+              "tokens_per_second": 8.22815990447998,
+              "tpot_ms": 121.58267716535433,
+              "total_time_ms": 15731,
+              "total_tokens": 128,
+              "peak_memory_mb": 1940.38671875,
+              "mean_cpu_percent": 357.82364,
+              "peak_cpu_percent": 400.0,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 346,
+              "tokens_per_second": 8.69041919708252,
+              "tpot_ms": 115.1259842519685,
+              "total_time_ms": 14967,
+              "total_tokens": 128,
+              "peak_memory_mb": 1940.40625,
+              "mean_cpu_percent": 364.9813,
+              "peak_cpu_percent": 403.53,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 291,
+              "tokens_per_second": 8.699265480041504,
+              "tpot_ms": 115.00787401574803,
+              "total_time_ms": 14897,
+              "total_tokens": 128,
+              "peak_memory_mb": 1940.6015625,
+              "mean_cpu_percent": 365.07516,
+              "peak_cpu_percent": 414.28,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 303,
+              "tokens_per_second": 8.67868709564209,
+              "tpot_ms": 115.29133858267717,
+              "total_time_ms": 14945,
+              "total_tokens": 128,
+              "peak_memory_mb": 1940.6875,
+              "mean_cpu_percent": 366.06653,
+              "peak_cpu_percent": 421.42,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 425,
+              "tokens_per_second": 8.651915550231934,
+              "tpot_ms": 115.63779527559055,
+              "total_time_ms": 15111,
+              "total_tokens": 128,
+              "peak_memory_mb": 1940.8671875,
+              "mean_cpu_percent": 362.74487,
+              "peak_cpu_percent": 414.28,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 358,
+              "tokens_per_second": 7.871043682098389,
+              "tpot_ms": 127.11023622047244,
+              "total_time_ms": 16501,
+              "total_tokens": 128,
+              "peak_memory_mb": 1940.90625,
+              "mean_cpu_percent": 349.7165,
+              "peak_cpu_percent": 410.25,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 404,
+              "tokens_per_second": 8.3005952835083,
+              "tpot_ms": 120.55118110236221,
+              "total_time_ms": 15714,
+              "total_tokens": 128,
+              "peak_memory_mb": 1940.91796875,
+              "mean_cpu_percent": 361.9391,
+              "peak_cpu_percent": 428.57,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            }
+          ],
+          "stats": {
+            "ttft": {
+              "mean": 436.0,
+              "median": 381.0,
+              "p90": 503.2999999999998,
+              "p95": 797.1499999999993,
+              "std_dev": 224.69356911135662,
+              "min": 290.0,
+              "max": 1091.0
+            },
+            "tokens_per_second": {
+              "mean": 8.43073468208313,
+              "median": 8.51936674118042,
+              "p90": 8.691303825378418,
+              "p95": 8.695284652709962,
+              "std_dev": 0.2701864141917246,
+              "min": 7.871043682098389,
+              "max": 8.699265480041504
+            },
+            "tpot": {
+              "mean": 118.80000000000003,
+              "median": 117.45275590551181,
+              "p90": 123.21968503937008,
+              "p95": 125.16496062992127,
+              "std_dev": 3.900535310486424,
+              "min": 115.00787401574803,
+              "max": 127.11023622047244
+            },
+            "total_time": {
+              "mean": 15523.6,
+              "median": 15342.5,
+              "p90": 16519.399999999998,
+              "p95": 16602.2,
+              "std_dev": 608.6731799578489,
+              "min": 14897.0,
+              "max": 16685.0
+            },
+            "peak_memory_mb": {
+              "mean": 1940.505078125,
+              "median": 1940.50390625,
+              "p90": 1940.907421875,
+              "p95": 1940.9126953125,
+              "std_dev": 0.38468154220863743,
+              "min": 1939.55078125,
+              "max": 1940.91796875
+            },
+            "mean_cpu_percent": {
+              "mean": 361.33530578613284,
+              "median": 362.3168029785156,
+              "p90": 365.17430114746094,
+              "p95": 365.6204147338867,
+              "std_dev": 4.497806758328031,
+              "min": 349.71649169921875,
+              "max": 366.0665283203125
+            },
+            "peak_cpu_percent": {
+              "mean": 412.15700378417966,
+              "median": 412.26499938964844,
+              "p90": 422.1350128173828,
+              "p95": 425.3525100708008,
+              "std_dev": 8.56982573180571,
+              "min": 400.0,
+              "max": 428.57000732421875
+            }
+          }
+        },
+        {
+          "prompt_id": "short_3",
+          "tier": "short",
+          "max_tokens": 128,
+          "runs": [
+            {
+              "ttft_ms": 973,
+              "tokens_per_second": 8.699616432189941,
+              "tpot_ms": 115.04494382022472,
+              "total_time_ms": 11212,
+              "total_tokens": 90,
+              "peak_memory_mb": 1943.1328125,
+              "mean_cpu_percent": 359.55676,
+              "peak_cpu_percent": 403.6,
+              "stop_reason": "natural_eos",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 475,
+              "tokens_per_second": 8.614814758300781,
+              "tpot_ms": 116.15730337078652,
+              "total_time_ms": 10813,
+              "total_tokens": 90,
+              "peak_memory_mb": 1944.5625,
+              "mean_cpu_percent": 363.08762,
+              "peak_cpu_percent": 406.77,
+              "stop_reason": "natural_eos",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 332,
+              "tokens_per_second": 8.42205810546875,
+              "tpot_ms": 118.8314606741573,
+              "total_time_ms": 10908,
+              "total_tokens": 90,
+              "peak_memory_mb": 1944.6015625,
+              "mean_cpu_percent": 363.43344,
+              "peak_cpu_percent": 406.77,
+              "stop_reason": "natural_eos",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 380,
+              "tokens_per_second": 8.089990615844727,
+              "tpot_ms": 123.69662921348315,
+              "total_time_ms": 11389,
+              "total_tokens": 90,
+              "peak_memory_mb": 1944.55859375,
+              "mean_cpu_percent": 362.15417,
+              "peak_cpu_percent": 403.6,
+              "stop_reason": "natural_eos",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 434,
+              "tokens_per_second": 8.51390552520752,
+              "tpot_ms": 117.53932584269663,
+              "total_time_ms": 10895,
+              "total_tokens": 90,
+              "peak_memory_mb": 1944.56640625,
+              "mean_cpu_percent": 357.09387,
+              "peak_cpu_percent": 414.28,
+              "stop_reason": "natural_eos",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 471,
+              "tokens_per_second": 8.392287254333496,
+              "tpot_ms": 119.25842696629213,
+              "total_time_ms": 11085,
+              "total_tokens": 90,
+              "peak_memory_mb": 1944.56640625,
+              "mean_cpu_percent": 361.35886,
+              "peak_cpu_percent": 403.53,
+              "stop_reason": "natural_eos",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 350,
+              "tokens_per_second": 8.138246536254883,
+              "tpot_ms": 122.96629213483146,
+              "total_time_ms": 11294,
+              "total_tokens": 90,
+              "peak_memory_mb": 1944.56640625,
+              "mean_cpu_percent": 361.69482,
+              "peak_cpu_percent": 407.01,
+              "stop_reason": "natural_eos",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 373,
+              "tokens_per_second": 8.34140396118164,
+              "tpot_ms": 119.97752808988764,
+              "total_time_ms": 11051,
+              "total_tokens": 90,
+              "peak_memory_mb": 1944.5703125,
+              "mean_cpu_percent": 359.3347,
+              "peak_cpu_percent": 403.6,
+              "stop_reason": "natural_eos",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 339,
+              "tokens_per_second": 7.816638946533203,
+              "tpot_ms": 128.03370786516854,
+              "total_time_ms": 11734,
+              "total_tokens": 90,
+              "peak_memory_mb": 1944.5703125,
+              "mean_cpu_percent": 357.24094,
+              "peak_cpu_percent": 400.0,
+              "stop_reason": "natural_eos",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 739,
+              "tokens_per_second": 7.915858268737793,
+              "tpot_ms": 126.42696629213484,
+              "total_time_ms": 11991,
+              "total_tokens": 90,
+              "peak_memory_mb": 1944.5703125,
+              "mean_cpu_percent": 351.2836,
+              "peak_cpu_percent": 414.28,
+              "stop_reason": "natural_eos",
+              "truncated": false
+            }
+          ],
+          "stats": {
+            "ttft": {
+              "mean": 486.6,
+              "median": 407.0,
+              "p90": 762.3999999999999,
+              "p95": 867.6999999999998,
+              "std_dev": 198.00262624520917,
+              "min": 332.0,
+              "max": 973.0
+            },
+            "tokens_per_second": {
+              "mean": 8.294482040405274,
+              "median": 8.366845607757568,
+              "p90": 8.623294925689697,
+              "p95": 8.661455678939818,
+              "std_dev": 0.2794374757348513,
+              "min": 7.816638946533203,
+              "max": 8.699616432189941
+            },
+            "tpot": {
+              "mean": 120.7932584269663,
+              "median": 119.61797752808988,
+              "p90": 126.58764044943821,
+              "p95": 127.31067415730337,
+              "std_dev": 4.114698788236438,
+              "min": 115.04494382022472,
+              "max": 128.03370786516854
+            },
+            "total_time": {
+              "mean": 11237.2,
+              "median": 11148.5,
+              "p90": 11759.7,
+              "p95": 11875.35,
+              "std_dev": 361.27324838686854,
+              "min": 10813.0,
+              "max": 11991.0
+            },
+            "peak_memory_mb": {
+              "mean": 1944.4265625,
+              "median": 1944.56640625,
+              "p90": 1944.5734375,
+              "p95": 1944.5874999999999,
+              "std_dev": 0.4313915075804113,
+              "min": 1943.1328125,
+              "max": 1944.6015625
+            },
+            "mean_cpu_percent": {
+              "mean": 359.623876953125,
+              "median": 360.4578094482422,
+              "p90": 363.1221984863281,
+              "p95": 363.2778198242188,
+              "std_dev": 3.491981369261885,
+              "min": 351.2835998535156,
+              "max": 363.4334411621094
+            },
+            "peak_cpu_percent": {
+              "mean": 406.3440002441406,
+              "median": 405.18499755859375,
+              "p90": 414.2799987792969,
+              "p95": 414.2799987792969,
+              "std_dev": 4.44432336716623,
+              "min": 400.0,
+              "max": 414.2799987792969
+            }
+          }
+        },
+        {
+          "prompt_id": "short_4",
+          "tier": "short",
+          "max_tokens": 128,
+          "runs": [
+            {
+              "ttft_ms": 1048,
+              "tokens_per_second": 6.106713771820068,
+              "tpot_ms": 163.8181818181818,
+              "total_time_ms": 20870,
+              "total_tokens": 122,
+              "peak_memory_mb": 1946.3828125,
+              "mean_cpu_percent": 321.8754,
+              "peak_cpu_percent": 400.0,
+              "stop_reason": "natural_eos",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 306,
+              "tokens_per_second": 7.929769039154053,
+              "tpot_ms": 126.17355371900827,
+              "total_time_ms": 15573,
+              "total_tokens": 122,
+              "peak_memory_mb": 1947.6953125,
+              "mean_cpu_percent": 353.6717,
+              "peak_cpu_percent": 403.53,
+              "stop_reason": "natural_eos",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 539,
+              "tokens_per_second": 8.419414520263672,
+              "tpot_ms": 118.82644628099173,
+              "total_time_ms": 14917,
+              "total_tokens": 122,
+              "peak_memory_mb": 1881.765625,
+              "mean_cpu_percent": 357.51205,
+              "peak_cpu_percent": 414.28,
+              "stop_reason": "natural_eos",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 345,
+              "tokens_per_second": 8.44243335723877,
+              "tpot_ms": 118.52892561983471,
+              "total_time_ms": 14687,
+              "total_tokens": 122,
+              "peak_memory_mb": 1881.76953125,
+              "mean_cpu_percent": 360.34518,
+              "peak_cpu_percent": 403.66,
+              "stop_reason": "natural_eos",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 338,
+              "tokens_per_second": 8.56509017944336,
+              "tpot_ms": 116.8099173553719,
+              "total_time_ms": 14472,
+              "total_tokens": 122,
+              "peak_memory_mb": 1881.76953125,
+              "mean_cpu_percent": 361.47516,
+              "peak_cpu_percent": 411.0,
+              "stop_reason": "natural_eos",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 348,
+              "tokens_per_second": 8.575631141662598,
+              "tpot_ms": 116.6694214876033,
+              "total_time_ms": 14465,
+              "total_tokens": 122,
+              "peak_memory_mb": 1881.76953125,
+              "mean_cpu_percent": 360.39444,
+              "peak_cpu_percent": 417.69,
+              "stop_reason": "natural_eos",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 245,
+              "tokens_per_second": 8.486588478088379,
+              "tpot_ms": 117.88429752066116,
+              "total_time_ms": 14509,
+              "total_tokens": 122,
+              "peak_memory_mb": 1881.7890625,
+              "mean_cpu_percent": 360.99338,
+              "peak_cpu_percent": 411.21,
+              "stop_reason": "natural_eos",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 339,
+              "tokens_per_second": 8.710274696350098,
+              "tpot_ms": 114.86776859504133,
+              "total_time_ms": 14238,
+              "total_tokens": 122,
+              "peak_memory_mb": 1881.8203125,
+              "mean_cpu_percent": 361.98425,
+              "peak_cpu_percent": 418.01,
+              "stop_reason": "natural_eos",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 401,
+              "tokens_per_second": 8.582123756408691,
+              "tpot_ms": 116.58677685950413,
+              "total_time_ms": 14508,
+              "total_tokens": 122,
+              "peak_memory_mb": 1881.8203125,
+              "mean_cpu_percent": 363.94046,
+              "peak_cpu_percent": 410.81,
+              "stop_reason": "natural_eos",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 350,
+              "tokens_per_second": 8.461455345153809,
+              "tpot_ms": 118.24793388429752,
+              "total_time_ms": 14658,
+              "total_tokens": 122,
+              "peak_memory_mb": 1881.84375,
+              "mean_cpu_percent": 365.34827,
+              "peak_cpu_percent": 421.42,
+              "stop_reason": "natural_eos",
+              "truncated": false
+            }
+          ],
+          "stats": {
+            "ttft": {
+              "mean": 425.9,
+              "median": 346.5,
+              "p90": 589.8999999999999,
+              "p95": 818.9499999999994,
+              "std_dev": 219.35653626003486,
+              "min": 245.0,
+              "max": 1048.0
+            },
+            "tokens_per_second": {
+              "mean": 8.22794942855835,
+              "median": 8.474021911621094,
+              "p90": 8.594938850402832,
+              "p95": 8.652606773376466,
+              "std_dev": 0.7338431196152906,
+              "min": 6.106713771820068,
+              "max": 8.710274696350098
+            },
+            "tpot": {
+              "mean": 122.8413223140496,
+              "median": 118.06611570247935,
+              "p90": 129.9380165289256,
+              "p95": 146.87809917355366,
+              "std_dev": 13.956221520080089,
+              "min": 114.86776859504133,
+              "max": 163.8181818181818
+            },
+            "total_time": {
+              "mean": 15289.7,
+              "median": 14583.5,
+              "p90": 16102.699999999999,
+              "p95": 18486.349999999995,
+              "std_dev": 1891.9986284350207,
+              "min": 14238.0,
+              "max": 20870.0
+            },
+            "peak_memory_mb": {
+              "mean": 1894.842578125,
+              "median": 1881.8046875,
+              "p90": 1946.5140625,
+              "p95": 1947.1046875000002,
+              "std_dev": 26.099904720088634,
+              "min": 1881.765625,
+              "max": 1947.6953125
+            },
+            "mean_cpu_percent": {
+              "mean": 356.7540283203125,
+              "median": 360.69390869140625,
+              "p90": 364.08124084472655,
+              "p95": 364.71475372314455,
+              "std_dev": 12.024414659218335,
+              "min": 321.8753967285156,
+              "max": 365.3482666015625
+            },
+            "peak_cpu_percent": {
+              "mean": 411.16100158691404,
+              "median": 411.10499572753906,
+              "p90": 418.35101013183595,
+              "p95": 419.88551177978513,
+              "std_dev": 6.661297832353277,
+              "min": 400.0,
+              "max": 421.4200134277344
+            }
+          }
+        },
+        {
+          "prompt_id": "medium_1",
+          "tier": "medium",
+          "max_tokens": 256,
+          "runs": [
+            {
+              "ttft_ms": 1184,
+              "tokens_per_second": 8.470236778259277,
+              "tpot_ms": 118.09411764705882,
+              "total_time_ms": 31298,
+              "total_tokens": 256,
+              "peak_memory_mb": 1886.7421875,
+              "mean_cpu_percent": 362.5098,
+              "peak_cpu_percent": 410.61,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 622,
+              "tokens_per_second": 8.491006851196289,
+              "tpot_ms": 117.8,
+              "total_time_ms": 30661,
+              "total_tokens": 256,
+              "peak_memory_mb": 1888.61328125,
+              "mean_cpu_percent": 360.62567,
+              "peak_cpu_percent": 410.61,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 547,
+              "tokens_per_second": 7.651598453521728,
+              "tpot_ms": 130.72941176470587,
+              "total_time_ms": 33883,
+              "total_tokens": 256,
+              "peak_memory_mb": 1888.625,
+              "mean_cpu_percent": 358.54407,
+              "peak_cpu_percent": 421.05,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 643,
+              "tokens_per_second": 7.986090183258057,
+              "tpot_ms": 125.25098039215686,
+              "total_time_ms": 32582,
+              "total_tokens": 256,
+              "peak_memory_mb": 1888.62890625,
+              "mean_cpu_percent": 359.5193,
+              "peak_cpu_percent": 417.69,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 665,
+              "tokens_per_second": 8.2865571975708,
+              "tpot_ms": 120.71372549019608,
+              "total_time_ms": 31447,
+              "total_tokens": 256,
+              "peak_memory_mb": 1888.67578125,
+              "mean_cpu_percent": 361.51324,
+              "peak_cpu_percent": 417.39,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 691,
+              "tokens_per_second": 7.563228130340576,
+              "tpot_ms": 132.24705882352941,
+              "total_time_ms": 34414,
+              "total_tokens": 256,
+              "peak_memory_mb": 1888.69140625,
+              "mean_cpu_percent": 347.08887,
+              "peak_cpu_percent": 407.4,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 718,
+              "tokens_per_second": 8.182111740112305,
+              "tpot_ms": 122.26274509803922,
+              "total_time_ms": 31895,
+              "total_tokens": 256,
+              "peak_memory_mb": 1868.8515625,
+              "mean_cpu_percent": 357.50525,
+              "peak_cpu_percent": 421.42,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 517,
+              "tokens_per_second": 8.454715728759766,
+              "tpot_ms": 118.31372549019608,
+              "total_time_ms": 30687,
+              "total_tokens": 256,
+              "peak_memory_mb": 1868.8515625,
+              "mean_cpu_percent": 365.5715,
+              "peak_cpu_percent": 411.0,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 512,
+              "tokens_per_second": 8.057101249694824,
+              "tpot_ms": 124.14117647058823,
+              "total_time_ms": 32168,
+              "total_tokens": 256,
+              "peak_memory_mb": 1869.00390625,
+              "mean_cpu_percent": 361.39127,
+              "peak_cpu_percent": 418.69,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 631,
+              "tokens_per_second": 8.222646713256836,
+              "tpot_ms": 121.65098039215687,
+              "total_time_ms": 31652,
+              "total_tokens": 256,
+              "peak_memory_mb": 1869.00390625,
+              "mean_cpu_percent": 362.17474,
+              "peak_cpu_percent": 417.39,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            }
+          ],
+          "stats": {
+            "ttft": {
+              "mean": 673.0,
+              "median": 637.0,
+              "p90": 764.5999999999999,
+              "p95": 974.2999999999995,
+              "std_dev": 183.01147505006344,
+              "min": 512.0,
+              "max": 1184.0
+            },
+            "tokens_per_second": {
+              "mean": 8.136529302597046,
+              "median": 8.20237922668457,
+              "p90": 8.472313785552979,
+              "p95": 8.481660318374633,
+              "std_dev": 0.3103277068805986,
+              "min": 7.563228130340576,
+              "max": 8.491006851196289
+            },
+            "tpot": {
+              "mean": 123.12039215686278,
+              "median": 121.95686274509805,
+              "p90": 130.88117647058823,
+              "p95": 131.56411764705882,
+              "std_dev": 4.81804376414196,
+              "min": 117.8,
+              "max": 132.24705882352941
+            },
+            "total_time": {
+              "mean": 32068.7,
+              "median": 31773.5,
+              "p90": 33936.1,
+              "p95": 34175.05,
+              "std_dev": 1189.1370021994942,
+              "min": 30661.0,
+              "max": 34414.0
+            },
+            "peak_memory_mb": {
+              "mean": 1880.56875,
+              "median": 1887.677734375,
+              "p90": 1888.67734375,
+              "p95": 1888.6843749999998,
+              "std_dev": 9.52088643154527,
+              "min": 1868.8515625,
+              "max": 1888.69140625
+            },
+            "mean_cpu_percent": {
+              "mean": 359.6443695068359,
+              "median": 361.0084686279297,
+              "p90": 362.815966796875,
+              "p95": 364.19373474121096,
+              "std_dev": 4.697812795811146,
+              "min": 347.0888671875,
+              "max": 365.5715026855469
+            },
+            "peak_cpu_percent": {
+              "mean": 415.325,
+              "median": 417.3900146484375,
+              "p90": 421.0869903564453,
+              "p95": 421.25350189208984,
+              "std_dev": 4.704718864073328,
+              "min": 407.3999938964844,
+              "max": 421.4200134277344
+            }
+          }
+        },
+        {
+          "prompt_id": "medium_2",
+          "tier": "medium",
+          "max_tokens": 256,
+          "runs": [
+            {
+              "ttft_ms": 1260,
+              "tokens_per_second": 8.319624900817871,
+              "tpot_ms": 120.22745098039216,
+              "total_time_ms": 31918,
+              "total_tokens": 256,
+              "peak_memory_mb": 1872.56640625,
+              "mean_cpu_percent": 363.35056,
+              "peak_cpu_percent": 421.81,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 678,
+              "tokens_per_second": 8.279130935668945,
+              "tpot_ms": 120.8156862745098,
+              "total_time_ms": 31486,
+              "total_tokens": 256,
+              "peak_memory_mb": 1874.39453125,
+              "mean_cpu_percent": 365.28287,
+              "peak_cpu_percent": 414.28,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 659,
+              "tokens_per_second": 8.405489921569824,
+              "tpot_ms": 119.00392156862745,
+              "total_time_ms": 31005,
+              "total_tokens": 256,
+              "peak_memory_mb": 1874.85546875,
+              "mean_cpu_percent": 363.26944,
+              "peak_cpu_percent": 414.28,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 667,
+              "tokens_per_second": 7.578604698181152,
+              "tpot_ms": 131.98431372549018,
+              "total_time_ms": 34323,
+              "total_tokens": 256,
+              "peak_memory_mb": 1874.94921875,
+              "mean_cpu_percent": 347.26492,
+              "peak_cpu_percent": 414.54,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 553,
+              "tokens_per_second": 7.614095687866211,
+              "tpot_ms": 131.37254901960785,
+              "total_time_ms": 34053,
+              "total_tokens": 256,
+              "peak_memory_mb": 1874.95703125,
+              "mean_cpu_percent": 358.83035,
+              "peak_cpu_percent": 414.28,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 954,
+              "tokens_per_second": 8.352827072143555,
+              "tpot_ms": 119.75686274509803,
+              "total_time_ms": 31492,
+              "total_tokens": 256,
+              "peak_memory_mb": 1873.89453125,
+              "mean_cpu_percent": 363.83078,
+              "peak_cpu_percent": 410.25,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 735,
+              "tokens_per_second": 8.092438697814941,
+              "tpot_ms": 123.60392156862746,
+              "total_time_ms": 32254,
+              "total_tokens": 256,
+              "peak_memory_mb": 1873.7578125,
+              "mean_cpu_percent": 363.65,
+              "peak_cpu_percent": 418.01,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 684,
+              "tokens_per_second": 8.267915725708008,
+              "tpot_ms": 120.98823529411764,
+              "total_time_ms": 31536,
+              "total_tokens": 256,
+              "peak_memory_mb": 1873.76171875,
+              "mean_cpu_percent": 362.88348,
+              "peak_cpu_percent": 411.0,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 1080,
+              "tokens_per_second": 8.15043830871582,
+              "tpot_ms": 122.72941176470589,
+              "total_time_ms": 32376,
+              "total_tokens": 256,
+              "peak_memory_mb": 1873.76171875,
+              "mean_cpu_percent": 360.88303,
+              "peak_cpu_percent": 410.43,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 524,
+              "tokens_per_second": 8.243206977844238,
+              "tpot_ms": 121.34117647058824,
+              "total_time_ms": 31466,
+              "total_tokens": 256,
+              "peak_memory_mb": 1873.765625,
+              "mean_cpu_percent": 364.4173,
+              "peak_cpu_percent": 425.22,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            }
+          ],
+          "stats": {
+            "ttft": {
+              "mean": 779.4,
+              "median": 681.0,
+              "p90": 1098.0,
+              "p95": 1178.9999999999998,
+              "std_dev": 227.33068424653985,
+              "min": 524.0,
+              "max": 1260.0
+            },
+            "tokens_per_second": {
+              "mean": 8.130377292633057,
+              "median": 8.255561351776123,
+              "p90": 8.358093357086181,
+              "p95": 8.381791639328004,
+              "std_dev": 0.28064247677682697,
+              "min": 7.578604698181152,
+              "max": 8.405489921569824
+            },
+            "tpot": {
+              "mean": 123.18235294117646,
+              "median": 121.16470588235293,
+              "p90": 131.43372549019608,
+              "p95": 131.70901960784312,
+              "std_dev": 4.434710958351341,
+              "min": 119.00392156862745,
+              "max": 131.98431372549018
+            },
+            "total_time": {
+              "mean": 32190.9,
+              "median": 31727.0,
+              "p90": 34080.0,
+              "p95": 34201.5,
+              "std_dev": 1071.0771634200778,
+              "min": 31005.0,
+              "max": 34323.0
+            },
+            "peak_memory_mb": {
+              "mean": 1874.06640625,
+              "median": 1873.830078125,
+              "p90": 1874.95,
+              "p95": 1874.953515625,
+              "std_dev": 0.7038299417572845,
+              "min": 1872.56640625,
+              "max": 1874.95703125
+            },
+            "mean_cpu_percent": {
+              "mean": 361.36627197265625,
+              "median": 363.30999755859375,
+              "p90": 364.5038543701172,
+              "p95": 364.89336090087886,
+              "std_dev": 5.013097592562946,
+              "min": 347.2649230957031,
+              "max": 365.2828674316406
+            },
+            "peak_cpu_percent": {
+              "mean": 415.4100006103516,
+              "median": 414.2799987792969,
+              "p90": 422.1509979248047,
+              "p95": 423.6854995727539,
+              "std_dev": 4.68420654795556,
+              "min": 410.25,
+              "max": 425.2200012207031
+            }
+          }
+        },
+        {
+          "prompt_id": "medium_3",
+          "tier": "medium",
+          "max_tokens": 256,
+          "runs": [
+            {
+              "ttft_ms": 1746,
+              "tokens_per_second": 8.279542922973633,
+              "tpot_ms": 120.81176470588235,
+              "total_time_ms": 32553,
+              "total_tokens": 256,
+              "peak_memory_mb": 1882.26171875,
+              "mean_cpu_percent": 357.50296,
+              "peak_cpu_percent": 414.54,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 208,
+              "tokens_per_second": 8.333441734313965,
+              "tpot_ms": 120.02745098039216,
+              "total_time_ms": 30815,
+              "total_tokens": 256,
+              "peak_memory_mb": 1884.2421875,
+              "mean_cpu_percent": 362.43265,
+              "peak_cpu_percent": 407.14,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 294,
+              "tokens_per_second": 5.807378768920898,
+              "tpot_ms": 172.2156862745098,
+              "total_time_ms": 44209,
+              "total_tokens": 256,
+              "peak_memory_mb": 1884.328125,
+              "mean_cpu_percent": 292.41144,
+              "peak_cpu_percent": 421.42,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 208,
+              "tokens_per_second": 8.535490036010742,
+              "tpot_ms": 117.18039215686275,
+              "total_time_ms": 30089,
+              "total_tokens": 256,
+              "peak_memory_mb": 1756.37109375,
+              "mean_cpu_percent": 376.36395,
+              "peak_cpu_percent": 431.85,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 284,
+              "tokens_per_second": 8.590668678283691,
+              "tpot_ms": 116.43137254901961,
+              "total_time_ms": 29974,
+              "total_tokens": 256,
+              "peak_memory_mb": 1756.37109375,
+              "mean_cpu_percent": 376.16025,
+              "peak_cpu_percent": 418.01,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 257,
+              "tokens_per_second": 8.66455364227295,
+              "tpot_ms": 115.43137254901961,
+              "total_time_ms": 29692,
+              "total_tokens": 256,
+              "peak_memory_mb": 1756.02734375,
+              "mean_cpu_percent": 379.78348,
+              "peak_cpu_percent": 432.43,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 209,
+              "tokens_per_second": 7.862320423126221,
+              "tpot_ms": 127.21176470588236,
+              "total_time_ms": 32648,
+              "total_tokens": 256,
+              "peak_memory_mb": 1756.04296875,
+              "mean_cpu_percent": 371.04376,
+              "peak_cpu_percent": 428.57,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 201,
+              "tokens_per_second": 8.411255836486816,
+              "tpot_ms": 118.90980392156862,
+              "total_time_ms": 30523,
+              "total_tokens": 256,
+              "peak_memory_mb": 1756.04296875,
+              "mean_cpu_percent": 376.1356,
+              "peak_cpu_percent": 429.09,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 222,
+              "tokens_per_second": 7.6541032791137695,
+              "tpot_ms": 130.67450980392158,
+              "total_time_ms": 33544,
+              "total_tokens": 256,
+              "peak_memory_mb": 1756.125,
+              "mean_cpu_percent": 367.83624,
+              "peak_cpu_percent": 421.81,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 187,
+              "tokens_per_second": 7.626282215118408,
+              "tpot_ms": 131.16470588235293,
+              "total_time_ms": 33634,
+              "total_tokens": 256,
+              "peak_memory_mb": 1756.125,
+              "mean_cpu_percent": 365.93774,
+              "peak_cpu_percent": 421.81,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            }
+          ],
+          "stats": {
+            "ttft": {
+              "mean": 381.6,
+              "median": 215.5,
+              "p90": 439.1999999999995,
+              "p95": 1092.5999999999985,
+              "std_dev": 456.10682959148943,
+              "min": 187.0,
+              "max": 1746.0
+            },
+            "tokens_per_second": {
+              "mean": 7.97650375366211,
+              "median": 8.306492328643799,
+              "p90": 8.598057174682618,
+              "p95": 8.631305408477782,
+              "std_dev": 0.8072212785751978,
+              "min": 5.807378768920898,
+              "max": 8.66455364227295
+            },
+            "tpot": {
+              "mean": 127.0058823529412,
+              "median": 120.41960784313726,
+              "p90": 135.2698039215686,
+              "p95": 153.74274509803917,
+              "std_dev": 16.03017552896496,
+              "min": 115.43137254901961,
+              "max": 172.2156862745098
+            },
+            "total_time": {
+              "mean": 32768.1,
+              "median": 31684.0,
+              "p90": 34691.5,
+              "p95": 39450.249999999985,
+              "std_dev": 4069.5051898234506,
+              "min": 29692.0,
+              "max": 44209.0
+            },
+            "peak_memory_mb": {
+              "mean": 1794.39375,
+              "median": 1756.248046875,
+              "p90": 1884.25078125,
+              "p95": 1884.289453125,
+              "std_dev": 58.40864547593111,
+              "min": 1756.02734375,
+              "max": 1884.328125
+            },
+            "mean_cpu_percent": {
+              "mean": 362.56080627441406,
+              "median": 369.44000244140625,
+              "p90": 376.70590515136723,
+              "p95": 378.2446914672852,
+              "std_dev": 24.31890909963355,
+              "min": 292.41143798828125,
+              "max": 379.7834777832031
+            },
+            "peak_cpu_percent": {
+              "mean": 422.66700439453126,
+              "median": 421.80999755859375,
+              "p90": 431.9080047607422,
+              "p95": 432.1689987182617,
+              "std_dev": 7.6654465535471825,
+              "min": 407.1400146484375,
+              "max": 432.42999267578125
+            }
+          }
+        },
+        {
+          "prompt_id": "medium_4",
+          "tier": "medium",
+          "max_tokens": 256,
+          "runs": [
+            {
+              "ttft_ms": 2703,
+              "tokens_per_second": 7.266185283660889,
+              "tpot_ms": 137.64313725490197,
+              "total_time_ms": 37802,
+              "total_tokens": 256,
+              "peak_memory_mb": 1758.1015625,
+              "mean_cpu_percent": 354.4356,
+              "peak_cpu_percent": 428.57,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 783,
+              "tokens_per_second": 7.554159641265869,
+              "tpot_ms": 132.4078431372549,
+              "total_time_ms": 34547,
+              "total_tokens": 256,
+              "peak_memory_mb": 1759.43359375,
+              "mean_cpu_percent": 359.2815,
+              "peak_cpu_percent": 411.21,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 843,
+              "tokens_per_second": 7.970943927764893,
+              "tpot_ms": 125.48235294117647,
+              "total_time_ms": 32841,
+              "total_tokens": 256,
+              "peak_memory_mb": 1758.9921875,
+              "mean_cpu_percent": 371.57602,
+              "peak_cpu_percent": 421.81,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 695,
+              "tokens_per_second": 6.157966136932373,
+              "tpot_ms": 162.42745098039217,
+              "total_time_ms": 42114,
+              "total_tokens": 256,
+              "peak_memory_mb": 1758.9921875,
+              "mean_cpu_percent": 328.57477,
+              "peak_cpu_percent": 414.28,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 839,
+              "tokens_per_second": 7.771209239959717,
+              "tpot_ms": 128.7058823529412,
+              "total_time_ms": 33659,
+              "total_tokens": 256,
+              "peak_memory_mb": 1625.09765625,
+              "mean_cpu_percent": 366.03018,
+              "peak_cpu_percent": 435.71,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 618,
+              "tokens_per_second": 8.352494239807129,
+              "tpot_ms": 119.75294117647059,
+              "total_time_ms": 31155,
+              "total_tokens": 256,
+              "peak_memory_mb": 1625.09765625,
+              "mean_cpu_percent": 380.95334,
+              "peak_cpu_percent": 432.43,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 785,
+              "tokens_per_second": 8.263437271118164,
+              "tpot_ms": 121.04313725490196,
+              "total_time_ms": 31651,
+              "total_tokens": 256,
+              "peak_memory_mb": 1625.125,
+              "mean_cpu_percent": 375.1111,
+              "peak_cpu_percent": 428.57,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 813,
+              "tokens_per_second": 7.126278400421143,
+              "tpot_ms": 140.3686274509804,
+              "total_time_ms": 36607,
+              "total_tokens": 256,
+              "peak_memory_mb": 1625.28515625,
+              "mean_cpu_percent": 362.25528,
+              "peak_cpu_percent": 418.01,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 1445,
+              "tokens_per_second": 6.743847370147705,
+              "tpot_ms": 148.30980392156863,
+              "total_time_ms": 39264,
+              "total_tokens": 256,
+              "peak_memory_mb": 1497.296875,
+              "mean_cpu_percent": 350.1747,
+              "peak_cpu_percent": 428.57,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 690,
+              "tokens_per_second": 8.036233901977539,
+              "tpot_ms": 124.46666666666667,
+              "total_time_ms": 32429,
+              "total_tokens": 256,
+              "peak_memory_mb": 1369.296875,
+              "mean_cpu_percent": 374.92587,
+              "peak_cpu_percent": 418.34,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            }
+          ],
+          "stats": {
+            "ttft": {
+              "mean": 1021.4,
+              "median": 799.0,
+              "p90": 1570.7999999999995,
+              "p95": 2136.8999999999987,
+              "std_dev": 600.6293699112623,
+              "min": 618.0,
+              "max": 2703.0
+            },
+            "tokens_per_second": {
+              "mean": 7.524275541305542,
+              "median": 7.662684440612793,
+              "p90": 8.272342967987061,
+              "p95": 8.312418603897095,
+              "std_dev": 0.667583060069041,
+              "min": 6.157966136932373,
+              "max": 8.352494239807129
+            },
+            "tpot": {
+              "mean": 134.0607843137255,
+              "median": 130.55686274509804,
+              "p90": 149.72156862745098,
+              "p95": 156.07450980392156,
+              "std_dev": 12.773181879124156,
+              "min": 119.75294117647059,
+              "max": 162.42745098039217
+            },
+            "total_time": {
+              "mean": 35206.9,
+              "median": 34103.0,
+              "p90": 39549.0,
+              "p95": 40831.5,
+              "std_dev": 3436.1447422947713,
+              "min": 31155.0,
+              "max": 42114.0
+            },
+            "peak_memory_mb": {
+              "mean": 1640.271875,
+              "median": 1625.205078125,
+              "p90": 1759.036328125,
+              "p95": 1759.2349609375,
+              "std_dev": 122.90493086630008,
+              "min": 1369.296875,
+              "max": 1759.43359375
+            },
+            "mean_cpu_percent": {
+              "mean": 362.3318389892578,
+              "median": 364.1427307128906,
+              "p90": 375.69533691406247,
+              "p95": 378.3243377685547,
+              "std_dev": 14.583582910653917,
+              "min": 328.57476806640625,
+              "max": 380.9533386230469
+            },
+            "peak_cpu_percent": {
+              "mean": 423.75,
+              "median": 425.19000244140625,
+              "p90": 432.75799255371095,
+              "p95": 434.2339920043945,
+              "std_dev": 7.75237418271317,
+              "min": 411.2099914550781,
+              "max": 435.7099914550781
+            }
+          }
+        },
+        {
+          "prompt_id": "long_1",
+          "tier": "long",
+          "max_tokens": 512,
+          "runs": [
+            {
+              "ttft_ms": 7328,
+              "tokens_per_second": 4.460439682006836,
+              "tpot_ms": 224.21917808219177,
+              "total_time_ms": 121904,
+              "total_tokens": 512,
+              "peak_memory_mb": 1402.796875,
+              "mean_cpu_percent": 292.0688,
+              "peak_cpu_percent": 428.57,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 1143,
+              "tokens_per_second": 6.130838871002197,
+              "tpot_ms": 163.1252446183953,
+              "total_time_ms": 84500,
+              "total_tokens": 512,
+              "peak_memory_mb": 1265.80859375,
+              "mean_cpu_percent": 350.90796,
+              "peak_cpu_percent": 411.0,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 583,
+              "tokens_per_second": 5.504380702972412,
+              "tpot_ms": 181.6986301369863,
+              "total_time_ms": 93431,
+              "total_tokens": 512,
+              "peak_memory_mb": 1265.90625,
+              "mean_cpu_percent": 324.37485,
+              "peak_cpu_percent": 426.16,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 1022,
+              "tokens_per_second": 5.27706241607666,
+              "tpot_ms": 189.51859099804307,
+              "total_time_ms": 97866,
+              "total_tokens": 512,
+              "peak_memory_mb": 1266.4140625,
+              "mean_cpu_percent": 313.30902,
+              "peak_cpu_percent": 428.57,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 583,
+              "tokens_per_second": 7.287791728973389,
+              "tpot_ms": 137.23287671232876,
+              "total_time_ms": 70709,
+              "total_tokens": 512,
+              "peak_memory_mb": 1262.15234375,
+              "mean_cpu_percent": 367.54074,
+              "peak_cpu_percent": 432.43,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 459,
+              "tokens_per_second": 7.489250659942627,
+              "tpot_ms": 133.5440313111546,
+              "total_time_ms": 68700,
+              "total_tokens": 512,
+              "peak_memory_mb": 1262.15234375,
+              "mean_cpu_percent": 370.27155,
+              "peak_cpu_percent": 435.71,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 481,
+              "tokens_per_second": 7.194549560546875,
+              "tpot_ms": 139.00978473581213,
+              "total_time_ms": 71515,
+              "total_tokens": 512,
+              "peak_memory_mb": 1262.2265625,
+              "mean_cpu_percent": 366.08636,
+              "peak_cpu_percent": 433.02,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 510,
+              "tokens_per_second": 7.66042947769165,
+              "tpot_ms": 130.55381604696674,
+              "total_time_ms": 67223,
+              "total_tokens": 512,
+              "peak_memory_mb": 1262.234375,
+              "mean_cpu_percent": 376.90717,
+              "peak_cpu_percent": 426.66,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 438,
+              "tokens_per_second": 7.664323806762695,
+              "tpot_ms": 130.48923679060664,
+              "total_time_ms": 67118,
+              "total_tokens": 512,
+              "peak_memory_mb": 1256.9296875,
+              "mean_cpu_percent": 377.57892,
+              "peak_cpu_percent": 424.77,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 557,
+              "tokens_per_second": 7.901418685913086,
+              "tpot_ms": 126.57534246575342,
+              "total_time_ms": 65237,
+              "total_tokens": 512,
+              "peak_memory_mb": 1257.05078125,
+              "mean_cpu_percent": 378.945,
+              "peak_cpu_percent": 424.77,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            }
+          ],
+          "stats": {
+            "ttft": {
+              "mean": 1310.4,
+              "median": 570.0,
+              "p90": 1761.499999999998,
+              "p95": 4544.749999999994,
+              "std_dev": 2018.9860920769117,
+              "min": 438.0,
+              "max": 7328.0
+            },
+            "tokens_per_second": {
+              "mean": 6.657048559188842,
+              "median": 7.241170644760132,
+              "p90": 7.6880332946777346,
+              "p95": 7.79472599029541,
+              "std_dev": 1.1525680218822867,
+              "min": 4.460439682006836,
+              "max": 7.901418685913086
+            },
+            "tpot": {
+              "mean": 155.5966731898239,
+              "median": 138.12133072407045,
+              "p90": 192.98864970645792,
+              "p95": 208.60391389432482,
+              "std_dev": 31.298841554621394,
+              "min": 126.57534246575342,
+              "max": 224.21917808219177
+            },
+            "total_time": {
+              "mean": 80820.3,
+              "median": 71112.0,
+              "p90": 100269.79999999999,
+              "p95": 111086.89999999997,
+              "std_dev": 17613.07395118751,
+              "min": 65237.0,
+              "max": 121904.0
+            },
+            "peak_memory_mb": {
+              "mean": 1276.3671875,
+              "median": 1262.23046875,
+              "p90": 1280.0523437499999,
+              "p95": 1341.4246093749998,
+              "std_dev": 42.26015011906533,
+              "min": 1256.9296875,
+              "max": 1402.796875
+            },
+            "mean_cpu_percent": {
+              "mean": 351.7990356445313,
+              "median": 366.8135528564453,
+              "p90": 377.71552734375,
+              "p95": 378.33026733398435,
+              "std_dev": 29.37201217602174,
+              "min": 292.06878662109375,
+              "max": 378.94500732421875
+            },
+            "peak_cpu_percent": {
+              "mean": 427.16599731445314,
+              "median": 427.61500549316406,
+              "p90": 433.2889892578125,
+              "p95": 434.49949035644534,
+              "std_dev": 6.4265887031860345,
+              "min": 411.0,
+              "max": 435.7099914550781
+            }
+          }
+        },
+        {
+          "prompt_id": "long_2",
+          "tier": "long",
+          "max_tokens": 512,
+          "runs": [
+            {
+              "ttft_ms": 3978,
+              "tokens_per_second": 7.72230339050293,
+              "tpot_ms": 129.50880626223093,
+              "total_time_ms": 70157,
+              "total_tokens": 512,
+              "peak_memory_mb": 1264.328125,
+              "mean_cpu_percent": 367.2769,
+              "peak_cpu_percent": 417.69,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 454,
+              "tokens_per_second": 6.751742839813232,
+              "tpot_ms": 148.12328767123287,
+              "total_time_ms": 76145,
+              "total_tokens": 512,
+              "peak_memory_mb": 1265.80859375,
+              "mean_cpu_percent": 345.49728,
+              "peak_cpu_percent": 417.69,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 858,
+              "tokens_per_second": 4.956433296203613,
+              "tpot_ms": 201.77690802348337,
+              "total_time_ms": 103966,
+              "total_tokens": 512,
+              "peak_memory_mb": 1266.28125,
+              "mean_cpu_percent": 288.3175,
+              "peak_cpu_percent": 428.57,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 1075,
+              "tokens_per_second": 5.174594402313232,
+              "tpot_ms": 193.2720156555773,
+              "total_time_ms": 99837,
+              "total_tokens": 512,
+              "peak_memory_mb": 1060.0625,
+              "mean_cpu_percent": 296.6396,
+              "peak_cpu_percent": 439.63,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 602,
+              "tokens_per_second": 7.26995849609375,
+              "tpot_ms": 137.56947162426616,
+              "total_time_ms": 70900,
+              "total_tokens": 512,
+              "peak_memory_mb": 1060.546875,
+              "mean_cpu_percent": 364.9717,
+              "peak_cpu_percent": 428.57,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 592,
+              "tokens_per_second": 8.055924415588379,
+              "tpot_ms": 124.14677103718199,
+              "total_time_ms": 64031,
+              "total_tokens": 512,
+              "peak_memory_mb": 1060.62109375,
+              "mean_cpu_percent": 375.09064,
+              "peak_cpu_percent": 432.43,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 476,
+              "tokens_per_second": 7.390918731689453,
+              "tpot_ms": 135.3170254403131,
+              "total_time_ms": 69623,
+              "total_tokens": 512,
+              "peak_memory_mb": 1060.62890625,
+              "mean_cpu_percent": 372.0429,
+              "peak_cpu_percent": 425.22,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 695,
+              "tokens_per_second": 7.590947151184082,
+              "tpot_ms": 131.75146771037183,
+              "total_time_ms": 68020,
+              "total_tokens": 512,
+              "peak_memory_mb": 1060.66015625,
+              "mean_cpu_percent": 369.97336,
+              "peak_cpu_percent": 425.22,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 533,
+              "tokens_per_second": 8.00482177734375,
+              "tpot_ms": 124.9412915851272,
+              "total_time_ms": 64378,
+              "total_tokens": 512,
+              "peak_memory_mb": 1060.66796875,
+              "mean_cpu_percent": 378.29086,
+              "peak_cpu_percent": 428.57,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            },
+            {
+              "ttft_ms": 490,
+              "tokens_per_second": 7.924138069152832,
+              "tpot_ms": 126.21135029354207,
+              "total_time_ms": 64984,
+              "total_tokens": 512,
+              "peak_memory_mb": 1060.79296875,
+              "mean_cpu_percent": 375.12943,
+              "peak_cpu_percent": 421.42,
+              "stop_reason": "max_tokens_exact",
+              "truncated": false
+            }
+          ],
+          "stats": {
+            "ttft": {
+              "mean": 975.3,
+              "median": 597.0,
+              "p90": 1365.2999999999988,
+              "p95": 2671.649999999997,
+              "std_dev": 1017.6908224013813,
+              "min": 454.0,
+              "max": 3978.0
+            },
+            "tokens_per_second": {
+              "mean": 7.084178256988525,
+              "median": 7.490932941436768,
+              "p90": 8.009932041168213,
+              "p95": 8.032928228378296,
+              "std_dev": 1.0758416431501472,
+              "min": 4.956433296203613,
+              "max": 8.055924415588379
+            },
+            "tpot": {
+              "mean": 145.26183953033268,
+              "median": 133.53424657534248,
+              "p90": 194.12250489236789,
+              "p95": 197.94970645792563,
+              "std_dev": 27.05100708919604,
+              "min": 124.14677103718199,
+              "max": 201.77690802348337
+            },
+            "total_time": {
+              "mean": 75204.1,
+              "median": 69890.0,
+              "p90": 100249.9,
+              "p95": 102107.94999999998,
+              "std_dev": 13813.628997841226,
+              "min": 64031.0,
+              "max": 103966.0
+            },
+            "peak_memory_mb": {
+              "mean": 1122.03984375,
+              "median": 1060.6640625,
+              "p90": 1265.855859375,
+              "p95": 1266.0685546875,
+              "std_dev": 93.90009954770208,
+              "min": 1060.0625,
+              "max": 1266.28125
+            },
+            "mean_cpu_percent": {
+              "mean": 353.32301635742186,
+              "median": 368.6251220703125,
+              "p90": 375.44556884765626,
+              "p95": 376.8682159423828,
+              "std_dev": 31.671410820758354,
+              "min": 288.3175048828125,
+              "max": 378.2908630371094
+            },
+            "peak_cpu_percent": {
+              "mean": 426.5010040283203,
+              "median": 426.89500427246094,
+              "p90": 433.1499938964844,
+              "p95": 436.38999938964844,
+              "std_dev": 6.361853452673884,
+              "min": 417.69000244140625,
+              "max": 439.6300048828125
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "skipped": [
+    {
+      "backend": "cpu",
+      "model_id": "qwen3-4b",
+      "reason": "ensure_started failed: /engine/ensure-started failed with HTTP 503 [STARTUP_MODEL_ASSET_MISSING]: Model directory not found for 'qwen3-4b': C:\\Users\\User\\AppData\\Local\\SmolPC 2.0\\models\\qwen3-4b\\openvino"
+    },
+    {
+      "backend": "openvino_npu",
+      "model_id": "qwen2.5-1.5b-instruct",
+      "reason": "ensure_started failed: /engine/ensure-started failed with HTTP 503 [STARTUP_MODEL_LOAD_FAILED]: NPU hardware was detected, but OpenVINO did not expose an NPU device"
+    },
+    {
+      "backend": "openvino_npu",
+      "model_id": "qwen3-4b",
+      "reason": "ensure_started failed: /engine/ensure-started failed with HTTP 503 [STARTUP_MODEL_ASSET_MISSING]: Model directory not found for 'qwen3-4b': C:\\Users\\User\\AppData\\Local\\SmolPC 2.0\\models\\qwen3-4b\\openvino"
+    }
+  ]
+}
