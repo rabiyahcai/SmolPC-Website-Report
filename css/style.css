@@ -1378,6 +1378,23 @@ footer p {
   transform: translateY(0);
 }
 
+.code-figure {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+.code-figure img {
+  display: block;
+  max-width: 640px;
+  width: 100%;
+  margin: 0 auto;
+  border-radius: 8px;
+}
+.code-figure figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
 @media (max-width: 960px) {
   main {
     padding-inline: 1.15rem;

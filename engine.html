@@ -67,12 +67,6 @@
         <p>Foundation library with zero workspace dependencies. This crate owns everything that does not require a network socket: hardware detection via DXGI (~14 ms), NPU driver probing, RAM enumeration via <code>GlobalMemoryStatusEx</code>, the <code>InferenceBackend</code> enum (<code>Cpu</code>, <code>DirectML</code>, <code>OpenVinoNpu</code>), custom FFI wrappers for the OpenVINO GenAI C API and ONNX Runtime GenAI C API (no published Rust bindings exist for either &mdash; these are entirely hand-written), centralised DLL loading with CI-enforced source scanning, and a model registry with RAM-based selection thresholds.</p>
       </div>
 
-      <!-- CODESNAP: engine/crates/smolpc-engine-core/src/inference/backend.rs:L9-L27 — InferenceBackend enum with serde annotations and as_str implementation -->
-      <figure class="code-figure">
-        <img src="assets/images/code/inference-backend-enum.png" alt="The InferenceBackend enum definition in Rust, showing Cpu, DirectML, and OpenVinoNpu variants with serde rename attributes and the as_str method">
-        <figcaption>Figure 1. The <code>InferenceBackend</code> enum &mdash; three backends, each with serialisation aliases for the decision cache and API surface.</figcaption>
-      </figure>
-
       <div class="card">
         <h3>smolpc-engine-host</h3>
         <p>The binary crate. An Axum HTTP server exposing 13 endpoints with semaphore-based concurrency control: a generation semaphore (capacity 1 &mdash; only one LLM generation at a time), a configurable queue semaphore (default capacity 3, returns HTTP 429 when full), and a voice semaphore (capacity 1 &mdash; serialises STT and TTS). An atomic <code>generating</code> flag provides fast-path checking without acquiring the semaphore. The host manages background hardware probing, idle timeout monitoring, ChatML template formatting, and a streaming thinking-tag filter that strips <code>&lt;think&gt;...&lt;/think&gt;</code> blocks before tokens reach the user.</p>
@@ -93,11 +87,6 @@
         <p>CLI tool for performance testing across all three backends. Measures time-to-first-token (TTFT), tokens per second, peak memory, and CPU utilisation. Supports multi-backend comparison runs with configurable warmup and cooldown periods. Statistics computed per run: mean, median, p90, p95, and standard deviation. Outputs results in CSV and JSON formats for automated analysis.</p>
       </div>
 
-      <!-- CODESNAP: engine/crates/smolpc-engine-core/src/models/registry.rs:L4-L54 — ModelDefinition struct and ModelRegistry with Qwen 2.5 and Qwen 3 entries -->
-      <figure class="code-figure">
-        <img src="assets/images/code/model-registry.png" alt="The ModelDefinition struct and ModelRegistry implementation showing the Qwen 2.5 1.5B and Qwen 3 4B model entries with RAM thresholds">
-        <figcaption>Figure 2. Model registry &mdash; each model declares its RAM threshold, disk footprint, and runtime memory estimate. The selection algorithm filters by <code>min_ram_gb</code> and picks the largest model that fits.</figcaption>
-      </figure>
     </section>
 
     <!-- ================================================================== -->
@@ -117,14 +106,14 @@
         <li>Create an <code>IDXGIFactory1</code>, then attempt to cast to <code>IDXGIFactory6</code> for high-performance GPU preference ordering.</li>
         <li>Enumerate all adapters, extracting per-adapter: name, vendor ID, device ID, dedicated VRAM, and software/hardware classification.</li>
         <li>Filter out software adapters (the Windows WARP rasteriser).</li>
-        <li>Classify as discrete if dedicated VRAM exceeds 512 MB and the adapter is not software.</li>
+        <li>Classify as discrete if dedicated VRAM exceeds 512 MB and the adapter is not software. This threshold is a conservative midpoint — discrete GPUs typically start at 1-2 GB of dedicated VRAM.</li>
         <li>Select the best candidate: discrete GPUs first, then by VRAM descending.</li>
       </ol>
 
       <!-- CODESNAP: engine/crates/smolpc-engine-host/src/probe.rs:L118-L188 — DxgiGpuInfo struct and enumerate_dxgi_gpus function showing IDXGIFactory1 creation, adapter enumeration, and discrete classification -->
       <figure class="code-figure">
         <img src="assets/images/code/dxgi-enumeration.png" alt="The enumerate_dxgi_gpus function showing IDXGIFactory1 creation, IDXGIFactory6 cast, adapter enumeration loop, VRAM extraction, and discrete GPU classification">
-        <figcaption>Figure 3. DXGI GPU enumeration &mdash; the function creates a factory, enumerates adapters with high-performance preference, extracts hardware descriptors, and classifies each adapter as discrete or integrated based on VRAM threshold.</figcaption>
+        <figcaption>Figure 1. DXGI GPU enumeration &mdash; the function creates a factory, enumerates adapters with high-performance preference, extracts hardware descriptors, and classifies each adapter as discrete or integrated based on VRAM threshold.</figcaption>
       </figure>
 
       <p><strong>Critical: integrated GPU rejection.</strong> Intel UHD integrated graphics technically supports DirectML, and the DXGI probe reports it as a valid adapter. However, DirectML inference on these GPUs produces garbage logits &mdash; the output is numerical noise with no coherent text. This is detected by the preflight validation (described in Section 4), which generates a single token and inspects the logits tensor for NaN and Infinity values. When non-finite logits are detected, the backend is rejected and the engine falls through to OpenVINO CPU.</p>
@@ -200,7 +189,7 @@
           <tr>
             <td><strong>Bundle ready</strong></td>
             <td>ONNX Runtime + DirectML DLLs loaded</td>
-            <td>All 14 OpenVINO DLLs loaded in dependency order</td>
+            <td>All 13 OpenVINO DLLs loaded in dependency order (15 with NPU)</td>
             <td>OpenVINO CPU plugin DLLs loaded</td>
           </tr>
           <tr>
@@ -249,7 +238,7 @@
         <li><strong>Bundle fingerprinting prevents version skew.</strong> Each bundle gets a hash-based fingerprint. If the engine is already initialised with one bundle, attempting to load a different one returns an error rather than silently mixing DLL versions &mdash; preventing ABI mismatches that would manifest as memory corruption or undefined behaviour.</li>
       </ol>
 
-      <p>The OpenVINO DLL load sequence requires 13 DLLs for CPU-only operation, or 15 when NPU support is included. The order is strict &mdash; reordering any entry can produce confusing "DLL not found" errors that name the wrong library.</p>
+      <p>The OpenVINO DLL load sequence requires 13 DLLs for CPU-only operation, or 15 when NPU support is included. All components are pinned to OpenVINO 2026.0.0 &mdash; the runtime, GenAI extension, and tokenizers must all match. Mixing versions breaks ABI compatibility. The order is strict &mdash; reordering any entry can produce confusing "DLL not found" errors that name the wrong library.</p>
 
       <table>
         <thead>
@@ -283,7 +272,7 @@
       <!-- CODESNAP: engine/crates/smolpc-engine-core/src/inference/runtime_loading.rs:L466-L503 — ensure_initialized_internal showing the DLL load sequence: TBB family, OpenVINO core, NPU conditionals, ICU, tokenizers, GenAI -->
       <figure class="code-figure">
         <img src="assets/images/code/dll-load-sequence.png" alt="The ensure_initialized_internal function showing the ordered vector of DLL references, conditional NPU DLLs, and the map-and-collect loading pattern">
-        <figcaption>Figure 4. The DLL load sequence in <code>runtime_loading.rs</code> &mdash; each library is loaded in strict dependency order through <code>RetainedLibrary::load()</code>. The NPU compiler and plugin DLLs (steps 9&ndash;10) are conditionally included only when <code>requires_npu</code> is true.</figcaption>
+        <figcaption>Figure 2. The DLL load sequence in <code>runtime_loading.rs</code> &mdash; each library is loaded in strict dependency order through <code>RetainedLibrary::load()</code>. The NPU compiler and plugin DLLs (steps 9&ndash;10) are conditionally included only when <code>requires_npu</code> is true.</figcaption>
       </figure>
 
       <h3>OpenVINO GenAI Backend (CPU + NPU)</h3>
@@ -295,18 +284,12 @@
       <!-- CODESNAP: engine/crates/smolpc-engine-core/src/inference/genai/openvino_ffi.rs:L351-L380 — OvOwned<T> struct, new(), as_ptr(), and Drop impl showing the RAII guard for C handles -->
       <figure class="code-figure">
         <img src="assets/images/code/ov-owned-raii.png" alt="The OvOwned generic struct with api (Arc of OpenVinoGenAiApi), ptr (raw mutable pointer), and destroy (extern C function pointer) fields, plus the Drop implementation that null-checks before calling destroy">
-        <figcaption>Figure 5. <code>OvOwned&lt;T&gt;</code> &mdash; the RAII guard for opaque C handles. The <code>api</code> field keeps the DLL loaded for the lifetime of the handle. On drop, the pointer is replaced with null before calling the destroy function to prevent double-free.</figcaption>
+        <figcaption>Figure 3. <code>OvOwned&lt;T&gt;</code> &mdash; the RAII guard for opaque C handles. The <code>api</code> field keeps the DLL loaded for the lifetime of the handle. On drop, the pointer is replaced with null before calling the destroy function to prevent double-free.</figcaption>
       </figure>
 
       <p><strong>Pipeline creation</strong> differs between CPU and NPU. The CPU path calls <code>ov_genai_llm_pipeline_create(model_dir, "CPU", 0, &amp;pipeline)</code> where <code>0</code> means no extra properties. The NPU path uses the variadic C API with 6 string arguments: <code>ov_genai_llm_pipeline_create(model_dir, "NPU", 6, &amp;pipeline, "CACHE_DIR", cache_path, "MAX_PROMPT_LEN", "2048", "MIN_RESPONSE_LEN", "1024")</code>. The count parameter (<code>6</code>) tells the API how many variadic string arguments follow. Getting this count wrong causes undefined behaviour &mdash; an incorrect count reads garbage from the stack.</p>
 
       <p><strong>Streaming</strong> uses a C callback mechanism. The <code>StreamerCallback</code> struct passes a function pointer to the C library. On each generated token, the callback receives the token as a C string and returns a status: <code>Running (0)</code> to continue, <code>Stop (1)</code> to finish gracefully, or <code>Cancel (2)</code> to abort immediately.</p>
-
-      <!-- CODESNAP: engine/crates/smolpc-engine-core/src/inference/genai/openvino_ffi.rs:L22-L35 — OvGenAiStreamingStatus enum and StreamerCallback struct -->
-      <figure class="code-figure">
-        <img src="assets/images/code/streamer-callback.png" alt="The OvGenAiStreamingStatus repr(C) enum with Running=0, Stop=1, Cancel=2 variants, and the StreamerCallback repr(C) struct with callback_func and args fields">
-        <figcaption>Figure 6. The streaming callback interface &mdash; <code>OvGenAiStreamingStatus</code> controls generation flow, and <code>StreamerCallback</code> passes the Rust callback function pointer and context to the C library.</figcaption>
-      </figure>
 
       <p>The Rust-side callback function implements multiple safety nets beyond the C library's own stop logic:</p>
       <ul>
@@ -428,11 +411,6 @@
 
       <p>The <code>InferenceRuntimeAdapter</code> enum unifies both backends behind a single interface with two generation methods: <code>generate_stream()</code> takes a raw string prompt (pre-formatted ChatML) and works with both backends; <code>generate_stream_messages()</code> takes structured chat messages and is only supported by OpenVINO GenAI (which has native structured chat via <code>ov_genai_llm_pipeline_generate_with_history</code>). DirectML returns an error for structured messages because ORT GenAI does not have a native structured chat API. The engine host checks <code>is_openvino_genai()</code> to decide which path to use.</p>
 
-      <!-- CODESNAP: engine/crates/smolpc-engine-core/src/inference/runtime_adapter.rs:L9-L14 — InferenceRuntimeAdapter enum showing GenAiDirectMl and OpenVinoGenAi variants -->
-      <figure class="code-figure">
-        <img src="assets/images/code/runtime-adapter-enum.png" alt="The InferenceRuntimeAdapter enum with GenAiDirectMl and OpenVinoGenAi variants, each wrapping their respective generator type">
-        <figcaption>Figure 7. <code>InferenceRuntimeAdapter</code> &mdash; a single enum that dispatches to the correct backend. The host code never touches backend-specific types directly.</figcaption>
-      </figure>
     </section>
 
     <!-- ================================================================== -->
@@ -504,7 +482,7 @@
       <!-- CODESNAP: app/src-tauri/src/engine/mod.rs:L53-L68 — Validated state transitions -->
       <figure class="code-figure">
         <img src="assets/images/code/lifecycle-can-transition-to.png" alt="The can_transition_to method in EngineLifecycleState that validates every state machine transition">
-        <figcaption>Figure 12. The <code>can_transition_to()</code> method validates every state machine transition. Invalid transitions are logged and rejected.</figcaption>
+        <figcaption>Figure 4. The <code>can_transition_to()</code> method validates every state machine transition. Invalid transitions are logged and rejected.</figcaption>
       </figure>
 
       <h3>Supervisor Architecture</h3>
@@ -575,12 +553,6 @@
 
       <p>Every state transition does two things: it broadcasts the new state via the watch channel, and it emits a Tauri event <code>"engine-state-changed"</code> with the serialised state. The Svelte frontend listens for this event and updates <code>inferenceStore.lifecycleState</code>, which drives loading screens, error states, and ready indicators.</p>
 
-      <!-- CODESNAP: app/src-tauri/src/engine/supervisor.rs:L129-L162 — The select! loop -->
-      <figure class="code-figure">
-        <img src="assets/images/code/supervisor-select-loop.png" alt="The tokio select! loop inside the EngineSupervisor run method, showing the three concurrent event sources">
-        <figcaption>Figure 13. The supervisor's <code>select!</code> loop. The health timer fires only when <code>is_running</code> is true; the restart delay fires only when <code>restart_pending</code> is true.</figcaption>
-      </figure>
-
       <h3>Spawn Sequence</h3>
       <p>When the supervisor receives a <code>Start</code> command, the <code>do_spawn_sequence()</code> method executes a 12-step procedure that takes the engine from nothing to healthy.</p>
 
@@ -640,12 +612,6 @@
           </tr>
         </tbody>
       </table>
-
-      <!-- CODESNAP: engine/crates/smolpc-engine-client/src/spawn.rs:L488-L496 — SpawnLockGuard RAII -->
-      <figure class="code-figure">
-        <img src="assets/images/code/spawn-lock-guard.png" alt="SpawnLockGuard struct with Drop implementation that removes the lock file">
-        <figcaption>Figure 14. The <code>SpawnLockGuard</code> removes the lock file on drop, ensuring cleanup on all exit paths including panics and early returns.</figcaption>
-      </figure>
 
       <h3>Health Check Loop</h3>
       <p>While in the <code>Running</code> state, the supervisor runs a two-phase health check every 10 seconds.</p>
@@ -710,11 +676,6 @@
       <h3>TTS Sidecar Lifecycle</h3>
       <p>The TTS sidecar (<code>smolpc-tts-server</code>) is managed by the engine host, not the supervisor. It runs as a separate process on port 19433 with the same detached/windowless flags. Health is checked at 200ms intervals during startup with a 15-second total budget. The engine proxies <code>/v1/audio/speech</code> requests to <code>localhost:19433/synthesize</code>. If a speech request finds the sidecar unhealthy, the engine attempts one respawn before returning 503.</p>
 
-      <!-- CODESNAP: engine/crates/smolpc-engine-host/src/types.rs:L316-L333 — RAII guards -->
-      <figure class="code-figure">
-        <img src="assets/images/code/raii-guards.png" alt="TransitionGuard and GenerationPermit RAII structs that clean up atomic flags on drop">
-        <figcaption>Figure 15. <code>TransitionGuard</code> and <code>GenerationPermit</code> use RAII to guarantee that atomic state flags are reset on all exit paths, preventing permanently stuck flags.</figcaption>
-      </figure>
     </section>
 
 
@@ -723,7 +684,7 @@
     <!-- ================================================================== -->
     <section id="api">
       <h2>API Surface</h2>
-      <p>The engine exposes 15 HTTP endpoints on <code>localhost:19432</code>. Every request (except <code>/engine/health</code>) must include a Bearer token in the <code>Authorization</code> header. Token comparison uses constant-time equality to prevent timing side-channel attacks.</p>
+      <p>The engine exposes 13 HTTP endpoints on <code>localhost:19432</code>. Every request must include a Bearer token in the <code>Authorization</code> header. Token comparison uses constant-time equality to prevent timing side-channel attacks.</p>
 
       <h3>Authentication</h3>
       <p>The token is a 48-character alphanumeric string generated by <code>OsRng</code> and passed to the engine via the <code>SMOLPC_ENGINE_TOKEN</code> environment variable. It is stored on disk in <code>engine-token.txt</code> inside <code>%LOCALAPPDATA%\SmolPC 2.0\engine-runtime\</code>. The token is rotated on every engine spawn -- restarting the engine invalidates all previous tokens. Verification uses a hand-rolled XOR-based comparison that accumulates byte differences and returns equality only if the accumulated diff is zero, taking the same time regardless of where a mismatch occurs.</p>
@@ -743,7 +704,7 @@
             <td><code>GET</code></td>
             <td><code>/engine/health</code></td>
             <td>Liveness check. Returns <code>ok</code> boolean and state (<code>idle</code>, <code>starting</code>, <code>resolving_assets</code>, <code>probing</code>, <code>loading_model</code>, <code>ready</code>, <code>failed</code>).</td>
-            <td>No</td>
+            <td>Yes</td>
           </tr>
           <tr>
             <td><code>GET</code></td>
@@ -1000,12 +961,6 @@
       <h3>Thinking Filter</h3>
       <p>Qwen3 models may emit chain-of-thought reasoning wrapped in <code>&lt;think&gt;...&lt;/think&gt;</code> tags, even when the <code>/nothink</code> directive is present. The <code>ThinkingFilter</code> in <code>chat.rs</code> acts as a safety net that strips these blocks from the SSE token stream before they reach the client.</p>
       <p>The filter is a state machine that buffers incoming tokens and tracks whether it is currently inside a thinking block. It handles partial tags at token boundaries (for example, one token ending with <code>&lt;thi</code> and the next starting with <code>nk&gt;</code>) by computing the longest suffix of the buffer that could be a prefix of the target tag. At end-of-stream, any remaining buffered text outside a thinking block is flushed. This makes the filter robust against arbitrary tokenisation splits.</p>
-
-      <!-- CODESNAP: engine/crates/smolpc-engine-host/src/chat.rs:L20-L103 — ThinkingFilter -->
-      <figure class="code-figure">
-        <img src="assets/images/code/thinking-filter.png" alt="ThinkingFilter struct and its push method that strips think tags from the token stream">
-        <figcaption>Figure 16. The <code>ThinkingFilter</code> strips <code>&lt;think&gt;...&lt;/think&gt;</code> blocks from the SSE token stream. The <code>partial_tag_suffix_len</code> helper handles tags split across token boundaries.</figcaption>
-      </figure>
 
       <h3>Graceful Degradation</h3>
       <p>If the microphone is missing or the TTS sidecar fails to start, voice controls are disabled but text chat remains fully functional. The voice semaphore (capacity 1) serialises STT and TTS operations so that a hung transcription cannot block a concurrent speech request indefinitely -- the 30-second semaphore timeout returns a 504 and frees the resource.</p>
