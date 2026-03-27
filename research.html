@@ -22,6 +22,120 @@
   <main>
     <h1>Research</h1>
 
+    <section id="requirements-discovery">
+      <h2>Requirements Discovery</h2>
+      <p>Before any technology decisions were made, we carried out structured requirements discovery to understand real user needs in an educational context. We reached teachers and IT administrators through our project supervisor, Prof. Mohamedally, who facilitated contact with relevant stakeholders. This ensured an authentic educational context while respecting access limitations in schools.</p>
+
+      <h3>Research Method Flow</h3>
+      <div class="flow-diagram">
+        <div class="flow-step">
+          <div class="flow-box flow-box--primary">Project Supervisor<br><small>(Prof. Mohamedally)</small></div>
+          <div class="flow-arrow">↓</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-box">Contact with Teachers &amp; IT Admins<br><small>via educational network</small></div>
+          <div class="flow-arrow">↓</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-box">Key Insights Gathered<br><small>Privacy · Offline access · Budget constraints · Lightweight hardware</small></div>
+          <div class="flow-arrow">↓</div>
+        </div>
+        <div class="flow-step flow-step--split">
+          <div class="flow-box flow-box--secondary">Personas &amp;<br>User Scenarios</div>
+          <div class="flow-box flow-box--secondary">MoSCoW<br>Requirements</div>
+        </div>
+      </div>
+
+      <h3>Cloud AI vs Local AI — Comparative Analysis</h3>
+      <p>A key early research question was whether to build on cloud-based AI infrastructure or commit fully to local inference. The comparison below summarises why local AI was the only viable direction for a school-focused deployment.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Factor</th>
+            <th>Cloud AI (e.g. ChatGPT, Copilot)</th>
+            <th>Local AI (SmolPC 2.0)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Internet required</td>
+            <td>Yes — constant connection needed</td>
+            <td>No — fully offline after setup</td>
+          </tr>
+          <tr>
+            <td>Data privacy</td>
+            <td>Student code sent to external servers — GDPR concern</td>
+            <td>100% on-device, nothing leaves the machine</td>
+          </tr>
+          <tr>
+            <td>Cost</td>
+            <td>Subscription-based, per user</td>
+            <td>Free after initial setup</td>
+          </tr>
+          <tr>
+            <td>School suitability</td>
+            <td>Poor — requires accounts, internet, and cloud trust</td>
+            <td>High — works in any classroom environment</td>
+          </tr>
+          <tr>
+            <td>Hardware requirements</td>
+            <td>Low (cloud does the work)</td>
+            <td>Optimised for 4GB RAM+ budget mini PCs</td>
+          </tr>
+          <tr>
+            <td>Deployment</td>
+            <td>Account management per student</td>
+            <td>Single USB bundle, no admin rights needed</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>HCI Evaluation — Heuristic Analysis</h3>
+      <p>We applied Nielsen's usability heuristics to evaluate our prototype at two stages of development. Problems found in the initial prototype directly informed the design decisions in the final version.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Heuristic</th>
+            <th>Problem in Initial Prototype</th>
+            <th>Solution in Final Prototype</th>
+            <th>Severity</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Visibility of System Status</td>
+            <td>No indicator shown when the AI was processing or generating a response</td>
+            <td>Added a visible "Generating…" loading icon in the sidebar</td>
+            <td>2</td>
+          </tr>
+          <tr>
+            <td>Match Between System and the Real World</td>
+            <td>Prompts used technical jargon unfamiliar to student users</td>
+            <td>Replaced with plain, user-friendly language and icons</td>
+            <td>2</td>
+          </tr>
+          <tr>
+            <td>User Control and Freedom</td>
+            <td>AI output overwrote existing text with no undo option</td>
+            <td>Added confirmation before insertion and enabled undo/redo</td>
+            <td>3</td>
+          </tr>
+          <tr>
+            <td>Consistency and Standards</td>
+            <td>Cluttered layout with action buttons placed away from related content</td>
+            <td>Unified tab-based shell with consistent layout across all assistant modes</td>
+            <td>2</td>
+          </tr>
+          <tr>
+            <td>Recognition Rather Than Recall</td>
+            <td>Icon-only buttons with no labels — not intuitive for new users</td>
+            <td>Labelled controls and contextual help text added near the input bar</td>
+            <td>2</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
     <section id="related-projects">
       <h2>Related Projects Review</h2>
       <p>Before beginning development, we reviewed the original SmolPC project and related open-source tools to understand what had already been built, what worked well, and where the gaps were. This review directly shaped the scope, architecture, and design decisions of SmolPC 2.0.</p>
@@ -396,6 +510,15 @@
           </tr>
         </tbody>
       </table>
+    </section>
+
+    <section id="consent-forms">
+      <h2>Ethical Approval &amp; Consent Forms</h2>
+      <p>As part of our HCI research process, we conducted pseudo-user testing with coursemates to evaluate our prototype before wider deployment. All participants provided informed consent prior to taking part. The anonymised consent forms collected during this process are shown below.</p>
+      <figure>
+        <img src="assets/images/consent-forms.png" alt="Anonymised consent forms from pseudo-user testing participants" style="width:100%;max-width:900px;display:block;margin:1.5rem auto;border:1px solid #dde;border-radius:8px;">
+        <figcaption style="text-align:center;font-size:0.85rem;color:#666;margin-top:0.5rem;">Figure: Anonymised informed consent forms collected from pseudo-user testing participants (coursemates).</figcaption>
+      </figure>
     </section>
 
     <section id="references">
