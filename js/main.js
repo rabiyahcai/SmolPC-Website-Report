@@ -133,8 +133,9 @@ blocks.forEach((_, i) => {
 
 function go(n) {
   offset = Math.max(0, Math.min(n, max));
-  const cardW = track.children[0].offsetWidth + 16;
+  const cardW = track.children[0].getBoundingClientRect().width + 16;
   track.style.transform = `translateX(-${offset * cardW}px)`;
+  document.querySelectorAll("#track ~ .dots .dot, #dots .dot").forEach((d, i) => d.classList.toggle("active", i === offset));
   document.querySelectorAll(".dot").forEach((d, i) => d.classList.toggle("active", i === offset));
   prev.disabled = offset === 0;
   next.disabled = offset >= max;
@@ -143,3 +144,31 @@ function go(n) {
 prev.onclick = () => go(offset - 1);
 next.onclick = () => go(offset + 1);
 go(0);
+
+const personaTrack = document.getElementById("personas-track");
+const personaDotsEl = document.getElementById("personas-dots");
+const personaPrev = document.getElementById("personas-prev");
+const personaNext = document.getElementById("personas-next");
+const personaCards = personaTrack.querySelectorAll(".card");
+let personaOffset = 0;
+const personaMax = personaCards.length - 1;
+
+personaCards.forEach((_, i) => {
+  const d = document.createElement("div");
+  d.className = "dot" + (i === 0 ? " active" : "");
+  d.onclick = () => gotoPersona(i);
+  personaDotsEl.appendChild(d);
+});
+
+function gotoPersona(n) {
+  personaOffset = Math.max(0, Math.min(n, personaMax));
+  const cardW = personaCards[0].offsetWidth + 16;
+  personaTrack.style.transform = `translateX(-${personaOffset * cardW}px)`;
+  personaDotsEl.querySelectorAll(".dot").forEach((d, i) => d.classList.toggle("active", i === personaOffset));
+  personaPrev.disabled = personaOffset === 0;
+  personaNext.disabled = personaOffset >= personaMax;
+}
+
+personaPrev.onclick = () => gotoPersona(personaOffset - 1);
+personaNext.onclick = () => gotoPersona(personaOffset + 1);
+gotoPersona(0);
