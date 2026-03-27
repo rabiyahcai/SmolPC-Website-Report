@@ -360,8 +360,9 @@ Representative named tests cited on this page:
       <p>
         Performance matters because SmolPC runs local models on varied hardware. The platform therefore
         tracks readiness state, runtime selection, memory pressure, streaming behaviour, and benchmark
-        instrumentation. This section records the measurement areas that were monitored during
-        development and the behaviours that matter most for real local deployment.
+        instrumentation. In addition to the broader monitoring areas below, we produced standalone
+        benchmark reports on three different Windows laptops to measure the real effect of hardware,
+        backend selection, and model size on local inference.
       </p>
 
       <table>
@@ -412,6 +413,179 @@ Representative named tests cited on this page:
           </tr>
         </tbody>
       </table>
+
+      <h3>Benchmark Method</h3>
+      <p>
+        The benchmark runs used the project&apos;s dedicated benchmarking tool with a fixed prompt corpus and
+        deterministic decoding settings. This kept the prompt inputs aligned across all three machines,
+        but the configurations were not perfectly identical: two machines used <code>10</code> runs per
+        prompt with <code>2</code> warmups, while the Core Ultra Vivobook used <code>3</code> runs per
+        prompt with <code>1</code> warmup for a quicker backend comparison pass. The results below
+        should therefore be read as representative measurements that support the hardware-aware runtime
+        story, rather than as one fully normalised laboratory benchmark matrix.
+      </p>
+      <p>
+        We focused the main report on <strong>time to first token</strong>, <strong>tokens per
+        second</strong>, and <strong>time per output token</strong>, because these most directly affect
+        perceived responsiveness in a local assistant. Full raw JSON artefacts, including per-prompt
+        breakdowns and skipped combinations, are linked in the Appendix benchmark section.
+      </p>
+
+      <h3>Test Machines</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Machine</th>
+            <th>Hardware Summary</th>
+            <th>Benchmark Coverage</th>
+            <th>Main Role in Testing</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>LAPTOP-4Q14H91S</td>
+            <td>11th Gen Intel Core i5-1135G7, 7.7 GB RAM, Intel Iris Xe</td>
+            <td>CPU benchmark for <code>qwen2.5-1.5b-instruct</code>; attempted NPU and 4B paths but they were unavailable on this setup</td>
+            <td>Older low-memory fallback baseline</td>
+          </tr>
+          <tr>
+            <td>codex-cpu-full-20260327</td>
+            <td>12th Gen Intel Core i7-1255U, 31.7 GB RAM, Intel Iris Xe</td>
+            <td>CPU benchmark for both <code>qwen2.5-1.5b-instruct</code> and <code>qwen3-4b</code></td>
+            <td>Stronger CPU-only comparison point</td>
+          </tr>
+          <tr>
+            <td>vivobook-pinto</td>
+            <td>Intel Core Ultra 9 285H, 15.4 GB RAM, NVIDIA RTX 4050 Laptop GPU, Intel Arc 140T GPU</td>
+            <td>CPU, DirectML, and OpenVINO NPU benchmarks for both <code>qwen2.5-1.5b-instruct</code> and <code>qwen3-4b</code></td>
+            <td>Main backend-comparison machine</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Summary Results</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Machine</th>
+            <th>Backend</th>
+            <th>Model</th>
+            <th>Mean TTFT (ms)</th>
+            <th>Mean Tok/s</th>
+            <th>Mean TPOT (ms)</th>
+            <th>Cold Start TTFT (ms)</th>
+            <th>Result Note</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>LAPTOP-4Q14H91S</td>
+            <td>CPU</td>
+            <td><code>qwen2.5-1.5b-instruct</code></td>
+            <td>684.4</td>
+            <td>7.88</td>
+            <td>129.0</td>
+            <td>621</td>
+            <td>Usable fallback on older hardware; only successful path on this machine</td>
+          </tr>
+          <tr>
+            <td>codex-cpu-full-20260327</td>
+            <td>CPU</td>
+            <td><code>qwen2.5-1.5b-instruct</code></td>
+            <td>476.8</td>
+            <td>13.93</td>
+            <td>72.8</td>
+            <td>589</td>
+            <td>Noticeably stronger CPU-only baseline than the older i5 laptop</td>
+          </tr>
+          <tr>
+            <td>codex-cpu-full-20260327</td>
+            <td>CPU</td>
+            <td><code>qwen3-4b</code></td>
+            <td>1082.7</td>
+            <td>3.97</td>
+            <td>253.7</td>
+            <td>1364</td>
+            <td>Larger model remains usable, but much slower on CPU</td>
+          </tr>
+          <tr>
+            <td>vivobook-pinto</td>
+            <td>CPU</td>
+            <td><code>qwen2.5-1.5b-instruct</code></td>
+            <td>106.6</td>
+            <td>51.61</td>
+            <td>19.4</td>
+            <td>115</td>
+            <td>Very strong CPU fallback on newer hardware</td>
+          </tr>
+          <tr>
+            <td>vivobook-pinto</td>
+            <td>CPU</td>
+            <td><code>qwen3-4b</code></td>
+            <td>245.5</td>
+            <td>15.07</td>
+            <td>66.4</td>
+            <td>1382</td>
+            <td>4B model is practical on a stronger CPU, but not the fastest lane</td>
+          </tr>
+          <tr>
+            <td>vivobook-pinto</td>
+            <td>DirectML</td>
+            <td><code>qwen2.5-1.5b-instruct</code></td>
+            <td>154.2</td>
+            <td>108.62</td>
+            <td>8.5</td>
+            <td>614</td>
+            <td>Best sustained throughput for the smaller model</td>
+          </tr>
+          <tr>
+            <td>vivobook-pinto</td>
+            <td>DirectML</td>
+            <td><code>qwen3-4b</code></td>
+            <td>262.7</td>
+            <td>52.46</td>
+            <td>17.7</td>
+            <td>490</td>
+            <td>Best sustained throughput for the larger model</td>
+          </tr>
+          <tr>
+            <td>vivobook-pinto</td>
+            <td>OpenVINO NPU</td>
+            <td><code>qwen2.5-1.5b-instruct</code></td>
+            <td>2279.3</td>
+            <td>16.52</td>
+            <td>60.5</td>
+            <td>2298</td>
+            <td>Worked successfully, but was much slower than DirectML and CPU in these tests</td>
+          </tr>
+          <tr>
+            <td>vivobook-pinto</td>
+            <td>OpenVINO NPU</td>
+            <td><code>qwen3-4b</code></td>
+            <td>4091.5</td>
+            <td>7.88</td>
+            <td>127.0</td>
+            <td>4175</td>
+            <td>Highest latency path in this benchmark set</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="comparison-caption">
+        Peak memory is intentionally omitted from the main comparison table because the benchmark tracks
+        engine-process RSS rather than full GPU VRAM use. Throughput and latency are therefore the more
+        reliable headline metrics for the report body.
+      </p>
+
+      <h3>Key Findings</h3>
+      <ul>
+        <li>CPU fallback remained viable on every machine where the model assets were present, which supports the project&apos;s hardware-aware fallback strategy.</li>
+        <li>On the strongest laptop, DirectML delivered the best sustained throughput for both tested models, reaching 108.62 tok/s for <code>qwen2.5-1.5b-instruct</code> and 52.46 tok/s for <code>qwen3-4b</code>.</li>
+        <li>CPU often produced the lowest TTFT on the strongest laptop, but DirectML dominated longer generation throughput, which is more noticeable in sustained chat use.</li>
+        <li>OpenVINO NPU support was functional on the Core Ultra laptop, but in this benchmark set it did not outperform the CPU or DirectML paths on latency or sustained decoding speed.</li>
+        <li>The older 7.7 GB laptop completed only the smaller CPU benchmark path successfully; the 4B model was not available there and the attempted NPU path did not expose a usable device through OpenVINO.</li>
+        <li>All executed benchmark combinations completed without failed runs, so the main differences observed were performance and availability rather than stability.</li>
+      </ul>
     </section>
 
     <section id="uat">

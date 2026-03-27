@@ -242,6 +242,51 @@ npm run package:offline:bundle</code></pre>
 
     </section>
 
+    <section id="benchmark-artefacts">
+      <h2>Benchmark Artefacts</h2>
+      <p>
+        The performance-testing section summarises the benchmark results in report form. The raw JSON
+        reports used for that analysis are linked here so that assessors can inspect the exact per-prompt
+        runs, reliability counts, idle baselines, skipped combinations, and machine metadata directly.
+      </p>
+      <p>
+        All three reports use the same prompt corpus hash, but their run counts and warmup settings differ
+        slightly. They should therefore be read as representative measurements gathered under the same
+        benchmark tool and prompt set rather than as one perfectly identical hardware bake-off.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Artefact</th>
+            <th>Machine</th>
+            <th>Coverage</th>
+            <th>Link</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Benchmark report A</td>
+            <td>LAPTOP-4Q14H91S</td>
+            <td>CPU result for <code>qwen2.5-1.5b-instruct</code>, plus skipped entries for unavailable NPU and missing 4B assets</td>
+            <td><a href="assets/benchmarks/benchmark-LAPTOP-4Q14H91S-2026-03-27.json" target="_blank" rel="noopener noreferrer">Open JSON</a></td>
+          </tr>
+          <tr>
+            <td>Benchmark report B</td>
+            <td>codex-cpu-full-20260327</td>
+            <td>CPU results for <code>qwen2.5-1.5b-instruct</code> and <code>qwen3-4b</code></td>
+            <td><a href="assets/benchmarks/benchmark-codex-cpu-full-20260327-2026-03-27.json" target="_blank" rel="noopener noreferrer">Open JSON</a></td>
+          </tr>
+          <tr>
+            <td>Benchmark report C</td>
+            <td>vivobook-pinto</td>
+            <td>CPU, DirectML, and OpenVINO NPU results for both <code>qwen2.5-1.5b-instruct</code> and <code>qwen3-4b</code></td>
+            <td><a href="assets/benchmarks/benchmark-vivobook-pinto-2026-03-27.json" target="_blank" rel="noopener noreferrer">Open JSON</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
     <section id="gdpr">
       <h2>GDPR and Privacy of Data</h2>
       <p>
