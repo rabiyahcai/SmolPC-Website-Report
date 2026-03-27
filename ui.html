@@ -11,7 +11,7 @@
     <div class="nav-item"><a href="index.html">Home</a><div class="nav-dropdown"><a href="index.html#abstract">Abstract</a><a href="index.html#video">Video</a><a href="index.html#team">Team Members</a><a href="index.html#gantt">Project Timeline</a></div></div>
     <div class="nav-item"><a href="requirements.html">Requirements</a><div class="nav-dropdown"><a href="requirements.html#partner">Partner Introduction</a><a href="requirements.html#background">Background</a><a href="requirements.html#goals">Project Goals</a><a href="requirements.html#gathering">Requirements Gathering</a><a href="requirements.html#personas">Personas</a><a href="requirements.html#use-case-diagram">Use Case Diagram</a><a href="requirements.html#moscow">MoSCoW List</a></div></div>
     <div class="nav-item"><a href="research.html">Research</a><div class="nav-dropdown"><a href="research.html#requirements-discovery">Requirements Discovery</a><a href="research.html#related-projects">Related Projects</a><a href="research.html#technology-review">Technology Review</a><a href="research.html#summary">Summary</a><a href="research.html#consent-forms">Consent Forms</a></div></div>
-    <div class="nav-item"><a href="ui.html">UI Design</a><div class="nav-dropdown"><a href="ui.html#design-principles">Design Principles</a><a href="ui.html#overall-layout">Overall Layout</a><a href="ui.html#codehelper">CodeHelper</a><a href="ui.html#libreoffice">LibreOffice</a><a href="ui.html#gimp">GIMP</a><a href="ui.html#blender">Blender</a><a href="ui.html#artefacts">Artefacts</a></div></div>
+    <div class="nav-item"><a href="ui.html">UI Design</a><div class="nav-dropdown"><a href="ui.html#design-principles">Design Principles</a><a href="ui.html#unified-shell">Shared Shell</a><a href="ui.html#shared-wireframe">Wireframe</a><a href="ui.html#mode-adaptations">Mode Adaptations</a><a href="ui.html#artefacts">Artefacts</a></div></div>
     <div class="nav-item"><a href="system.html">System Design</a><div class="nav-dropdown"><a href="system.html#architecture">Architecture</a><a href="system.html#sequence-diagrams">Sequence Diagrams</a><a href="system.html#data-storage">Data Storage</a><a href="system.html#design-patterns">Design Patterns</a><a href="system.html#packages-apis">Packages &amp; APIs</a></div></div>
     <div class="nav-item"><a href="implementation.html">Implementation</a><div class="nav-dropdown"><a href="implementation.html#overview">Overview</a><a href="implementation.html#shared-infrastructure">Shared Infrastructure</a><a href="implementation.html#unified-shell">Unified Shell</a><a href="implementation.html#codehelper">CodeHelper</a><a href="implementation.html#gimp">GIMP</a><a href="implementation.html#blender">Blender</a><a href="implementation.html#libreoffice">LibreOffice</a></div></div>
     <div class="nav-item"><a href="testing.html">Testing</a><div class="nav-dropdown"><a href="testing.html#strategy">Strategy</a><a href="testing.html#unit-testing">Unit Testing</a><a href="testing.html#integration-testing">Integration Testing</a><a href="testing.html#prompt-testing">Prompt Testing</a><a href="testing.html#compatibility-testing">Compatibility</a><a href="testing.html#performance-testing">Performance</a><a href="testing.html#uat">User Acceptance</a></div></div>
@@ -48,7 +48,7 @@
       <div class="card">
         <h3>Consistency</h3>
         <p>
-          Code, LibreOffice, GIMP, and Blender all use the same core layout: shared sidebar,
+          Code, Writer, Slides, GIMP, and Blender all use the same core layout: shared sidebar,
           common header controls, the same conversation view, the same composer bar, and the same setup
           and status language. This means that switching tools feels like changing context inside one
           product rather than launching a new product each time.
@@ -94,13 +94,14 @@
 
     </section>
 
-    <section id="overall-layout">
+    <section id="unified-shell">
       <h2>Unified App Shell</h2>
       <p>
-        The implemented interface is centred on a reusable application shell. This shell gives every mode
-        the same basic structure while still allowing mode-specific behaviour, copy, setup checks, and
-        host-application controls. The result is a UI that feels coherent even though the underlying
-        assistants target very different workflows.
+        The implemented interface is centred on one reusable application shell. The current app builds
+        this shell from shared frontend pieces for the sidebar, workspace header, mode switcher,
+        conversation view, composer, setup surfaces, overlays, and help. Switching from Code to Writer,
+        Slides, GIMP, or Blender changes the active workflow inside that shell rather than replacing the
+        entire UI with a different frontend.
       </p>
 
       <table>
@@ -114,18 +115,23 @@
         <tbody>
           <tr>
             <td>Sidebar</td>
-            <td>Shows and switches between saved conversations.</td>
-            <td>Supports continuity and makes the app feel like a persistent workspace rather than a one-off prompt box.</td>
+            <td>Shows saved conversations, search, and chat actions inside one persistent workspace.</td>
+            <td>Keeps the core layout stable across all modes and makes the app feel like one product instead of separate assistants.</td>
           </tr>
           <tr>
-            <td>Mode selector</td>
-            <td>Changes the active assistant workflow without leaving the main shell.</td>
-            <td>Reinforces the idea of one platform with multiple specialised modes.</td>
+            <td>Mode switcher</td>
+            <td>Changes the active workflow between Code, GIMP, Blender, Writer, and Slides without leaving the shell.</td>
+            <td>Reinforces the idea of one platform with several specialised modes rather than several standalone apps.</td>
           </tr>
           <tr>
             <td>Workspace header</td>
-            <td>Shows current context and provides access to help, model info, hardware, and diagnostics.</td>
-            <td>Keeps important system state visible without cluttering the main conversation area.</td>
+            <td>Shows the current conversation title, mode controls, export, shortcuts, hardware status, and model/runtime status.</td>
+            <td>Keeps important system state visible at the top of every workflow without changing the overall page structure.</td>
+          </tr>
+          <tr>
+            <td>Workspace controls row</td>
+            <td>Holds the context toggle, theme controls, and mode-help access beneath the header.</td>
+            <td>Provides a second layer of shared controls that stays consistent even when the active mode changes.</td>
           </tr>
           <tr>
             <td>Startup loading screen</td>
@@ -133,191 +139,218 @@
             <td>Prevents the interface from appearing broken while local runtime preparation is still in progress.</td>
           </tr>
           <tr>
-            <td>Setup banner and setup panel</td>
-            <td>Warns the user when a mode is unavailable or missing prerequisites.</td>
-            <td>Essential for host-integrated tools such as GIMP, Blender, and LibreOffice.</td>
+            <td>Setup banner, setup panel, and setup wizard</td>
+            <td>Warn when a dependency or model is missing, show detailed setup status, and guide first-run provisioning.</td>
+            <td>These are the main UI mechanisms that make host-integrated modes understandable without inventing different setup screens per mode.</td>
           </tr>
           <tr>
             <td>Conversation view and welcome state</td>
-            <td>Displays mode-specific onboarding copy, example prompts, and the running conversation.</td>
-            <td>Supports both first-time guidance and ongoing use in the same space.</td>
+            <td>Show mode-specific onboarding copy, example prompts, and the running conversation in the same content area.</td>
+            <td>Most visible mode changes happen here, but they still sit inside the same shell and message layout.</td>
           </tr>
           <tr>
-            <td>Composer bar</td>
-            <td>Provides a single input pattern for all text-based interactions, including an optional microphone control in SmolPC 2.0&apos;s shared chat shell.</td>
-            <td>Reduces cognitive load by keeping the core interaction model consistent while still allowing low-friction dictation where supported.</td>
-          </tr>
-          <tr>
-            <td>Per-message voice controls</td>
-            <td>Allow the user to play or stop local read-aloud on assistant responses.</td>
-            <td>Supports accessibility and hands-free use without sending content to a cloud TTS service.</td>
+            <td>Composer bar and voice controls</td>
+            <td>Provide one input pattern for typed prompts, dictation, stop-generation behaviour, and per-message read-aloud.</td>
+            <td>Preserves one consistent interaction model while still supporting accessibility features and longer conversations.</td>
           </tr>
           <tr>
             <td>Model recommendation banner</td>
-            <td>Warns when a tool-backed mode is likely to perform badly on the currently selected small model.</td>
-            <td>Helps users make a sensible performance-quality tradeoff without exposing raw backend details first.</td>
+            <td>Warns when the current small model is a poor fit for tool-backed modes such as GIMP or LibreOffice.</td>
+            <td>Lets the same shell guide model choice without creating separate performance or diagnostic pages per mode.</td>
           </tr>
           <tr>
             <td>Help drawer and overlays</td>
-            <td>Explain mode purpose, controls, troubleshooting steps, and runtime status.</td>
-            <td>Improves learnability and gives non-expert users confidence in an unfamiliar local AI workflow.</td>
+            <td>Explain mode purpose, controls, troubleshooting steps, hardware, and runtime/model information.</td>
+            <td>Supports learnability and recovery while keeping advanced details out of the main conversation view.</td>
           </tr>
           <tr>
             <td>Host app launch controls</td>
-            <td>Open or focus the relevant external application from the current workflow.</td>
-            <td>Bridges the gap between the assistant shell and real user tasks inside GIMP, Blender, or LibreOffice.</td>
+            <td>Open or focus GIMP, Blender, or LibreOffice from inside the current workflow when the mode is ready.</td>
+            <td>Bridges the gap between the shared shell and the real host applications without changing the UI family.</td>
           </tr>
         </tbody>
       </table>
     </section>
 
-    <section id="codehelper">
-      <h2>Code Mode</h2>
+    <section id="shared-wireframe">
+      <h2>Primary Shell Sketch and Wireframe</h2>
       <p>
-        Code mode is the clearest and simplest mode in the current UI. It uses the shared shell without
-        needing an external host application, which makes it the easiest place to establish the product&apos;s
-        overall interaction pattern.
+        Because the current product uses one shared shell, the main UI artefacts on this page are also
+        shared-shell artefacts: one hand-drawn sketch and one interactive high-fidelity wireframe. Code
+        mode is used as the clearest reference view because it follows the common shell without needing an
+        external host application, which makes the shared interaction pattern easiest to see.
       </p>
 
       <div class="card">
-        <h3>Implemented UI Decisions</h3>
+        <h3>Why Code Mode Is the Reference View</h3>
         <p>
-          This mode emphasises a clean conversation view, clear prompt starters, visible runtime status,
-          and low-friction onboarding. The welcome state explains what Code mode is for, the shared
-          conversation view streams responses progressively, and the same shell exposes keyboard
-          shortcuts, model information, and hardware status when needed. Code mode is also the clearest
-          example of how optional voice controls work inside SmolPC 2.0: a microphone button in the
-          composer for local dictation and a read-aloud control on assistant messages for local playback.
+          Code mode shows the common sidebar, mode switcher, workspace header, controls row, welcome
+          state, conversation view, and composer without the extra launch or readiness steps needed by
+          host-integrated modes. It therefore provides the best single snapshot of the shared shell before
+          the report explains how Writer, Slides, GIMP, and Blender adapt that same structure.
         </p>
       </div>
 
       <div class="card">
         <h3>Hand-Drawn Sketch</h3>
-        <img src="assets/images/sketch unified ui.jpeg" alt="Hand-drawn sketch of the unified SmolPC 2.0 app shell showing mode tabs, chat history sidebar, conversation area and input bar" style="width:100%;border-radius:8px;margin-top:0.75rem;">
-        <p>The earliest Code mode sketch focused on five recurring states: the empty welcome view, an active coding conversation, loading and streaming feedback, microphone-driven input, and the shared shell layout used across modes. Even as the final interface evolved during implementation, those priorities stayed constant: readable conversation space, low-friction input, and visible system status.</p>
+        <img src="assets/images/smolpc-initial-sketch.jpeg" alt="Hand-drawn sketch of the early SmolPC 2.0 shared shell showing the sidebar, mode controls, conversation space, and input area" style="width:100%;border-radius:8px;margin-top:0.75rem;">
+        <p>This early shared-shell sketch captures the first attempt to unify the platform around one desktop layout rather than separate assistant frontends. The core structure is already visible: a persistent sidebar, a central conversation workspace, a shared input area, and clear mode-level controls that could be reused across coding, office, image-editing, and 3D workflows.</p>
       </div>
 
       <div class="card">
-        <h3>High-Fidelity Wireframe</h3>
-        <img src="assets/images/codehelper wireframe .jpeg" alt="High-fidelity wireframe of the CodeHelper assistant mode" style="width:100%;border-radius:8px;margin-top:0.75rem;">
+        <h3>Shared-Shell High-Fidelity Wireframe</h3>
+        <div class="wireframe-frame">
+          <iframe
+            class="wireframe-embed"
+            src="assets/wireframes/codehelper-wireframe.html"
+            title="Interactive high-fidelity wireframe of the SmolPC 2.0 shared shell"
+            loading="lazy"></iframe>
+        </div>
         <p>
-          The current Code mode wireframe is also available as an interactive HTML artefact:
-          <a href="assets/wireframes/codehelper-wireframe.html" target="_blank" rel="noopener noreferrer">CodeHelper Wireframe (open full page)</a>.
-          Together, the image and interactive version preserve the clearest high-fidelity snapshot of the shell design that informed the implemented interface.
-        </p>
-      </div>
-
-    </section>
-
-    <section id="libreoffice">
-      <h2>LibreOffice Modes</h2>
-      <p>
-        The LibreOffice workflows reuse the same shell as Code mode but place more emphasis on setup
-        readiness, host-application launching, and concise structured task descriptions. This lets the
-        UI support document and presentation work without inventing a totally separate interaction model.
-      </p>
-
-      <div class="card">
-        <h3>Implemented UI Decisions</h3>
-        <p>
-          Writer and Slides use mode-specific welcome copy, a shared LibreOffice launch control, and
-          setup messaging that makes it clear the user is working with a real desktop tool rather than a
-          generic chatbot. The UI also warns when a stronger tool-capable model would be more suitable,
-          which helps these modes stay understandable on lower-spec machines.
+          The current wireframe is embedded below and is also available as a standalone HTML artefact:
+          <a href="assets/wireframes/codehelper-wireframe.html" target="_blank" rel="noopener noreferrer">Shared-Shell Wireframe (open full page)</a>.
+          It preserves the clearest high-fidelity snapshot of the common shell structure that informed
+          the implemented SmolPC 2.0 interface.
         </p>
       </div>
 
       <div class="card">
-        <h3>High-Fidelity Wireframe</h3>
-        <img src="assets/images/libreoffice wireframe.jpeg" alt="High-fidelity wireframe of the LibreOffice assistant mode showing Writer, Calc and Impress tabs, document preview panel and macro snippets" style="width:100%;border-radius:8px;margin-top:0.75rem;">
-        <p>The LibreOffice design work centred on mode switching, setup readiness, host-application launch controls, and task prompts that feel specific to writing and slides rather than generic chat. Those themes carried through into the implemented welcome copy, availability messaging, and example workflows.</p>
-      </div>
-    </section>
-
-    <section id="gimp">
-      <h2>GIMP Assistant</h2>
-      <p>
-        GIMP mode required a stronger emphasis on host-state awareness than Code mode because the
-        usefulness of the assistant depends on the external editor being available and correctly prepared.
-        The UI therefore gives setup, mode availability, and edit feedback a more prominent role.
-      </p>
-
-      <div class="card">
-        <h3>Implemented UI Decisions</h3>
+        <h3>Design Evolution</h3>
         <p>
-          The mode-specific copy encourages direct plain-English image-editing prompts, while setup
-          surfaces explain what needs to be ready before the assistant can act. The shared shell then
-          reuses the same conversation view and launch controls, which keeps the workflow approachable
-          for users who may not know GIMP&apos;s menu structure well but still need clear recovery guidance
-          if the bridge or host app is unavailable.
+          The final shared shell emerged through a small number of increasingly unified concepts rather
+          than through separate UI tracks for each mode. The two snapshots below show that progression:
+          an earlier Code-focused concept and an early unified-shell layout that moved the project closer
+          to the final SmolPC 2.0 structure.
         </p>
-      </div>
-
-      <div class="card">
-        <h3>High-Fidelity Wireframe</h3>
-        <img src="assets/images/gimp wireframe.jpeg" alt="High-fidelity wireframe of the GIMP assistant mode showing image preview panel, layer stack, quick actions and Script-Fu snippets" style="width:100%;border-radius:8px;margin-top:0.75rem;">
-        <p>Early GIMP design work focused on the balance between simplicity and host awareness: a familiar shared shell, a prominent launch control, and clear guidance for straightforward edit requests such as cropping, rotating, and colour adjustments. The final interface kept those ideas by foregrounding setup state and concise edit summaries.</p>
+        <div class="evolution-grid">
+          <figure class="evolution-card">
+            <img
+              class="evolution-image"
+              src="assets/images/initial-codehelper-ui.jpeg"
+              alt="Early Code-focused interface concept showing the conversation layout and assistant workspace"
+            >
+            <figcaption class="evolution-caption">
+              <strong>Initial Code-focused concept</strong>
+              This version explored the earliest assistant workspace structure before the interface was
+              fully reframed as one shared shell for all modes.
+            </figcaption>
+          </figure>
+          <figure class="evolution-card">
+            <img
+              class="evolution-image"
+              src="assets/images/initial-unified-ui.jpeg"
+              alt="Early unified shell concept for SmolPC 2.0 showing shared navigation and a common assistant workspace"
+            >
+            <figcaption class="evolution-caption">
+              <strong>Initial unified shell concept</strong>
+              This concept shows the transition toward a reusable platform layout with common navigation,
+              shared conversation space, and a single product identity across workflows.
+            </figcaption>
+          </figure>
+        </div>
       </div>
     </section>
 
-    <section id="blender">
-      <h2>Blender Assistant</h2>
+    <section id="mode-adaptations">
+      <h2>Mode-Specific Adaptations</h2>
       <p>
-        Blender mode has the most context-heavy UI story because it is designed around scene-aware
-        guidance rather than generic chat alone. The interface therefore uses its welcome copy and help
-        surfaces to steer users toward asking about the live scene, objects, modifiers, materials, and
-        specific modelling steps.
+        The final UI differences between modes are mainly differences in copy, guidance, readiness, help,
+        and host-launch behaviour rather than differences in page layout. Each mode below is therefore
+        described as an adaptation of the same shell, not as a different UI family.
       </p>
 
       <div class="card">
-        <h3>Implemented UI Decisions</h3>
+        <h3>Code</h3>
         <p>
-          Blender mode keeps the shared shell but places extra importance on clear troubleshooting,
-          contextual guidance, and mode help. This is because the user is often moving between the
-          assistant and a live 3D environment, so the design needs to keep scene-aware guidance
-          discoverable without overwhelming the main conversation area.
+          Code mode is the reference path through the shared shell. It uses the common welcome state,
+          quick examples, conversation view, composer, model info, hardware panel, keyboard shortcuts,
+          export control, context toggle, and optional voice controls without needing an external desktop
+          host application.
+        </p>
+        <p>
+          This makes it the simplest expression of SmolPC 2.0&apos;s common interaction model: one shell,
+          one conversation layout, and one set of status surfaces.
         </p>
       </div>
 
       <div class="card">
-        <h3>High-Fidelity Wireframe</h3>
-        <img src="assets/images/blender wireframe.jpeg" alt="High-fidelity wireframe of the Blender assistant mode showing 3D scene context panel, outliner, key shortcuts and scene-aware conversation" style="width:100%;border-radius:8px;margin-top:0.75rem;">
-        <p>Blender design exploration concentrated on scene-based guidance, host launching, and the relationship between the assistant shell and the active 3D workflow. That work shaped the later emphasis on contextual help, strong troubleshooting cues, and welcome content that steers users toward scene-aware questions.</p>
+        <h3>Writer / Slides</h3>
+        <p>
+          Writer and Slides reuse the same shell but change the welcome copy, suggestions, setup state,
+          and launch affordances to suit document and presentation work. The user still stays in the same
+          conversation layout, but the prompts, mode label, and help content become office-specific.
+        </p>
+        <p>
+          These modes also rely more visibly on LibreOffice readiness and launch controls, and the UI can
+          recommend a stronger tool-capable model when the selected small model would be a poor fit for
+          office workflows.
+        </p>
       </div>
 
+      <div class="card">
+        <h3>GIMP</h3>
+        <p>
+          GIMP keeps the same shell but places more emphasis on host-app availability, setup guidance,
+          and direct edit prompting. The main UI changes are in readiness messaging, the GIMP launch
+          control, the GIMP-specific help copy, and the expectation that the assistant will summarise
+          concrete image-editing actions rather than only answer general questions.
+        </p>
+        <p>
+          This lets the UI stay familiar while still making it obvious that the workflow depends on a
+          live external editor and bridge.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Blender</h3>
+        <p>
+          Blender again uses the same shell, but the welcome copy, example prompts, help drawer content,
+          and troubleshooting emphasis are all tuned for scene-aware guidance. The UI needs to encourage
+          questions about the active scene, object, material, or modelling step rather than generic chat.
+        </p>
+        <p>
+          The result is still one consistent frontend, but with Blender-specific guidance layered into
+          the shell through copy, launch behaviour, and contextual help.
+        </p>
+      </div>
     </section>
 
     <section id="artefacts">
       <h2>Design Artefacts Summary</h2>
-      <p>This repo-backed page now combines the unified shell sketch, high-fidelity wireframes for each major mode, and the implemented UI decisions that carried through into the shipped interface.</p>
+      <p>This page therefore centres on one shared-shell sketch and one interactive high-fidelity wireframe for the common SmolPC 2.0 interface. The supporting implemented screenshots appear in the Appendix user manual, while the rows below explain how each mode appears inside that same shell.</p>
       <table style="width:100%;border-collapse:collapse;margin-top:1rem;">
         <thead>
           <tr style="background:#1a1f5e;color:white;">
-            <th style="padding:0.75rem;text-align:left;">Mode</th>
-            <th style="padding:0.75rem;text-align:left;">Hand-Drawn Sketch</th>
-            <th style="padding:0.75rem;text-align:left;">High-Fidelity Wireframe</th>
+            <th style="padding:0.75rem;text-align:left;">Area</th>
+            <th style="padding:0.75rem;text-align:left;">Primary Artefact</th>
+            <th style="padding:0.75rem;text-align:left;">How It Appears in the Final UI</th>
           </tr>
         </thead>
         <tbody>
           <tr style="border-bottom:1px solid #ddd;">
             <td style="padding:0.75rem;">Unified App Shell</td>
-            <td style="padding:0.75rem;">Completed</td>
-            <td style="padding:0.75rem;">Completed (CodeHelper)</td>
+            <td style="padding:0.75rem;">Hand-drawn sketch + interactive shared-shell wireframe</td>
+            <td style="padding:0.75rem;">Shared layout, navigation, sidebar, workspace header, conversation view, and composer reused across all modes</td>
           </tr>
           <tr style="border-bottom:1px solid #ddd;background:#f9f9f9;">
-            <td style="padding:0.75rem;">LibreOffice Assistant</td>
-            <td style="padding:0.75rem;">-</td>
-            <td style="padding:0.75rem;">Completed</td>
+            <td style="padding:0.75rem;">Code mode</td>
+            <td style="padding:0.75rem;">Shared-shell wireframe + implemented screen</td>
+            <td style="padding:0.75rem;">Reference path without an external host app, with quick examples, context controls, export, and voice support inside the common shell</td>
+          </tr>
+          <tr style="border-bottom:1px solid #ddd;background:#f9f9f9;">
+            <td style="padding:0.75rem;">Writer / Slides</td>
+            <td style="padding:0.75rem;">Shared-shell adaptation</td>
+            <td style="padding:0.75rem;">Mode-specific onboarding, launch controls, setup messaging, and office-oriented prompt framing</td>
           </tr>
           <tr style="border-bottom:1px solid #ddd;">
             <td style="padding:0.75rem;">GIMP Assistant</td>
-            <td style="padding:0.75rem;">-</td>
-            <td style="padding:0.75rem;">Completed</td>
+            <td style="padding:0.75rem;">Shared-shell adaptation</td>
+            <td style="padding:0.75rem;">Host-app availability, setup guidance, launch controls, and concise edit summaries inside the same shell</td>
           </tr>
           <tr style="background:#f9f9f9;">
-            <td style="padding:0.75rem;">Blender Assistant</td>
-            <td style="padding:0.75rem;">-</td>
-            <td style="padding:0.75rem;">Completed</td>
+            <td style="padding:0.75rem;">Blender</td>
+            <td style="padding:0.75rem;">Shared-shell adaptation</td>
+            <td style="padding:0.75rem;">Scene-aware guidance, contextual help, troubleshooting cues, and Blender-specific welcome content</td>
           </tr>
         </tbody>
       </table>
