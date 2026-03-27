@@ -6,17 +6,17 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <nav>    
+  <nav>
     <a href="index.html" class="nav-logo"> <img src="assets/images/smolpc.png" alt="SmolPC 2.0"> </a>
-    <a href="index.html">Home</a>
-    <a href="requirements.html">Requirements</a>
-    <a href="research.html">Research</a>
-    <a href="ui.html">UI Design</a>
-    <a href="system.html">System Design</a>
-    <a href="implementation.html">Implementation</a>
-    <a href="testing.html">Testing</a>
-    <a href="evaluation.html">Evaluation</a>
-    <a href="appendices.html">Appendices</a>
+    <div class="nav-item"><a href="index.html">Home</a><div class="nav-dropdown"><a href="index.html#abstract">Abstract</a><a href="index.html#video">Video</a><a href="index.html#team">Team Members</a><a href="index.html#gantt">Project Timeline</a></div></div>
+    <div class="nav-item"><a href="requirements.html">Requirements</a><div class="nav-dropdown"><a href="requirements.html#partner">Partner Introduction</a><a href="requirements.html#background">Background</a><a href="requirements.html#goals">Project Goals</a><a href="requirements.html#gathering">Requirements Gathering</a><a href="requirements.html#personas">Personas</a><a href="requirements.html#use-case-diagram">Use Case Diagram</a><a href="requirements.html#moscow">MoSCoW List</a></div></div>
+    <div class="nav-item"><a href="research.html">Research</a><div class="nav-dropdown"><a href="research.html#requirements-discovery">Requirements Discovery</a><a href="research.html#related-projects">Related Projects</a><a href="research.html#technology-review">Technology Review</a><a href="research.html#summary">Summary</a><a href="research.html#consent-forms">Consent Forms</a></div></div>
+    <div class="nav-item"><a href="ui.html">UI Design</a><div class="nav-dropdown"><a href="ui.html#design-principles">Design Principles</a><a href="ui.html#overall-layout">Overall Layout</a><a href="ui.html#codehelper">CodeHelper</a><a href="ui.html#libreoffice">LibreOffice</a><a href="ui.html#gimp">GIMP</a><a href="ui.html#blender">Blender</a><a href="ui.html#artefacts">Artefacts</a></div></div>
+    <div class="nav-item"><a href="system.html">System Design</a><div class="nav-dropdown"><a href="system.html#architecture">Architecture</a><a href="system.html#sequence-diagrams">Sequence Diagrams</a><a href="system.html#data-storage">Data Storage</a><a href="system.html#design-patterns">Design Patterns</a><a href="system.html#packages-apis">Packages &amp; APIs</a></div></div>
+    <div class="nav-item"><a href="implementation.html">Implementation</a><div class="nav-dropdown"><a href="implementation.html#overview">Overview</a><a href="implementation.html#shared-infrastructure">Shared Infrastructure</a><a href="implementation.html#unified-shell">Unified Shell</a><a href="implementation.html#codehelper">CodeHelper</a><a href="implementation.html#gimp">GIMP</a><a href="implementation.html#blender">Blender</a><a href="implementation.html#libreoffice">LibreOffice</a></div></div>
+    <div class="nav-item"><a href="testing.html">Testing</a><div class="nav-dropdown"><a href="testing.html#strategy">Strategy</a><a href="testing.html#unit-testing">Unit Testing</a><a href="testing.html#integration-testing">Integration Testing</a><a href="testing.html#prompt-testing">Prompt Testing</a><a href="testing.html#compatibility-testing">Compatibility</a><a href="testing.html#performance-testing">Performance</a><a href="testing.html#uat">User Acceptance</a></div></div>
+    <div class="nav-item"><a href="evaluation.html">Evaluation</a><div class="nav-dropdown"><a href="evaluation.html#achievements">Achievements</a><a href="evaluation.html#bugs">Known Bugs</a><a href="evaluation.html#critical-evaluation">Critical Evaluation</a><a href="evaluation.html#contributions">Contributions</a><a href="evaluation.html#future-work">Future Work</a></div></div>
+    <div class="nav-item"><a href="appendices.html">Appendices</a><div class="nav-dropdown"><a href="appendices.html#user-manual">User Manual</a><a href="appendices.html#deployment-manual">Deployment Manual</a><a href="appendices.html#gdpr">GDPR</a><a href="appendices.html#license">License</a><a href="appendices.html#blog">Blog</a><a href="appendices.html#monthly-videos">Monthly Videos</a></div></div>
   </nav>
 
   <main>
@@ -142,7 +142,7 @@
 
       <h3>Original SmolPC (v1.5)</h3>
       <div class="card">
-        <p>The original SmolPC was a UCL–Intel Industry Exchange Network (IXN) project developed in 2024, available at <a href="https://github.com/bthompson-dev/SmolPC" target="_blank">github.com/bthompson-dev/SmolPC</a>. It was a suite of six independently developed, locally-running AI-powered applications targeting business professionals and travellers on Intel laptops. All AI processing ran entirely on-device — no internet connection or cloud service was required.</p>
+        <p>The original SmolPC was a UCL–Intel Industry Exchange Network (IXN) project developed in 2024, available at <a href="https://github.com/bthompson-dev/SmolPC" target="_blank" rel="noopener noreferrer">github.com/bthompson-dev/SmolPC</a>. It was a suite of six independently developed, locally-running AI-powered applications targeting business professionals and travellers on Intel laptops. All AI processing ran entirely on-device — no internet connection or cloud service was required.</p>
         <p>The six applications were:</p>
         <ul>
           <li><strong>AI Assistant for LibreOffice</strong> — Chat interface for creating and editing documents and presentations, with Whisper voice transcription and MCP Server integration.</li>
@@ -532,49 +532,49 @@
     <section id="references">
       <h2>References</h2>
       <ol>
-        <li>[1] GitHub, &ldquo;GitHub Copilot,&rdquo; 2026. [Online]. Available: <a href="https://github.com/features/copilot" target="_blank">https://github.com/features/copilot</a>. [Accessed: 23-Mar-2026].</li>
-        <li>[2] maorcc, &ldquo;gimp-mcp,&rdquo; GitHub, 2026. [Online]. Available: <a href="https://github.com/maorcc/gimp-mcp" target="_blank">https://github.com/maorcc/gimp-mcp</a>. [Accessed: 23-Mar-2026].</li>
-        <li>[3] Ollama, &ldquo;Ollama,&rdquo; 2026. [Online]. Available: <a href="https://ollama.com/" target="_blank">https://ollama.com/</a>. [Accessed: 23-Mar-2026].</li>
-        <li>[4] SmolPC-2.0, &ldquo;SmolPC Platform Monorepo,&rdquo; GitHub, 2026. [Online]. Available: <a href="https://github.com/SmolPC-2-0/smolpc-codehelper" target="_blank">https://github.com/SmolPC-2-0/smolpc-codehelper</a>. [Accessed: 23-Mar-2026].</li>
-        <li>[5] SmolPC-2.0, &ldquo;SmolPC Monorepo Architecture,&rdquo; GitHub, 2026. [Online]. Available: <a href="https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/ARCHITECTURE.md" target="_blank">https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/ARCHITECTURE.md</a>. [Accessed: 23-Mar-2026].</li>
-        <li>[6] ONNX Runtime, &ldquo;Execution Providers,&rdquo; 2026. [Online]. Available: <a href="https://onnxruntime.ai/docs/execution-providers/" target="_blank">https://onnxruntime.ai/docs/execution-providers/</a>. [Accessed: 23-Mar-2026].</li>
-        <li>[7] Intel, &ldquo;OpenVINO GenAI on NPU,&rdquo; 2026. [Online]. Available: <a href="https://docs.openvino.ai/2026/openvino-workflow-generative/inference-with-genai/inference-with-genai-on-npu.html" target="_blank">https://docs.openvino.ai/2026/openvino-workflow-generative/inference-with-genai/inference-with-genai-on-npu.html</a>. [Accessed: 23-Mar-2026].</li>
-        <li>[8] SmolPC-2.0, &ldquo;Model Strategy,&rdquo; GitHub, 2026. [Online]. Available: <a href="https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/openvino-native-genai/MODEL_STRATEGY.md" target="_blank">https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/openvino-native-genai/MODEL_STRATEGY.md</a>. [Accessed: 23-Mar-2026].</li>
-        <li>[9] Tauri, &ldquo;Tauri 2.0,&rdquo; 2026. [Online]. Available: <a href="https://tauri.app/" target="_blank">https://tauri.app/</a>. [Accessed: 23-Mar-2026].</li>
-        <li>[10] Svelte, &ldquo;Svelte,&rdquo; 2026. [Online]. Available: <a href="https://svelte.dev/" target="_blank">https://svelte.dev/</a>. [Accessed: 23-Mar-2026].</li>
-        <li>[11] Model Context Protocol, &ldquo;What is the Model Context Protocol (MCP)?,&rdquo; 2026. [Online]. Available: <a href="https://modelcontextprotocol.io/docs/getting-started/intro" target="_blank">https://modelcontextprotocol.io/docs/getting-started/intro</a>. [Accessed: 23-Mar-2026].</li>
-        <li>[12] SmolPC-2.0, &ldquo;Shared Engine Integration Notes,&rdquo; GitHub, 2026. [Online]. Available: <a href="https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/SMOLPC_SUITE_INTEGRATION.md" target="_blank">https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/SMOLPC_SUITE_INTEGRATION.md</a>. [Accessed: 23-Mar-2026].</li>
-        <li>[13] SmolPC-2.0, &ldquo;Voice I/O: Whisper STT + KittenTTS,&rdquo; GitHub, 2026. [Online]. Available: <a href="https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/superpowers/specs/2026-03-24-voice-io-design.md" target="_blank">https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/superpowers/specs/2026-03-24-voice-io-design.md</a>. [Accessed: 24-Mar-2026].</li>
+        <li>[1] GitHub, &ldquo;GitHub Copilot,&rdquo; 2026. [Online]. Available: <a href="https://github.com/features/copilot" target="_blank" rel="noopener noreferrer">https://github.com/features/copilot</a>. [Accessed: 23-Mar-2026].</li>
+        <li>[2] maorcc, &ldquo;gimp-mcp,&rdquo; GitHub, 2026. [Online]. Available: <a href="https://github.com/maorcc/gimp-mcp" target="_blank" rel="noopener noreferrer">https://github.com/maorcc/gimp-mcp</a>. [Accessed: 23-Mar-2026].</li>
+        <li>[3] Ollama, &ldquo;Ollama,&rdquo; 2026. [Online]. Available: <a href="https://ollama.com/" target="_blank" rel="noopener noreferrer">https://ollama.com/</a>. [Accessed: 23-Mar-2026].</li>
+        <li>[4] SmolPC-2.0, &ldquo;SmolPC Platform Monorepo,&rdquo; GitHub, 2026. [Online]. Available: <a href="https://github.com/SmolPC-2-0/smolpc-codehelper" target="_blank" rel="noopener noreferrer">https://github.com/SmolPC-2-0/smolpc-codehelper</a>. [Accessed: 23-Mar-2026].</li>
+        <li>[5] SmolPC-2.0, &ldquo;SmolPC Monorepo Architecture,&rdquo; GitHub, 2026. [Online]. Available: <a href="https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/ARCHITECTURE.md" target="_blank" rel="noopener noreferrer">https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/ARCHITECTURE.md</a>. [Accessed: 23-Mar-2026].</li>
+        <li>[6] ONNX Runtime, &ldquo;Execution Providers,&rdquo; 2026. [Online]. Available: <a href="https://onnxruntime.ai/docs/execution-providers/" target="_blank" rel="noopener noreferrer">https://onnxruntime.ai/docs/execution-providers/</a>. [Accessed: 23-Mar-2026].</li>
+        <li>[7] Intel, &ldquo;OpenVINO GenAI on NPU,&rdquo; 2026. [Online]. Available: <a href="https://docs.openvino.ai/2026/openvino-workflow-generative/inference-with-genai/inference-with-genai-on-npu.html" target="_blank" rel="noopener noreferrer">https://docs.openvino.ai/2026/openvino-workflow-generative/inference-with-genai/inference-with-genai-on-npu.html</a>. [Accessed: 23-Mar-2026].</li>
+        <li>[8] SmolPC-2.0, &ldquo;Model Strategy,&rdquo; GitHub, 2026. [Online]. Available: <a href="https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/openvino-native-genai/MODEL_STRATEGY.md" target="_blank" rel="noopener noreferrer">https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/openvino-native-genai/MODEL_STRATEGY.md</a>. [Accessed: 23-Mar-2026].</li>
+        <li>[9] Tauri, &ldquo;Tauri 2.0,&rdquo; 2026. [Online]. Available: <a href="https://tauri.app/" target="_blank" rel="noopener noreferrer">https://tauri.app/</a>. [Accessed: 23-Mar-2026].</li>
+        <li>[10] Svelte, &ldquo;Svelte,&rdquo; 2026. [Online]. Available: <a href="https://svelte.dev/" target="_blank" rel="noopener noreferrer">https://svelte.dev/</a>. [Accessed: 23-Mar-2026].</li>
+        <li>[11] Model Context Protocol, &ldquo;What is the Model Context Protocol (MCP)?,&rdquo; 2026. [Online]. Available: <a href="https://modelcontextprotocol.io/docs/getting-started/intro" target="_blank" rel="noopener noreferrer">https://modelcontextprotocol.io/docs/getting-started/intro</a>. [Accessed: 23-Mar-2026].</li>
+        <li>[12] SmolPC-2.0, &ldquo;Shared Engine Integration Notes,&rdquo; GitHub, 2026. [Online]. Available: <a href="https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/SMOLPC_SUITE_INTEGRATION.md" target="_blank" rel="noopener noreferrer">https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/SMOLPC_SUITE_INTEGRATION.md</a>. [Accessed: 23-Mar-2026].</li>
+        <li>[13] SmolPC-2.0, &ldquo;Voice I/O: Whisper STT + KittenTTS,&rdquo; GitHub, 2026. [Online]. Available: <a href="https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/superpowers/specs/2026-03-24-voice-io-design.md" target="_blank" rel="noopener noreferrer">https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/superpowers/specs/2026-03-24-voice-io-design.md</a>. [Accessed: 24-Mar-2026].</li>
       </ol>
     </section>
 
   </main>
   <footer>
     <div class="footer-links">
-    <a href="https://github.com/SmolPC-2-0/smolpc-codehelper" target="_blank">GitHub</a>
+    <a href="https://github.com/SmolPC-2-0/smolpc-codehelper" target="_blank" rel="noopener noreferrer">GitHub</a>
   </div>
 
   <div class="footer-logos">
-    <a href="https://www.ucl.ac.uk/" target="_blank">
+    <a href="https://www.ucl.ac.uk/" target="_blank" rel="noopener noreferrer">
       <img src="assets/images/ucl.png" alt="University College London">
     </a>
-    <a href="https://www.intel.com/content/www/us/en/homepage.html" target="_blank">
+    <a href="https://www.intel.com/content/www/us/en/homepage.html" target="_blank" rel="noopener noreferrer">
       <img src="assets/images/intel.png" alt="Intel">
     </a>
-    <a href="https://www.microsoft.com/en-gb" target="_blank">
+    <a href="https://www.microsoft.com/en-gb" target="_blank" rel="noopener noreferrer">
       <img src="assets/images/microsoft.png" alt="Microsoft">
     </a>
-    <a href="https://www.ibm.com/uk-en" target="_blank">
+    <a href="https://www.ibm.com/uk-en" target="_blank" rel="noopener noreferrer">
       <img src="assets/images/IBM.png" alt="IBM">
     </a>
-    <a href="https://www.autism.org.uk/" target="_blank">
+    <a href="https://www.autism.org.uk/" target="_blank" rel="noopener noreferrer">
       <img src="assets/images/nas.png" alt="National Autistic Society">
     </a>
     <a href="https://www.motioninputgames.com/index.html" target="_blank">
       <img src="assets/images/motioninputgames.png" alt="Motion Input Games">
     </a>
   </div>
-    <p>COMP0016 Team 1 &copy; 2025</p>
+    <p>COMP0016 Team 1 &copy; 2025-2026</p>
   </footer>
 
 
