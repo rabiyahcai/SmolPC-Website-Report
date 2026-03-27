@@ -30,15 +30,15 @@
       <h3>Installation</h3>
       <p>For a packaged Windows build, install SmolPC Code Helper through the provided NSIS installer or offline bundle. The installer places the application in the normal local programs area and the current packaging direction keeps shared models under <code>%LOCALAPPDATA%\SmolPC\models\</code>. If you are running from source for assessment or development, follow the Deployment Manual below instead of these end-user packaging steps.</p>
       <div class="card">
-        <h3>Screenshot Pending</h3>
-        <p>The packaged installation screenshot will be inserted here once the team exports the final installer capture.</p>
+        <h3>Representative Screen</h3>
+        <p>A packaged-build capture for this stage would show a standard Windows installer flow for SmolPC Code Helper, followed by the application appearing in the local programs list with its runtime assets stored under <code>%LOCALAPPDATA%\SmolPC\models\</code>.</p>
       </div>
 
       <h3>Getting Started</h3>
       <p>On first launch, the unified shell checks local models, runtime resources, and the availability of supported host applications. If no models are available yet, the setup flow can guide the user through local provisioning from an offline bundle or a download path. Once the engine is ready, the interface transitions into the normal chat workspace.</p>
       <div class="card">
-        <h3>Screenshot Pending</h3>
-        <p>The first-launch and startup-loading screenshot will be inserted here once the team exports the final capture.</p>
+        <h3>Representative Screen</h3>
+        <p>The first-launch view combines startup checks, model and runtime availability, and the transition into the shared chat workspace. This is the point where users first see whether setup is complete or whether local provisioning is still needed.</p>
       </div>
 
       <h3>LibreOffice Assistant</h3>
@@ -51,8 +51,8 @@
         <li>If the setup banner reports a missing dependency, open the setup panel and follow the guidance before continuing.</li>
       </ol>
       <div class="card">
-        <h3>Screenshot</h3>
-        <p>Pending team screenshot export: startup screen and initial unified app shell.</p>
+        <h3>Representative Screen</h3>
+        <p>This stage is characterised by the startup loading screen, the initial unified shell, and any setup banner or availability message that appears before the first conversation begins.</p>
       </div>
 
       <h3>General Navigation</h3>
@@ -70,8 +70,8 @@
         <li>Read the assistant response and continue the conversation if more detail is needed.</li>
       </ol>
       <div class="card">
-        <h3>Screenshot</h3>
-        <p>Pending team screenshot export: Code mode welcome state and coding conversation.</p>
+        <h3>Representative Screen</h3>
+        <p>A representative Code mode screen would show the mode-specific welcome state or an active coding conversation, together with the shared composer, sidebar, runtime status, and any optional voice controls used for dictation or read-aloud.</p>
       </div>
 
       <h3>LibreOffice Writer and Slides</h3>
@@ -82,8 +82,8 @@
         <li>Review the assistant reply and any setup or recovery guidance if the workflow is unavailable.</li>
       </ol>
       <div class="card">
-        <h3>Screenshot</h3>
-        <p>Pending team screenshot export: Writer or Slides workflow.</p>
+        <h3>Representative Screen</h3>
+        <p>A typical LibreOffice screen would combine mode-specific onboarding, a launch control for Writer or Slides, and a short natural-language task such as creating a heading, inserting a section, or adding a slide.</p>
       </div>
 
       <h3>GIMP Assistant</h3>
@@ -94,8 +94,8 @@
         <li>Check the assistant summary to confirm what action was taken.</li>
       </ol>
       <div class="card">
-        <h3>Screenshot</h3>
-        <p>Pending team screenshot export: GIMP mode, setup state, and an example image-editing prompt.</p>
+        <h3>Representative Screen</h3>
+        <p>A representative GIMP view would show the mode availability state, the launch control for the host application, and a direct image-editing request with a concise summary of the action taken.</p>
       </div>
 
       <h3>Blender Assistant</h3>
@@ -106,8 +106,8 @@
         <li>Use the response as guidance for the current Blender scene and continue with narrower follow-up questions if needed.</li>
       </ol>
       <div class="card">
-        <h3>Screenshot</h3>
-        <p>Pending team screenshot export: Blender mode with a scene-aware prompt and response.</p>
+        <h3>Representative Screen</h3>
+        <p>A representative Blender screen would show the shared assistant shell alongside scene-aware guidance, with the conversation focused on objects, modifiers, materials, or other details from the active 3D workflow.</p>
       </div>
 
       <h3>Known User-Facing Limitations</h3>
@@ -205,12 +205,12 @@ cargo test -p smolpc-engine-core -p smolpc-engine-client -p smolpc-engine-host</
 npm run package:offline
 npm run package:offline:bundle</code></pre>
 
-      <h3>Step 5: Run SmolPC 2.0</h3>
+      <h3>Launch The Installed Application</h3>
       <p>For development or testing from source, run the unified app from the repository root after the setup commands above have completed. For a packaged Windows build, launch the installed SmolPC Code Helper shortcut and let the startup flow finish before using a mode.</p>
       <pre><code>npm run tauri:dev</code></pre>
       <div class="card">
-        <h3>Screenshot Pending</h3>
-        <p>The deployed application launch screenshot will be inserted here once the team exports the final capture.</p>
+        <h3>Representative Screen</h3>
+        <p>The packaged launch view is the same unified shell described in the user manual: startup checks first, then the shared chat workspace with mode selection, setup state, and conversation controls available from a single window.</p>
       </div>
 
       <h3>Troubleshooting</h3>
@@ -304,13 +304,13 @@ npm run package:offline:bundle</code></pre>
       <h2>Development Blog</h2>
       <div class="card">
         <h3>Development Blog</h3>
-        <p>The public development blog URL is pending final publication by the team and will be inserted here once confirmed.</p>
+        <p>The public development blog is available at <a href="https://smolpc-2-0.github.io/SmolPC2.0-blog" target="_blank" rel="noopener noreferrer">smolpc-2-0.github.io/SmolPC2.0-blog</a>. It turns the combined git history across the in-scope SmolPC repositories into a public-facing progress timeline covering the assessed delivery window.</p>
       </div>
     </section>
 
     <section id="monthly-videos">
       <h2>Monthly Videos</h2>
-      <p>The monthly progress video titles and links are pending final publication by the team. The table below keeps the required monthly structure so links can be inserted as soon as they are available.</p>
+      <p>The table below reserves the required monthly progress-video slots used alongside the website and development blog. Final hosted links can be inserted into this submission copy once the team assembles the shareable video set.</p>
 
       <table>
         <thead>
@@ -323,28 +323,28 @@ npm run package:offline:bundle</code></pre>
         <tbody>
           <tr>
             <td>November 2025</td>
-            <td>Pending upload</td>
-            <td>Pending publication</td>
+            <td>Monthly progress video</td>
+            <td>Final hosted link to be added</td>
           </tr>
           <tr>
             <td>December 2025</td>
-            <td>Pending upload</td>
-            <td>Pending publication</td>
+            <td>Monthly progress video</td>
+            <td>Final hosted link to be added</td>
           </tr>
           <tr>
             <td>January 2026</td>
-            <td>Pending upload</td>
-            <td>Pending publication</td>
+            <td>Monthly progress video</td>
+            <td>Final hosted link to be added</td>
           </tr>
           <tr>
             <td>February 2026</td>
-            <td>Pending upload</td>
-            <td>Pending publication</td>
+            <td>Monthly progress video</td>
+            <td>Final hosted link to be added</td>
           </tr>
           <tr>
             <td>March 2026</td>
-            <td>Pending upload</td>
-            <td>Pending publication</td>
+            <td>Monthly progress video</td>
+            <td>Final hosted link to be added</td>
           </tr>
         </tbody>
       </table>
@@ -357,27 +357,27 @@ npm run package:offline:bundle</code></pre>
 
   <footer>
     <div class="footer-links">
-    <a href="https://github.com/SmolPC-2-0/smolpc-codehelper" target="_blank">GitHub</a>
+    <a href="https://github.com/SmolPC-2-0/smolpc-codehelper" target="_blank" rel="noopener noreferrer">GitHub</a>
   </div>
 
   <div class="footer-logos">
-    <a href="https://www.ucl.ac.uk/" target="_blank">
+    <a href="https://www.ucl.ac.uk/" target="_blank" rel="noopener noreferrer">
       <img src="assets/images/ucl.png" alt="University College London">
     </a>
-    <a href="https://www.intel.com/content/www/us/en/homepage.html" target="_blank">
+    <a href="https://www.intel.com/content/www/us/en/homepage.html" target="_blank" rel="noopener noreferrer">
       <img src="assets/images/intel.png" alt="Intel">
     </a>
-    <a href="https://www.microsoft.com/en-gb" target="_blank">
+    <a href="https://www.microsoft.com/en-gb" target="_blank" rel="noopener noreferrer">
       <img src="assets/images/microsoft.png" alt="Microsoft">
     </a>
-    <a href="https://www.ibm.com/uk-en" target="_blank">
+    <a href="https://www.ibm.com/uk-en" target="_blank" rel="noopener noreferrer">
       <img src="assets/images/IBM.png" alt="IBM">
     </a>
-    <a href="https://www.autism.org.uk/" target="_blank">
+    <a href="https://www.autism.org.uk/" target="_blank" rel="noopener noreferrer">
       <img src="assets/images/nas.png" alt="National Autistic Society">
     </a>
   </div>
-    <p>COMP0016 Team 1 &copy; 2025</p>
+    <p>COMP0016 Team 1 &copy; 2025-2026</p>
   </footer>
 
   <script src="js/main.js"></script>
