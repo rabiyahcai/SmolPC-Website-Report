@@ -448,6 +448,92 @@
         really split across the unified shell, shared backend, deployment flow, and tool-specific modes.
       </p>
 
+      <h3>Individual Contribution Summaries</h3>
+
+      <div class="card">
+        <h3>Stefanos Ioannidis</h3>
+        <p>
+          Led the shared-engine and backend architecture, including runtime selection, supervisor lifecycle,
+          voice I/O plumbing, and core integration documentation for the unified SmolPC 2.0 platform. Owned
+          the inference engine crate design, FFI bindings for OpenVINO and ORT GenAI, DLL loading
+          centralisation, and the hardware detection probe layer.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Siddhant Murugkar</h3>
+        <p>
+          Across all SmolPC 2.0 repositories (83 commits in the main monorepo, 16 in the standalone Blender
+          prototype, 1 in the report website), Siddhant's work covered three major areas:
+        </p>
+        <p><strong>Blender integration.</strong>
+          Built the original standalone Blender Assistant prototype from scratch in <code>smolpc-blenderhelper</code>
+          (Tauri app, Python addon, RAG system with tutorial knowledge base, scene bridge, model fine-tuning,
+          and iterative architecture changes). Then ported the entire application (~9,300 lines) into the main
+          monorepo, built the launcher app with catalog registry and install orchestrator, added addon sync and
+          engine shutdown support, and migrated Blender from its standalone embedded engine to the shared
+          <code>smolpc-engine-client</code> architecture. Later hardened the Blender connector with resilient bridge
+          port binding, selected-objects support, addon robustness (per-field error handling, max-object limits),
+          stdlib HTTP replacement for Blender's bundled Python, token path fixes, and bridge cleanup on app exit.
+        </p>
+        <p><strong>LibreOffice integration and fixes.</strong>
+          Led the source-parity migration for LibreOffice across six phases (frontend controller extraction,
+          chat settings, dependency loading gate, MCP tools workspace, chat session persistence, and session
+          resume UX hardening). Then fixed a series of critical runtime bugs: running the MCP helper with
+          LibreOffice's own Python instead of the system Python, capturing helper stderr for startup failure
+          diagnostics, validating the Python override path, and hardening UNO bridge crash recovery with retry
+          logic and process health monitoring. When the UNO bridge architecture proved fundamentally unreliable,
+          rewrote the entire MCP server from a 4-process UNO-based system to a single-process architecture using
+          python-docx, python-pptx, and odfdo — eliminating the soffice daemon, TCP ports, and "Binary URP bridge
+          disposed" crashes. Added a keyword-based tool pre-filter for the 1.5B planner, a balanced-brace JSON
+          parser for LLM output garbage, and compact planner prompts. Further hardened planner JSON parsing
+          (comma-as-colon repair, optional property stripping), fixed multi-turn tool chaining with paths
+          containing spaces (rewrote file path extraction to handle OneDrive paths), fixed planner path
+          hallucination with fuzzy-match recovery, and defaulted to the local Documents folder. Raised the Writer
+          stress test pass rate from 67% to 96%.
+        </p>
+        <p><strong>Cross-cutting platform work.</strong>
+          Hardened crash-safe state recovery, replaced WMI hardware detection with sysinfo (WMI was slow and
+          unreliable), moved detection to a blocking worker thread, implemented memory pressure monitoring with
+          graceful model degradation, split engine state into startup and loading modules, made host app launch
+          explicit across all connector modes, fixed the CI release workflow for Windows NSIS installers, wrote
+          the release and installer guide, created the offline USB bundle, built per-model offline installer
+          bundles, wrote end-to-end connector tests for all three connectors (LibreOffice 28 MCP tool tests,
+          Blender RAG and addon validation, GIMP resource and script validation), and fixed GIMP planner JSON
+          parsing, live image state exposure, and persistent plugin socket startup.
+        </p>
+        <p><strong>Website.</strong>
+          Took screenshots used in the user manual, recorded the 2-minute project demo video, and created the
+          CodeHelper wireframe on the UI Design page.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Mathias Tidball Gerez</h3>
+        <p>
+          Shaped the unified SmolPC 2.0 shell and user experience, including mode visibility, help and
+          onboarding flows, model guidance, setup polish, and early Code mode foundations. Led the website
+          report design, content coherence passes, and homepage layout.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Aishah Mohammed</h3>
+        <p>
+          Contributed to the GIMP assistant implementation and review-driven fixes across the Tauri backend,
+          planning pipeline, and Svelte app scaffold for image-editing support. Added consent forms, use case
+          diagrams, Gantt chart, dropdown navigation, and monthly video updates to the report website.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Rabiyah Sherif</h3>
+        <p>
+          Created the initial website structure, page templates, and navigation. Contributed to requirements
+          content, formatting, and GIMP integration work.
+        </p>
+      </div>
+
       <h3>System Artefacts</h3>
       <table>
         <thead>
