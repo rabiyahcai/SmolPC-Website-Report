@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Engine</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-logo"> <img src="assets/images/smolpc.png" alt="SmolPC 2.0"> </a>
+    <div class="nav-item"><a href="index.html">Home</a><div class="nav-dropdown"><a href="index.html#abstract">Abstract</a><a href="index.html#video">Video</a><a href="index.html#team">Team Members</a><a href="index.html#gantt">Project Timeline</a></div></div>
+    <div class="nav-item"><a href="requirements.html">Requirements</a><div class="nav-dropdown"><a href="requirements.html#partner">Partner Introduction</a><a href="requirements.html#background">Background</a><a href="requirements.html#goals">Project Goals</a><a href="requirements.html#gathering">Requirements Gathering</a><a href="requirements.html#personas">Personas</a><a href="requirements.html#use-case-diagram">Use Case Diagram</a><a href="requirements.html#moscow">MoSCoW List</a></div></div>
+    <div class="nav-item"><a href="research.html">Research</a><div class="nav-dropdown"><a href="research.html#requirements-discovery">Requirements Discovery</a><a href="research.html#related-projects">Related Projects</a><a href="research.html#technology-review">Technology Review</a><a href="research.html#summary">Summary</a><a href="research.html#consent-forms">Consent Forms</a></div></div>
+    <div class="nav-item"><a href="ui.html">UI Design</a><div class="nav-dropdown"><a href="ui.html#design-principles">Design Principles</a><a href="ui.html#overall-layout">Overall Layout</a><a href="ui.html#codehelper">CodeHelper</a><a href="ui.html#libreoffice">LibreOffice</a><a href="ui.html#gimp">GIMP</a><a href="ui.html#blender">Blender</a><a href="ui.html#artefacts">Artefacts</a></div></div>
+    <div class="nav-item"><a href="system.html">System Design</a><div class="nav-dropdown"><a href="system.html#architecture">Architecture</a><a href="system.html#sequence-diagrams">Sequence Diagrams</a><a href="system.html#data-storage">Data Storage</a><a href="system.html#design-patterns">Design Patterns</a><a href="system.html#packages-apis">Packages &amp; APIs</a></div></div>
+    <div class="nav-item"><a href="engine.html">Engine</a><div class="nav-dropdown"><a href="engine.html#overview">Overview</a><a href="engine.html#crate-architecture">Crate Architecture</a><a href="engine.html#hardware-detection">Hardware &amp; Backend Selection</a><a href="engine.html#inference-backends">Inference Backends</a><a href="engine.html#lifecycle">Engine Lifecycle</a><a href="engine.html#api">API Surface</a><a href="engine.html#voice-audio">Voice &amp; Audio</a><a href="engine.html#challenges">Challenges &amp; Decisions</a></div></div>
+    <div class="nav-item"><a href="implementation.html">Implementation</a><div class="nav-dropdown"><a href="implementation.html#overview">Overview</a><a href="implementation.html#shared-infrastructure">Shared Infrastructure</a><a href="implementation.html#unified-shell">Unified Shell</a><a href="implementation.html#codehelper">CodeHelper</a><a href="implementation.html#gimp">GIMP</a><a href="implementation.html#blender">Blender</a><a href="implementation.html#libreoffice">LibreOffice</a></div></div>
+    <div class="nav-item"><a href="testing.html">Testing</a><div class="nav-dropdown"><a href="testing.html#strategy">Strategy</a><a href="testing.html#unit-testing">Unit Testing</a><a href="testing.html#integration-testing">Integration Testing</a><a href="testing.html#prompt-testing">Prompt Testing</a><a href="testing.html#compatibility-testing">Compatibility</a><a href="testing.html#performance-testing">Performance</a><a href="testing.html#uat">User Acceptance</a></div></div>
+    <div class="nav-item"><a href="evaluation.html">Evaluation</a><div class="nav-dropdown"><a href="evaluation.html#achievements">Achievements</a><a href="evaluation.html#bugs">Known Bugs</a><a href="evaluation.html#critical-evaluation">Critical Evaluation</a><a href="evaluation.html#contributions">Contributions</a><a href="evaluation.html#future-work">Future Work</a></div></div>
+    <div class="nav-item"><a href="appendices.html">Appendices</a><div class="nav-dropdown"><a href="appendices.html#user-manual">User Manual</a><a href="appendices.html#deployment-manual">Deployment Manual</a><a href="appendices.html#gdpr">GDPR</a><a href="appendices.html#license">License</a><a href="appendices.html#blog">Blog</a><a href="appendices.html#monthly-videos">Monthly Videos</a></div></div>
+  </nav>
+
+  <main>
+
+    <h1>The SmolPC Engine</h1>
+
+    <!-- ================================================================== -->
+    <!-- SECTION 1: OVERVIEW & MOTIVATION                                   -->
+    <!-- ================================================================== -->
+    <section id="overview">
+      <h2>Overview and Motivation</h2>
+
+      <p>The SmolPC inference engine is a standalone local HTTP server that runs large language models on student hardware. It is a separate process from the Tauri desktop app &mdash; it survives app restarts, isolates native FFI crashes from the UI, and can be shared across multiple consumers. The engine listens on <code>localhost:19432</code> with Bearer token authentication and exposes an OpenAI-compatible API surface with Server-Sent Events (SSE) streaming.</p>
+
+      <p>The constraint that drives every design decision on this page: <strong>8 GB of RAM minimum, fully offline, no cloud dependency, no data collection.</strong> The LLM itself consumes 1.5&ndash;4 GB of RAM depending on model size. Every megabyte the infrastructure consumes is a megabyte unavailable for inference.</p>
+
+      <h3>Why a Separate Process?</h3>
+
+      <p>The most important architectural decision in the engine is that inference runs in a separate OS process rather than inside the Tauri application via in-process FFI calls. OpenVINO and ONNX Runtime are C libraries loaded at runtime. A segfault inside the FFI layer kills the process. If that process is the Tauri app, the student loses their entire UI &mdash; every open conversation, every unsaved context, gone. With a separate engine process, the supervisor in the Tauri backend detects the crash and auto-restarts the engine while the UI remains fully responsive. The student sees a brief "reconnecting" state, not a crash dialog.</p>
+
+      <p>Alternatives we evaluated and rejected:</p>
+      <ul>
+        <li><strong>In-process FFI</strong> &mdash; faster IPC, but a single C-level segfault takes down the entire application. Unacceptable for a tool students rely on during lessons.</li>
+        <li><strong>Unix domain sockets / named pipes</strong> &mdash; marginal latency improvement over TCP loopback, but loses HTTP debuggability. No benefit for localhost communication.</li>
+        <li><strong>gRPC</strong> &mdash; adds a protobuf compiler build dependency, protocol complexity, and a binary wire format that cannot be inspected with <code>curl</code>. No benefit over HTTP + SSE for a localhost-only server.</li>
+      </ul>
+
+      <p>The HTTP approach also provides practical benefits beyond crash isolation:</p>
+      <ul>
+        <li><strong>Debuggable.</strong> Any HTTP client works. A developer can probe the engine with <code>curl</code> without compiling Rust.</li>
+        <li><strong>Survives app restarts.</strong> The engine process persists after the app closes. Reopening the app reconnects instantly &mdash; no model reload, no 30-second startup delay.</li>
+        <li><strong>Shareable.</strong> Multiple consumers can hit the same engine process. This enables the future launcher architecture where the GIMP connector, Blender connector, and Code Helper all share one loaded model.</li>
+        <li><strong>Standard protocol.</strong> The OpenAI-compatible wire format means any client that speaks that protocol can use the engine as a drop-in local backend.</li>
+      </ul>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- SECTION 2: CRATE ARCHITECTURE                                      -->
+    <!-- ================================================================== -->
+    <section id="crate-architecture">
+      <h2>Crate Architecture</h2>
+
+      <p>The engine is split across five Rust crates with clear separation of concerns. The dependency flow is deliberately one-directional: <code>smolpc-engine-core</code> has no workspace dependencies, <code>smolpc-engine-host</code> depends on core, <code>smolpc-engine-client</code> is fully independent, and the TTS sidecar is isolated in its own workspace. This means <code>core</code> is testable without a network, <code>host</code> is testable without the desktop app, and <code>client</code> is testable without a running engine.</p>
+
+      <div class="card">
+        <h3>smolpc-engine-core</h3>
+        <p>Foundation library with zero workspace dependencies. This crate owns everything that does not require a network socket: hardware detection via DXGI (~14 ms), NPU driver probing, RAM enumeration via <code>GlobalMemoryStatusEx</code>, the <code>InferenceBackend</code> enum (<code>Cpu</code>, <code>DirectML</code>, <code>OpenVinoNpu</code>), custom FFI wrappers for the OpenVINO GenAI C API and ONNX Runtime GenAI C API (no published Rust bindings exist for either &mdash; these are entirely hand-written), centralised DLL loading with CI-enforced source scanning, and a model registry with RAM-based selection thresholds.</p>
+      </div>
+
+      <!-- CODESNAP: engine/crates/smolpc-engine-core/src/inference/backend.rs:L9-L27 — InferenceBackend enum with serde annotations and as_str implementation -->
+      <figure class="code-figure">
+        <img src="assets/images/code/inference-backend-enum.png" alt="The InferenceBackend enum definition in Rust, showing Cpu, DirectML, and OpenVinoNpu variants with serde rename attributes and the as_str method">
+        <figcaption>Figure 1. The <code>InferenceBackend</code> enum &mdash; three backends, each with serialisation aliases for the decision cache and API surface.</figcaption>
+      </figure>
+
+      <div class="card">
+        <h3>smolpc-engine-host</h3>
+        <p>The binary crate. An Axum HTTP server exposing 13 endpoints with semaphore-based concurrency control: a generation semaphore (capacity 1 &mdash; only one LLM generation at a time), a configurable queue semaphore (default capacity 3, returns HTTP 429 when full), and a voice semaphore (capacity 1 &mdash; serialises STT and TTS). An atomic <code>generating</code> flag provides fast-path checking without acquiring the semaphore. The host manages background hardware probing, idle timeout monitoring, ChatML template formatting, and a streaming thinking-tag filter that strips <code>&lt;think&gt;...&lt;/think&gt;</code> blocks before tokens reach the user.</p>
+      </div>
+
+      <div class="card">
+        <h3>smolpc-engine-client</h3>
+        <p>Consumer library for any application that needs to talk to the engine. Key exports: <code>spawn_engine()</code> launches the engine as a detached process with a PID file and filesystem spawn lock; <code>wait_for_healthy()</code> polls until the engine is ready (60-second timeout, 250 ms polling interval); <code>kill_stale_processes()</code> cleans up orphaned engine processes with PID identity verification (Windows reuses PIDs aggressively, so the process name is checked before killing); <code>EngineClient</code> provides typed HTTP methods with SSE streaming; and <code>RuntimeModePreference</code> (<code>Auto</code>, <code>Cpu</code>, <code>Dml</code>, <code>Npu</code>) carries the user's backend choice from the UI to the engine.</p>
+      </div>
+
+      <div class="card">
+        <h3>smolpc-tts-server</h3>
+        <p>Standalone text-to-speech sidecar on port 19433. This crate lives in its own Cargo workspace root (separate <code>Cargo.toml</code>) because it depends on a different version of the <code>ort</code> crate (ONNX Runtime Rust bindings) than the main engine. Cargo does not allow two versions of the same native-library-wrapping crate in one workspace when they have conflicting link requirements. The TTS server must be built with <code>--manifest-path</code>, not <code>-p</code>. It is spawned and health-checked by the engine host at 200 ms intervals with a 15-second startup budget, and respawned automatically if it becomes unhealthy.</p>
+      </div>
+
+      <div class="card">
+        <h3>smolpc-benchmark</h3>
+        <p>CLI tool for performance testing across all three backends. Measures time-to-first-token (TTFT), tokens per second, peak memory, and CPU utilisation. Supports multi-backend comparison runs with configurable warmup and cooldown periods. Statistics computed per run: mean, median, p90, p95, and standard deviation. Outputs results in CSV and JSON formats for automated analysis.</p>
+      </div>
+
+      <!-- CODESNAP: engine/crates/smolpc-engine-core/src/models/registry.rs:L4-L54 — ModelDefinition struct and ModelRegistry with Qwen 2.5 and Qwen 3 entries -->
+      <figure class="code-figure">
+        <img src="assets/images/code/model-registry.png" alt="The ModelDefinition struct and ModelRegistry implementation showing the Qwen 2.5 1.5B and Qwen 3 4B model entries with RAM thresholds">
+        <figcaption>Figure 2. Model registry &mdash; each model declares its RAM threshold, disk footprint, and runtime memory estimate. The selection algorithm filters by <code>min_ram_gb</code> and picks the largest model that fits.</figcaption>
+      </figure>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- SECTION 3: HARDWARE DETECTION & BACKEND SELECTION                  -->
+    <!-- ================================================================== -->
+    <section id="hardware-detection">
+      <h2>Hardware Detection and Backend Selection</h2>
+
+      <p>The engine must run on whatever hardware a secondary school provides: high-end Intel Core Ultra laptops with discrete GPUs and NPUs, budget machines with integrated graphics only, or anything in between. The hardware detection and backend selection system is a multi-stage state machine that probes the hardware, validates each backend through a gate chain, and caches successful decisions for instant startup on subsequent launches.</p>
+
+      <h3>GPU Detection via DXGI</h3>
+
+      <p>GPU enumeration uses the Windows DXGI API (<code>IDXGIFactory6</code>) directly, not WMI. This was a hard-won decision: the original implementation used <code>Get-WmiObject</code> queries, which hang for 60+ seconds on some Windows machines with unusual driver configurations or pending updates. The hang occurs inside the WMI service itself and cannot be timed out from the caller. DXGI, by contrast, completes in ~14 ms consistently &mdash; it is a direct COM call to the same API that DirectX uses, so it reports exactly what DirectML will see.</p>
+
+      <p>The DXGI probe follows this sequence:</p>
+      <ol>
+        <li>Create an <code>IDXGIFactory1</code>, then attempt to cast to <code>IDXGIFactory6</code> for high-performance GPU preference ordering.</li>
+        <li>Enumerate all adapters, extracting per-adapter: name, vendor ID, device ID, dedicated VRAM, and software/hardware classification.</li>
+        <li>Filter out software adapters (the Windows WARP rasteriser).</li>
+        <li>Classify as discrete if dedicated VRAM exceeds 512 MB and the adapter is not software.</li>
+        <li>Select the best candidate: discrete GPUs first, then by VRAM descending.</li>
+      </ol>
+
+      <!-- CODESNAP: engine/crates/smolpc-engine-host/src/probe.rs:L118-L188 — DxgiGpuInfo struct and enumerate_dxgi_gpus function showing IDXGIFactory1 creation, adapter enumeration, and discrete classification -->
+      <figure class="code-figure">
+        <img src="assets/images/code/dxgi-enumeration.png" alt="The enumerate_dxgi_gpus function showing IDXGIFactory1 creation, IDXGIFactory6 cast, adapter enumeration loop, VRAM extraction, and discrete GPU classification">
+        <figcaption>Figure 3. DXGI GPU enumeration &mdash; the function creates a factory, enumerates adapters with high-performance preference, extracts hardware descriptors, and classifies each adapter as discrete or integrated based on VRAM threshold.</figcaption>
+      </figure>
+
+      <p><strong>Critical: integrated GPU rejection.</strong> Intel UHD integrated graphics technically supports DirectML, and the DXGI probe reports it as a valid adapter. However, DirectML inference on these GPUs produces garbage logits &mdash; the output is numerical noise with no coherent text. This is detected by the preflight validation (described in Section 4), which generates a single token and inspects the logits tensor for NaN and Infinity values. When non-finite logits are detected, the backend is rejected and the engine falls through to OpenVINO CPU.</p>
+
+      <h3>NPU and RAM Detection</h3>
+
+      <p>NPU detection is not done through DXGI. Instead, the engine uses the OpenVINO startup probe (<code>probe_openvino_startup</code>), which checks whether the Intel NPU device is visible to the OpenVINO runtime and whether the driver supports the required operations. This runs asynchronously in the background during engine startup.</p>
+
+      <p>System RAM is queried via the Windows <code>GlobalMemoryStatusEx</code> API, returning total physical memory in gigabytes. This drives automatic model selection: 16 GB or more selects Qwen3 4B (if provisioned), 3&ndash;15 GB selects Qwen2.5 1.5B Instruct, and less than 3 GB falls to the smallest available model. The algorithm filters models by <code>min_ram_gb</code>, sorts descending, and selects the first whose model directory actually exists on disk.</p>
+
+      <h3>Backend Selection Algorithm</h3>
+
+      <p>Backend selection is a multi-stage decision process, evaluated in priority order:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Stage</th>
+            <th>Condition</th>
+            <th>Behaviour</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Forced override</strong></td>
+            <td><code>SMOLPC_FORCE_EP</code> environment variable or user selection in the UI</td>
+            <td>That backend is used unconditionally. The decision is not persisted to the cache.</td>
+          </tr>
+          <tr>
+            <td><strong>2. Persisted decision</strong></td>
+            <td>Matching entry in <code>backend_decisions.v2.json</code></td>
+            <td>Reuse the cached decision, skipping the full probe and preflight. The cache key is a fingerprint of model ID, artifact fingerprint, app version, runtime versions, GPU adapter identity, NPU identity, and tuning parameters.</td>
+          </tr>
+          <tr>
+            <td><strong>3. Failure demotion</strong></td>
+            <td>DirectML has failed 3 or more consecutive times</td>
+            <td>DirectML is demoted. The engine falls through to OpenVINO NPU or CPU. The failure count resets on any successful DirectML load.</td>
+          </tr>
+          <tr>
+            <td><strong>4. Default priority</strong></td>
+            <td>No override, no cached decision, no demotion</td>
+            <td>DirectML (fastest on discrete GPU) then OpenVINO NPU (low power, good TTFT) then CPU (universal fallback). Each must pass its gate chain.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Gate Chains</h3>
+
+      <p>Each backend must pass every gate in its chain before it can be selected. If any gate fails, the backend is skipped and the next candidate in priority order is evaluated.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Gate</th>
+            <th>DirectML</th>
+            <th>OpenVINO NPU</th>
+            <th>CPU</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Hardware detected</strong></td>
+            <td>DXGI found a discrete GPU</td>
+            <td>NPU device visible to OpenVINO runtime</td>
+            <td>Always passes</td>
+          </tr>
+          <tr>
+            <td><strong>Artifacts available</strong></td>
+            <td><code>dml/model.onnx</code>, <code>dml/genai_config.json</code>, <code>dml/tokenizer.json</code></td>
+            <td><code>openvino/manifest.json</code> + IR artifacts (<code>.xml</code> + <code>.bin</code>)</td>
+            <td>Same OpenVINO IR artifacts as NPU</td>
+          </tr>
+          <tr>
+            <td><strong>Bundle ready</strong></td>
+            <td>ONNX Runtime + DirectML DLLs loaded</td>
+            <td>All 14 OpenVINO DLLs loaded in dependency order</td>
+            <td>OpenVINO CPU plugin DLLs loaded</td>
+          </tr>
+          <tr>
+            <td><strong>Probe ready</strong></td>
+            <td>&mdash;</td>
+            <td>OpenVINO startup probe completed (not still pending)</td>
+            <td>&mdash;</td>
+          </tr>
+          <tr>
+            <td><strong>Preflight validated</strong></td>
+            <td>Model loads and generates 1 token within 60 s</td>
+            <td>Model compiles and loads on NPU within 300 s (5 min)</td>
+            <td>CPU runtime adapter builds within 30 s</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Temporary Fallback vs. Permanent Demotion</h3>
+
+      <p>A critical invariant in the backend selection system: <strong>a preflight timeout is never persisted as a negative decision.</strong> When a preflight times out, the result is classified as <code>TemporaryFallback</code> &mdash; it is not written to <code>backend_decisions.v2.json</code>, and the backend will be retried on the next startup. This is essential because NPU first-time compilation is expected to take 3&ndash;5 minutes. On the first launch, the 300-second preflight budget may not be enough. On the second launch, the compiled blob cache is warm and the preflight completes in seconds. If the timeout were persisted as a permanent failure, the machine would skip the NPU forever &mdash; a working piece of hardware would never be used.</p>
+
+      <p>Only explicit failures (init errors, runtime crashes) are persisted. Timeouts are always temporary.</p>
+
+      <h3>Fingerprint-Based Decision Cache</h3>
+
+      <p>Successful backend decisions are cached in <code>backend_decisions.v2.json</code> using a composite fingerprint as the cache key. The <code>RuntimeBundleFingerprint</code> is computed from: runtime family (ORT or OpenVINO), canonical file paths, file sizes, modification timestamps, and version metadata strings. It is formatted as a 16-character hex string via <code>DefaultHasher</code>. The cache is stored as an <code>OnceLock&lt;Mutex&lt;HashMap&gt;&gt;</code> &mdash; each bundle is loaded exactly once per process, and attempting to load a second bundle with a different fingerprint returns an error rather than silently mixing DLL versions.</p>
+
+      <p>The file is written atomically (temporary file then rename) to prevent corruption from power loss or process termination during the write.</p>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- SECTION 4: INFERENCE BACKENDS                                      -->
+    <!-- ================================================================== -->
+    <section id="inference-backends">
+      <h2>Inference Backends</h2>
+
+      <p>This section covers the lowest and most technically demanding layer of the engine: the custom FFI wrappers that bridge Rust to the native C inference libraries. No published Rust crate bindings exist for the OpenVINO GenAI C API or the ONNX Runtime GenAI C API. The existing <code>openvino</code> Rust crate covers the OpenVINO core but not the GenAI extension (LLM pipeline, streaming, chat history). The <code>ort</code> Rust crate covers ONNX Runtime but not the GenAI extension that provides the <code>OgaGenerator</code> step-by-step decoding API needed for DirectML streaming. We wrote our own FFI bindings from scratch &mdash; loading DLLs at runtime, resolving function pointers by name, and managing opaque C handles with RAII guards.</p>
+
+      <h3>Centralised DLL Loading</h3>
+
+      <p>All native library loading is confined to a single file: <code>runtime_loading.rs</code>. A CI test (<code>runtime_loading_is_centralized</code>) scans every <code>.rs</code> file in the engine workspace and fails if <code>Library::new()</code> or <code>load_with_flags()</code> appears anywhere else. This enforcement exists for three reasons:</p>
+
+      <ol>
+        <li><strong>Windows DLL dependency order is fragile.</strong> Loading <code>openvino_genai_c.dll</code> before <code>tbb12.dll</code> causes a silent load failure because the GenAI DLL has an implicit dependency on TBB. The error message names the DLL you tried to load (<code>openvino_genai_c.dll</code>), not the actual missing transitive dependency (<code>tbb12.dll</code>), making debugging without this knowledge extremely difficult.</li>
+        <li><strong>Load flags matter.</strong> We use <code>LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_SYSTEM32</code> to restrict dependency resolution to the DLL's own directory plus System32. Without these flags, Windows searches <code>PATH</code> and the working directory, which can silently pick up wrong-version DLLs from the user's environment.</li>
+        <li><strong>Bundle fingerprinting prevents version skew.</strong> Each bundle gets a hash-based fingerprint. If the engine is already initialised with one bundle, attempting to load a different one returns an error rather than silently mixing DLL versions &mdash; preventing ABI mismatches that would manifest as memory corruption or undefined behaviour.</li>
+      </ol>
+
+      <p>The OpenVINO DLL load sequence requires 13 DLLs for CPU-only operation, or 15 when NPU support is included. The order is strict &mdash; reordering any entry can produce confusing "DLL not found" errors that name the wrong library.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>DLL</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td><code>tbb12.dll</code></td><td>Intel Threading Building Blocks runtime</td></tr>
+          <tr><td>2</td><td><code>tbbbind_2_5.dll</code></td><td>TBB binding library</td></tr>
+          <tr><td>3</td><td><code>tbbmalloc.dll</code></td><td>TBB memory allocator</td></tr>
+          <tr><td>4</td><td><code>tbbmalloc_proxy.dll</code></td><td>TBB malloc proxy</td></tr>
+          <tr><td>5</td><td><code>openvino.dll</code></td><td>OpenVINO core runtime</td></tr>
+          <tr><td>6</td><td><code>openvino_c.dll</code></td><td>OpenVINO C API wrapper</td></tr>
+          <tr><td>7</td><td><code>openvino_ir_frontend.dll</code></td><td>IR model format parser</td></tr>
+          <tr><td>8</td><td><code>openvino_intel_cpu_plugin.dll</code></td><td>CPU inference plugin</td></tr>
+          <tr><td>9</td><td><code>openvino_intel_npu_compiler.dll</code></td><td>NPU model compiler (NPU only)</td></tr>
+          <tr><td>10</td><td><code>openvino_intel_npu_plugin.dll</code></td><td>NPU inference plugin (NPU only)</td></tr>
+          <tr><td>11</td><td><code>icudt70.dll</code></td><td>ICU data (Unicode support for tokenisers)</td></tr>
+          <tr><td>12</td><td><code>icuuc70.dll</code></td><td>ICU common library</td></tr>
+          <tr><td>13</td><td><code>openvino_tokenizers.dll</code></td><td>Tokeniser extension</td></tr>
+          <tr><td>14</td><td><code>openvino_genai.dll</code></td><td>GenAI LLM pipeline</td></tr>
+          <tr><td>15</td><td><code>openvino_genai_c.dll</code></td><td>GenAI C API (the API we call)</td></tr>
+        </tbody>
+      </table>
+
+      <p>Steps 9&ndash;10 are conditionally included only when the NPU is the target device. CPU-only initialisation skips them, which avoids loading NPU driver dependencies on machines without an NPU. ONNX Runtime is simpler: 2 support DLLs (<code>onnxruntime.dll</code>, <code>onnxruntime_providers_shared.dll</code>), with the GenAI and DirectML DLLs loaded later during API struct construction.</p>
+
+      <!-- CODESNAP: engine/crates/smolpc-engine-core/src/inference/runtime_loading.rs:L466-L503 — ensure_initialized_internal showing the DLL load sequence: TBB family, OpenVINO core, NPU conditionals, ICU, tokenizers, GenAI -->
+      <figure class="code-figure">
+        <img src="assets/images/code/dll-load-sequence.png" alt="The ensure_initialized_internal function showing the ordered vector of DLL references, conditional NPU DLLs, and the map-and-collect loading pattern">
+        <figcaption>Figure 4. The DLL load sequence in <code>runtime_loading.rs</code> &mdash; each library is loaded in strict dependency order through <code>RetainedLibrary::load()</code>. The NPU compiler and plugin DLLs (steps 9&ndash;10) are conditionally included only when <code>requires_npu</code> is true.</figcaption>
+      </figure>
+
+      <h3>OpenVINO GenAI Backend (CPU + NPU)</h3>
+
+      <p>The OpenVINO wrapper loads ~28 C API symbols from <code>openvino_c.dll</code> (error reporting) and <code>openvino_genai_c.dll</code> (pipeline lifecycle, generation config, chat history, streaming, performance metrics). All functions return an <code>OvStatus</code> integer where 0 means success. Errors are retrieved via <code>ov_get_error_info(status)</code> and <code>ov_get_last_err_msg()</code>, which return C strings converted to Rust <code>Result</code> types by the <code>check_status</code> helper. Every <code>_create</code> function has a corresponding <code>_free</code> destructor &mdash; these are the RAII targets for <code>OvOwned&lt;T&gt;</code>.</p>
+
+      <p><strong>RAII for C handles.</strong> Every opaque C pointer is wrapped in <code>OvOwned&lt;T&gt;</code>, a generic RAII guard that calls the stored destroy function on drop. The critical design detail is the ownership chain: <code>OvOwned</code> holds an <code>Arc&lt;OpenVinoGenAiApi&gt;</code>, which holds <code>RetainedLibrary</code> handles, which hold <code>Arc&lt;Library&gt;</code> references to the loaded DLLs. This ensures that function pointers are never called after their DLL has been unloaded &mdash; the destroy function is always valid when <code>Drop::drop</code> executes.</p>
+
+      <!-- CODESNAP: engine/crates/smolpc-engine-core/src/inference/genai/openvino_ffi.rs:L351-L380 — OvOwned<T> struct, new(), as_ptr(), and Drop impl showing the RAII guard for C handles -->
+      <figure class="code-figure">
+        <img src="assets/images/code/ov-owned-raii.png" alt="The OvOwned generic struct with api (Arc of OpenVinoGenAiApi), ptr (raw mutable pointer), and destroy (extern C function pointer) fields, plus the Drop implementation that null-checks before calling destroy">
+        <figcaption>Figure 5. <code>OvOwned&lt;T&gt;</code> &mdash; the RAII guard for opaque C handles. The <code>api</code> field keeps the DLL loaded for the lifetime of the handle. On drop, the pointer is replaced with null before calling the destroy function to prevent double-free.</figcaption>
+      </figure>
+
+      <p><strong>Pipeline creation</strong> differs between CPU and NPU. The CPU path calls <code>ov_genai_llm_pipeline_create(model_dir, "CPU", 0, &amp;pipeline)</code> where <code>0</code> means no extra properties. The NPU path uses the variadic C API with 6 string arguments: <code>ov_genai_llm_pipeline_create(model_dir, "NPU", 6, &amp;pipeline, "CACHE_DIR", cache_path, "MAX_PROMPT_LEN", "2048", "MIN_RESPONSE_LEN", "1024")</code>. The count parameter (<code>6</code>) tells the API how many variadic string arguments follow. Getting this count wrong causes undefined behaviour &mdash; an incorrect count reads garbage from the stack.</p>
+
+      <p><strong>Streaming</strong> uses a C callback mechanism. The <code>StreamerCallback</code> struct passes a function pointer to the C library. On each generated token, the callback receives the token as a C string and returns a status: <code>Running (0)</code> to continue, <code>Stop (1)</code> to finish gracefully, or <code>Cancel (2)</code> to abort immediately.</p>
+
+      <!-- CODESNAP: engine/crates/smolpc-engine-core/src/inference/genai/openvino_ffi.rs:L22-L35 — OvGenAiStreamingStatus enum and StreamerCallback struct -->
+      <figure class="code-figure">
+        <img src="assets/images/code/streamer-callback.png" alt="The OvGenAiStreamingStatus repr(C) enum with Running=0, Stop=1, Cancel=2 variants, and the StreamerCallback repr(C) struct with callback_func and args fields">
+        <figcaption>Figure 6. The streaming callback interface &mdash; <code>OvGenAiStreamingStatus</code> controls generation flow, and <code>StreamerCallback</code> passes the Rust callback function pointer and context to the C library.</figcaption>
+      </figure>
+
+      <p>The Rust-side callback function implements multiple safety nets beyond the C library's own stop logic:</p>
+      <ul>
+        <li><strong>Cancellation check.</strong> An <code>AtomicBool</code> flag set by the user or by a timeout.</li>
+        <li><strong>Token limit enforcement.</strong> A counter that matches <code>max_new_tokens</code>, catching cases where the C-level limit is not honoured due to pipeline bugs or ABI mismatches.</li>
+        <li><strong>Stop string accumulation.</strong> Checks for <code>&lt;|im_end|&gt;</code> and <code>&lt;|endoftext|&gt;</code> in accumulated text. This is a second line of defence &mdash; the NPU <code>StaticLLMPipeline</code> does not always honour <code>stop_token_ids</code> reliably.</li>
+        <li><strong>Degenerate output detection.</strong> If 64 or more consecutive dots are generated, stops generation immediately. This is a sign of model collapse.</li>
+      </ul>
+
+      <p>The async wrapper runs the blocking generation call in <code>tokio::task::spawn_blocking</code> and reads tokens from an <code>mpsc::unbounded_channel</code> with a 90-second watchdog timer. If no token arrives within 90 seconds (which can happen during NPU compilation on first load), the wrapper sets the cancelled flag and returns a timeout error. The watchdog resets after each token.</p>
+
+      <h3>DirectML Backend (Discrete GPU)</h3>
+
+      <p>The DirectML wrapper uses the ONNX Runtime GenAI C API with a fundamentally different generation model. Where OpenVINO uses a callback-based streaming API, ORT GenAI uses a step-by-step token generation loop: <code>OgaGenerator_GenerateNextToken</code> generates one token, <code>OgaGenerator_GetNextTokens</code> reads the token ID, <code>OgaGenerator_IsDone</code> checks for completion, and <code>OgaTokenizerStreamDecode</code> converts the token to text. Each iteration of this loop produces one token and sends it through the channel.</p>
+
+      <p>Key difference in calling convention: ORT GenAI uses <code>extern "system"</code> (Microsoft x64 calling convention on 64-bit Windows), while OpenVINO uses <code>extern "C"</code>. The error pattern also differs &mdash; ORT GenAI functions return <code>*mut OgaResult</code> where null means success and non-null means an error with an embedded message string.</p>
+
+      <p>Model loading creates an <code>OgaConfig</code>, clears default providers, appends <code>"dml"</code> as the execution provider, and optionally sets a specific GPU adapter index via <code>OgaConfigSetDecoderProviderOptionsHardwareDeviceId</code>. This is how the engine targets a specific discrete GPU when multiple GPUs are present.</p>
+
+      <p><strong>Preflight validation</strong> is the mechanism that catches garbage output on integrated GPUs. The preflight generates a single token and inspects the logits tensor:</p>
+      <ol>
+        <li>Encode a short prompt and generate one token with <code>max_length = prompt_tokens + 1</code>.</li>
+        <li>Call <code>OgaGenerator_GetLogits</code> to access the logits tensor.</li>
+        <li>Read the tensor's element type (Float32 or Float16), shape, and data pointer.</li>
+        <li>Compute the bounds of the last row of logits.</li>
+        <li>Scan the last row for non-finite values (NaN, Infinity, negative Infinity).</li>
+        <li>If any non-finite values are found, return an error with the count and first offending value.</li>
+      </ol>
+
+      <p>This logits-level check is more reliable than testing the decoded text, because a single non-finite logit can propagate through softmax and produce plausible-looking but semantically wrong tokens. The check catches the problem at source.</p>
+
+      <p><strong>Hung driver protection.</strong> DirectML on some GPU/driver combinations can hang indefinitely during <code>OgaGenerator_GenerateNextToken</code>. A 45-second watchdog sets a <code>hung</code> flag if the timer fires. All subsequent calls to <code>generate_stream</code> or <code>run_preflight</code> immediately return an error. Recovery requires destroying and recreating the entire model.</p>
+
+      <h3>Backend Comparison</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Characteristic</th>
+            <th>CPU (OpenVINO)</th>
+            <th>NPU (OpenVINO)</th>
+            <th>DirectML (Discrete GPU)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>TTFT</td>
+            <td>Slow (seconds)</td>
+            <td>Fast after compilation</td>
+            <td>Variable (GPU-dependent)</td>
+          </tr>
+          <tr>
+            <td>Decode speed</td>
+            <td>Slowest</td>
+            <td>Moderate</td>
+            <td>Fastest on discrete GPU</td>
+          </tr>
+          <tr>
+            <td>First load</td>
+            <td>Fast</td>
+            <td>Slow (3&ndash;5 min compilation, then cached)</td>
+            <td>Fast</td>
+          </tr>
+          <tr>
+            <td>Context window</td>
+            <td>Unlimited (within RAM)</td>
+            <td>Fixed (MAX_PROMPT_LEN 2048 tokens)</td>
+            <td>Unlimited (within VRAM)</td>
+          </tr>
+          <tr>
+            <td>Sampling</td>
+            <td>Full (temperature, top_k, top_p)</td>
+            <td>Greedy only (do_sample=false)</td>
+            <td>Full</td>
+          </tr>
+          <tr>
+            <td>Reliability</td>
+            <td>Most reliable</td>
+            <td>Driver-dependent</td>
+            <td>GPU-dependent</td>
+          </tr>
+          <tr>
+            <td>Quantisation</td>
+            <td>INT4</td>
+            <td>INT8_SYM (Qwen3), INT4 (Qwen2.5)</td>
+            <td>INT4</td>
+          </tr>
+          <tr>
+            <td>Calling convention</td>
+            <td><code>extern "C"</code></td>
+            <td><code>extern "C"</code></td>
+            <td><code>extern "system"</code></td>
+          </tr>
+          <tr>
+            <td>Error pattern</td>
+            <td><code>OvStatus</code> integer (0 = OK)</td>
+            <td><code>OvStatus</code> integer (0 = OK)</td>
+            <td><code>*mut OgaResult</code> (null = OK)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>NPU Constraints</h3>
+
+      <p>The NPU uses OpenVINO's <code>StaticLLMPipeline</code>, which differs from the CPU <code>LLMPipeline</code> in several architecturally significant ways. These constraints are the source of the most complex workarounds in the engine.</p>
+
+      <ul>
+        <li><strong>Fixed context window.</strong> <code>MAX_PROMPT_LEN</code> (2048 tokens) + <code>MIN_RESPONSE_LEN</code> (1024 tokens) are set at pipeline creation time and cannot be changed. Exceeding <code>MAX_PROMPT_LEN</code> crashes the pipeline with "unknown exception" &mdash; no graceful error, no recovery. The engine host humanises this to "conversation too long, try starting a new chat."</li>
+        <li><strong>Greedy decoding only.</strong> <code>do_sample</code> must be <code>false</code>. Temperature, top_k, and top_p are ignored. <code>presence_penalty</code> is incompatible with greedy decoding.</li>
+        <li><strong>Qwen3 INT4 crashes the NPU.</strong> Only INT8_SYM (symmetric per-channel quantisation via <code>nncf.compress_weights</code>) works. INT4 is used only on CPU.</li>
+        <li><strong>No <code>extra_context</code> API.</strong> The CPU path disables Qwen3's thinking mode via <code>ov_genai_chat_history_set_extra_context({"enable_thinking": false})</code>. The NPU <code>StaticLLMPipeline</code> does not support this API. Instead, the engine injects <code>/nothink</code> into the system message content.</li>
+        <li><strong>Template patching required.</strong> Qwen3 ships with a Jinja chat template that enables thinking by default when <code>enable_thinking</code> is undefined. On the NPU, where we cannot set <code>extra_context</code>, this causes runaway generation (thinking tokens consume the entire response budget). The <code>ensure_qwen3_nothink_template</code> function patches the Jinja condition from <code>enable_thinking is defined and enable_thinking is false</code> to <code>not enable_thinking is defined or enable_thinking is false</code>. Template patch failure is a hard error that aborts NPU model loading &mdash; an un-patched template produces runaway generation on every request.</li>
+        <li><strong>First-run compilation.</strong> The first load compiles the model to an NPU-specific blob, taking 3&ndash;5 minutes for Qwen at MAX_PROMPT_LEN=2048. The <code>CACHE_DIR</code> property stores this blob so subsequent loads take seconds. Changing <code>MAX_PROMPT_LEN</code> or <code>MIN_RESPONSE_LEN</code> invalidates the cache.</li>
+      </ul>
+
+      <p><strong>OpenVINO 2026.0.0 bug:</strong> setting <code>min_new_tokens &gt;= 1</code> permanently suppresses EOS token detection, causing generation to run until <code>max_new_tokens</code> is exhausted. The wrapper explicitly skips the <code>set_min_new_tokens</code> call and logs a warning if a caller attempts to set it.</p>
+
+      <h3>Unified Runtime Adapter</h3>
+
+      <p>The <code>InferenceRuntimeAdapter</code> enum unifies both backends behind a single interface with two generation methods: <code>generate_stream()</code> takes a raw string prompt (pre-formatted ChatML) and works with both backends; <code>generate_stream_messages()</code> takes structured chat messages and is only supported by OpenVINO GenAI (which has native structured chat via <code>ov_genai_llm_pipeline_generate_with_history</code>). DirectML returns an error for structured messages because ORT GenAI does not have a native structured chat API. The engine host checks <code>is_openvino_genai()</code> to decide which path to use.</p>
+
+      <!-- CODESNAP: engine/crates/smolpc-engine-core/src/inference/runtime_adapter.rs:L9-L14 — InferenceRuntimeAdapter enum showing GenAiDirectMl and OpenVinoGenAi variants -->
+      <figure class="code-figure">
+        <img src="assets/images/code/runtime-adapter-enum.png" alt="The InferenceRuntimeAdapter enum with GenAiDirectMl and OpenVinoGenAi variants, each wrapping their respective generator type">
+        <figcaption>Figure 7. <code>InferenceRuntimeAdapter</code> &mdash; a single enum that dispatches to the correct backend. The host code never touches backend-specific types directly.</figcaption>
+      </figure>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- SECTION 5: ENGINE LIFECYCLE                                        -->
+    <!-- ================================================================== -->
+    <section id="lifecycle">
+      <h2>Engine Lifecycle</h2>
+      <p>The engine process is not managed by the operating system or a generic service framework. A purpose-built supervisor actor inside the Tauri app owns the entire lifecycle: spawning, health monitoring, crash recovery, and shutdown. This section traces that lifecycle from idle to running, through failure, and back.</p>
+
+      <h3>State Machine</h3>
+      <p>The engine lifecycle is modelled as an explicit state machine with six states and validated transitions. Invalid transitions (such as <code>Idle</code> directly to <code>Running</code>) are rejected with an error log, which makes impossible states unrepresentable at runtime.</p>
+
+      <pre><code>Idle --Start--> Starting --spawn--> WaitingForHealth --healthy--> Running
+                                                                      |
+                                                           health loop (10s)
+                                                           PID alive + HTTP
+                                                                      |
+                                                         3 failures --> Crashed
+                                                                          |
+                                                              backoff restart
+                                                              1s -> 2s -> 4s
+                                                                          |
+                                                        max 3 per 5min --> Failed (terminal)</code></pre>
+
+      <table>
+        <thead>
+          <tr>
+            <th>State</th>
+            <th>Description</th>
+            <th>Carries</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>Idle</code></td>
+            <td>No engine running. Waiting for a <code>Start</code> command.</td>
+            <td>Nothing</td>
+          </tr>
+          <tr>
+            <td><code>Starting</code></td>
+            <td>Spawn sequence in progress.</td>
+            <td>Nothing</td>
+          </tr>
+          <tr>
+            <td><code>WaitingForHealth</code></td>
+            <td>Engine process launched, polling <code>/engine/health</code> every 100ms.</td>
+            <td>Nothing</td>
+          </tr>
+          <tr>
+            <td><code>Running</code></td>
+            <td>Engine is healthy and serving requests.</td>
+            <td>Current backend, model ID</td>
+          </tr>
+          <tr>
+            <td><code>Crashed</code></td>
+            <td>Engine process died or became unresponsive.</td>
+            <td>Error message, restart count</td>
+          </tr>
+          <tr>
+            <td><code>Failed</code></td>
+            <td>Max restarts exceeded. Terminal -- requires app restart or manual retry.</td>
+            <td>Error message</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>The state graph includes several non-obvious cycles that are important for correctness. <code>Running</code> can transition back to <code>Starting</code> when the user changes runtime mode (the engine must restart with different DLL paths). <code>Running</code> can transition to <code>Running</code> when a status refresh updates the backend or model information. <code>Failed</code> can transition to <code>Starting</code> when the user explicitly clicks Retry. These cycles are validated by the <code>can_transition_to()</code> method and covered by unit tests in <code>mod.rs</code>.</p>
+
+      <!-- CODESNAP: app/src-tauri/src/engine/mod.rs:L53-L68 — Validated state transitions -->
+      <figure class="code-figure">
+        <img src="assets/images/code/lifecycle-can-transition-to.png" alt="The can_transition_to method in EngineLifecycleState that validates every state machine transition">
+        <figcaption>Figure 12. The <code>can_transition_to()</code> method validates every state machine transition. Invalid transitions are logged and rejected.</figcaption>
+      </figure>
+
+      <h3>Supervisor Architecture</h3>
+      <p>The <code>EngineSupervisor</code> is a single Tokio background task spawned during Tauri app initialisation. It runs a <code>select!</code> loop that listens to three concurrent event sources, processing whichever fires first.</p>
+
+      <div class="card">
+        <h3>Why an Actor, Not Mutexes</h3>
+        <p>The original design used four <code>Mutex</code>-guarded fields shared across Tauri commands. This produced deadlocks: a health check could run while a model load was in progress, each holding different mutexes but needing the other's. A separate bug -- the "disconnected while running" issue -- was caused by a stale <code>EngineClient</code> surviving a state transition because two code paths held overlapping locks.</p>
+        <p>The actor pattern eliminates both classes of bug. The supervisor has <strong>exclusive ownership</strong> of all engine process state. Commands arrive through an <code>mpsc</code> channel (buffer 16) and are processed one at a time, giving <strong>ordered processing</strong> with no concurrent mutation. External consumers observe state through <code>tokio::sync::watch</code> channels -- lock-free, no contention, any number of readers.</p>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Event Source</th>
+            <th>Mechanism</th>
+            <th>Fires When</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Command channel</td>
+            <td><code>mpsc</code>, buffer 16</td>
+            <td>Tauri command sends <code>Start</code>, <code>SetRuntimeMode</code>, <code>SetDesiredModel</code>, <code>RefreshStatus</code>, or <code>Shutdown</code></td>
+          </tr>
+          <tr>
+            <td>Health check timer</td>
+            <td>10-second interval</td>
+            <td>Only when state is <code>Running</code></td>
+          </tr>
+          <tr>
+            <td>Restart delay timer</td>
+            <td>Backoff sleep (1s / 2s / 4s)</td>
+            <td>After a crash when a restart is pending</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Watch Channels and Frontend Integration</h3>
+      <p>External code reads engine state through watch channels rather than locks. This means there is no contention between the supervisor and any number of concurrent readers.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Watch Channel</th>
+            <th>Type</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>state_tx</code></td>
+            <td><code>EngineLifecycleState</code></td>
+            <td>Current lifecycle state (serialised as a tagged enum)</td>
+          </tr>
+          <tr>
+            <td><code>client_tx</code></td>
+            <td><code>Option&lt;EngineClient&gt;</code></td>
+            <td>HTTP client for the running engine, or <code>None</code></td>
+          </tr>
+          <tr>
+            <td><code>pid_tx</code></td>
+            <td><code>Option&lt;u32&gt;</code></td>
+            <td>Engine process ID, or <code>None</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>Every state transition does two things: it broadcasts the new state via the watch channel, and it emits a Tauri event <code>"engine-state-changed"</code> with the serialised state. The Svelte frontend listens for this event and updates <code>inferenceStore.lifecycleState</code>, which drives loading screens, error states, and ready indicators.</p>
+
+      <!-- CODESNAP: app/src-tauri/src/engine/supervisor.rs:L129-L162 — The select! loop -->
+      <figure class="code-figure">
+        <img src="assets/images/code/supervisor-select-loop.png" alt="The tokio select! loop inside the EngineSupervisor run method, showing the three concurrent event sources">
+        <figcaption>Figure 13. The supervisor's <code>select!</code> loop. The health timer fires only when <code>is_running</code> is true; the restart delay fires only when <code>restart_pending</code> is true.</figcaption>
+      </figure>
+
+      <h3>Spawn Sequence</h3>
+      <p>When the supervisor receives a <code>Start</code> command, the <code>do_spawn_sequence()</code> method executes a 12-step procedure that takes the engine from nothing to healthy.</p>
+
+      <ol>
+        <li><strong>Resolve paths</strong> -- port, data directory, resource directory, app version. Portable mode uses exe-relative paths; installed mode uses <code>%LOCALAPPDATA%</code>.</li>
+        <li><strong>Create directories</strong> -- ensure runtime and data directories exist.</li>
+        <li><strong>Generate auth token</strong> -- delete the old token file, generate a fresh 48-character alphanumeric string via the OS cryptographic random generator (<code>OsRng</code>), and write it to <code>engine-token.txt</code>.</li>
+        <li><strong>Create HTTP client</strong> -- construct an <code>EngineClient</code> with the fresh token and <code>http://127.0.0.1:19432</code>.</li>
+        <li><strong>Kill stale processes</strong> -- run <code>taskkill /F /IM smolpc-engine-host.exe</code> with <code>CREATE_NO_WINDOW</code> to clean up orphaned engines.</li>
+        <li><strong>Spawn detached process</strong> -- launch <code>smolpc-engine-host.exe</code> with Windows flags <code>DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW</code>. Stderr is redirected to <code>engine-spawn.log</code>. The auth token is passed via the <code>SMOLPC_ENGINE_TOKEN</code> environment variable, not the command line, to prevent exposure through process listing.</li>
+        <li><strong>Write PID file</strong> -- record the child PID to <code>engine.pid</code> in the shared runtime directory.</li>
+        <li><strong>Transition to <code>WaitingForHealth</code></strong>.</li>
+        <li><strong>Poll health</strong> -- call <code>GET /engine/health</code> every 100ms with a 30-second timeout.</li>
+        <li><strong>Transition to <code>Running</code></strong> -- reset the failure counter and broadcast the client via the watch channel.</li>
+        <li><strong>Refresh status</strong> -- read <code>GET /engine/status</code> to populate the current backend and model info.</li>
+        <li><strong>Restore desired model</strong> -- if a model was previously set, call <code>load_model()</code>. On first failure, retry once after a 2-second delay. On second failure, log the error but remain in <code>Running</code> without a loaded model.</li>
+      </ol>
+
+      <h3>Spawn Lock</h3>
+      <p>Multiple app instances (or future consumers like separate Blender/GIMP connectors) could try to spawn the engine simultaneously. A filesystem-based lock prevents this race condition.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Lock file</td>
+            <td><code>engine-spawn.lock</code> in the shared runtime directory</td>
+          </tr>
+          <tr>
+            <td>Atomic creation</td>
+            <td><code>OpenOptions::new().create_new(true)</code> -- OS guarantees only one process succeeds</td>
+          </tr>
+          <tr>
+            <td>Content</td>
+            <td><code>pid=&lt;holder_pid&gt;</code></td>
+          </tr>
+          <tr>
+            <td>Dead-holder detection</td>
+            <td><code>OpenProcess</code> on Windows, <code>kill(pid, 0)</code> on Unix</td>
+          </tr>
+          <tr>
+            <td>Stale timeout</td>
+            <td>30 seconds -- older lock files are deleted and re-acquired</td>
+          </tr>
+          <tr>
+            <td>Force-acquire timeout</td>
+            <td>10 seconds -- force-delete and attempt once more</td>
+          </tr>
+          <tr>
+            <td>Cleanup</td>
+            <td><code>SpawnLockGuard</code> RAII struct removes the lock file on drop</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- CODESNAP: engine/crates/smolpc-engine-client/src/spawn.rs:L488-L496 — SpawnLockGuard RAII -->
+      <figure class="code-figure">
+        <img src="assets/images/code/spawn-lock-guard.png" alt="SpawnLockGuard struct with Drop implementation that removes the lock file">
+        <figcaption>Figure 14. The <code>SpawnLockGuard</code> removes the lock file on drop, ensuring cleanup on all exit paths including panics and early returns.</figcaption>
+      </figure>
+
+      <h3>Health Check Loop</h3>
+      <p>While in the <code>Running</code> state, the supervisor runs a two-phase health check every 10 seconds.</p>
+
+      <ol>
+        <li><strong>PID liveness check</strong> -- call <code>OpenProcess</code> (Windows) to verify the engine process is still alive. This catches cases where the process has exited but the port has not been released yet.</li>
+        <li><strong>HTTP health check</strong> -- call <code>GET /engine/health</code>. This catches cases where the process is alive but hung (deadlocked FFI call, infinite loop in the runtime).</li>
+        <li><strong>On success</strong> -- reset the failure counter to 0 and optionally refresh backend/model status.</li>
+        <li><strong>On failure</strong> -- increment the failure counter. After 3 consecutive failures, transition to <code>Crashed</code>.</li>
+      </ol>
+
+      <p>PID death triggers an immediate crash transition (process exit is definitive), while HTTP failures require three consecutive misses before the engine is considered crashed. This prevents a transient network hiccup or a slow model load from triggering unnecessary restarts.</p>
+
+      <h3>Automatic Restart and Backoff</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Restart Policy Parameter</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Max restarts per window</td>
+            <td>3</td>
+          </tr>
+          <tr>
+            <td>Window duration</td>
+            <td>5 minutes</td>
+          </tr>
+          <tr>
+            <td>Backoff delays</td>
+            <td>1s, 2s, 4s (indexed by restart count)</td>
+          </tr>
+          <tr>
+            <td>Window reset</td>
+            <td>If the first restart in the window happened more than 5 minutes ago, the counter resets</td>
+          </tr>
+          <tr>
+            <td>Terminal condition</td>
+            <td>3 crashes within the window transitions to <code>Failed</code> (requires user retry)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>After each successful restart, the supervisor automatically attempts to restore the previously loaded model (with one retry on failure). This means a student whose engine crashed mid-conversation will return to a working state within seconds, with their model already loaded.</p>
+
+      <h3>Graceful Shutdown</h3>
+      <p>The shutdown path is designed with nested timeouts to guarantee cleanup even if the engine hangs.</p>
+
+      <ol>
+        <li><strong>Stop audio</strong> -- halt recording and playback synchronously to prevent Windows WASAPI session corruption.</li>
+        <li><strong>Snapshot PID</strong> -- capture the current engine PID before shutdown clears it.</li>
+        <li><strong>Send shutdown command</strong> -- the supervisor calls <code>POST /engine/shutdown</code> with a 5-second timeout. The engine receives the request, notifies its internal shutdown channel, and stops accepting new connections.</li>
+        <li><strong>Clear state</strong> -- the supervisor sets the client and PID to <code>None</code> and broadcasts via watch channels.</li>
+        <li><strong>Force-kill fallback</strong> -- if the 5-second HTTP shutdown fails, the 8-second outer timeout fires. The supervisor verifies the PID still belongs to <code>smolpc-engine-host.exe</code> via <code>tasklist</code> (PIDs are aggressively reused by Windows), then runs <code>taskkill /F /PID &lt;pid&gt;</code>.</li>
+      </ol>
+
+      <p>The 8-second outer timeout intentionally exceeds the 5-second inner timeout. This layering ensures the force-kill path only activates if the HTTP shutdown genuinely failed, not due to a race.</p>
+
+      <h3>TTS Sidecar Lifecycle</h3>
+      <p>The TTS sidecar (<code>smolpc-tts-server</code>) is managed by the engine host, not the supervisor. It runs as a separate process on port 19433 with the same detached/windowless flags. Health is checked at 200ms intervals during startup with a 15-second total budget. The engine proxies <code>/v1/audio/speech</code> requests to <code>localhost:19433/synthesize</code>. If a speech request finds the sidecar unhealthy, the engine attempts one respawn before returning 503.</p>
+
+      <!-- CODESNAP: engine/crates/smolpc-engine-host/src/types.rs:L316-L333 — RAII guards -->
+      <figure class="code-figure">
+        <img src="assets/images/code/raii-guards.png" alt="TransitionGuard and GenerationPermit RAII structs that clean up atomic flags on drop">
+        <figcaption>Figure 15. <code>TransitionGuard</code> and <code>GenerationPermit</code> use RAII to guarantee that atomic state flags are reset on all exit paths, preventing permanently stuck flags.</figcaption>
+      </figure>
+    </section>
+
+
+    <!-- ================================================================== -->
+    <!-- SECTION 6: API SURFACE                                             -->
+    <!-- ================================================================== -->
+    <section id="api">
+      <h2>API Surface</h2>
+      <p>The engine exposes 15 HTTP endpoints on <code>localhost:19432</code>. Every request (except <code>/engine/health</code>) must include a Bearer token in the <code>Authorization</code> header. Token comparison uses constant-time equality to prevent timing side-channel attacks.</p>
+
+      <h3>Authentication</h3>
+      <p>The token is a 48-character alphanumeric string generated by <code>OsRng</code> and passed to the engine via the <code>SMOLPC_ENGINE_TOKEN</code> environment variable. It is stored on disk in <code>engine-token.txt</code> inside <code>%LOCALAPPDATA%\SmolPC 2.0\engine-runtime\</code>. The token is rotated on every engine spawn -- restarting the engine invalidates all previous tokens. Verification uses a hand-rolled XOR-based comparison that accumulates byte differences and returns equality only if the accumulated diff is zero, taking the same time regardless of where a mismatch occurs.</p>
+
+      <h3>Health and Status Endpoints</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Endpoint</th>
+            <th>Purpose</th>
+            <th>Auth</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>GET</code></td>
+            <td><code>/engine/health</code></td>
+            <td>Liveness check. Returns <code>ok</code> boolean and state (<code>idle</code>, <code>starting</code>, <code>resolving_assets</code>, <code>probing</code>, <code>loading_model</code>, <code>ready</code>, <code>failed</code>).</td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td><code>GET</code></td>
+            <td><code>/engine/meta</code></td>
+            <td>Engine version, protocol version, PID, and <code>busy</code> flag.</td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td><code>GET</code></td>
+            <td><code>/engine/status</code></td>
+            <td>Full readiness payload: backend status, model info, lane readiness, startup state, error details.</td>
+            <td>Yes</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Startup and Model Endpoints</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Endpoint</th>
+            <th>Purpose</th>
+            <th>Key Detail</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>POST</code></td>
+            <td><code>/engine/ensure-started</code></td>
+            <td>Trigger background probe: hardware detection, backend selection, model loading.</td>
+            <td>Body: <code>{"mode": "auto", "startup_policy": {}}</code>. Returns 409 on conflict with existing startup.</td>
+          </tr>
+          <tr>
+            <td><code>POST</code></td>
+            <td><code>/engine/load</code></td>
+            <td>Load a model by ID. Replaces the currently loaded model.</td>
+            <td>600-second timeout (first-run NPU compilation can take 3-5 minutes). Memory pressure errors include a hint to switch models.</td>
+          </tr>
+          <tr>
+            <td><code>POST</code></td>
+            <td><code>/engine/unload</code></td>
+            <td>Unload the current model. Optional <code>force</code> flag unloads during active generation.</td>
+            <td>Returns 200 on success.</td>
+          </tr>
+          <tr>
+            <td><code>POST</code></td>
+            <td><code>/engine/check-model</code></td>
+            <td>Check whether a model's artefacts are available on disk, per backend lane.</td>
+            <td>Returns lane-based readiness report (which backends can load this model).</td>
+          </tr>
+          <tr>
+            <td><code>GET</code></td>
+            <td><code>/v1/models</code></td>
+            <td>List all registered models with RAM requirements.</td>
+            <td>OpenAI-compatible format. Each model includes <code>min_ram_gb</code> and <code>estimated_runtime_ram_gb</code>.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Generation Endpoints</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Endpoint</th>
+            <th>Purpose</th>
+            <th>Key Detail</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>POST</code></td>
+            <td><code>/v1/chat/completions</code></td>
+            <td>Chat completion with SSE streaming. OpenAI-compatible wire format.</td>
+            <td>Streaming only (<code>stream: true</code> required). Non-streaming returns 400. Qwen3 thinking blocks are stripped automatically.</td>
+          </tr>
+          <tr>
+            <td><code>POST</code></td>
+            <td><code>/engine/cancel</code></td>
+            <td>Cancel the active generation.</td>
+            <td>Sets a cancellation flag; the next token callback detects it and stops.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Audio Endpoints</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Endpoint</th>
+            <th>Purpose</th>
+            <th>Key Detail</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>POST</code></td>
+            <td><code>/v1/audio/transcriptions</code></td>
+            <td>Whisper speech-to-text. Raw f32 PCM body, 16kHz mono.</td>
+            <td>Body must be a multiple of 4 bytes. Whisper model lazy-loaded on first request.</td>
+          </tr>
+          <tr>
+            <td><code>POST</code></td>
+            <td><code>/v1/audio/speech</code></td>
+            <td>Text-to-speech synthesis. Proxied to TTS sidecar on port 19433.</td>
+            <td>Returns binary WAV. If sidecar is unhealthy, engine attempts one respawn before 503.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Lifecycle Endpoints</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Endpoint</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>POST</code></td>
+            <td><code>/engine/shutdown</code></td>
+            <td>Graceful shutdown. Notifies the internal shutdown channel; the Axum server stops accepting new connections and exits.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Concurrency Model</h3>
+      <p>The engine enforces strict concurrency limits through Tokio semaphores to prevent out-of-memory crashes on 8GB hardware.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Semaphore</th>
+            <th>Capacity</th>
+            <th>Purpose</th>
+            <th>When Full</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Generation</td>
+            <td>1</td>
+            <td>Only one LLM generation runs at a time. Two concurrent generations on 8GB RAM causes OOM.</td>
+            <td>Requests queue (up to queue capacity)</td>
+          </tr>
+          <tr>
+            <td>Queue</td>
+            <td>3 (configurable)</td>
+            <td>Limits waiting requests while one generation runs.</td>
+            <td>429 Too Many Requests</td>
+          </tr>
+          <tr>
+            <td>Voice</td>
+            <td>1</td>
+            <td>Serialises STT and TTS operations.</td>
+            <td>504 Gateway Timeout (30s)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>An atomic <code>generating</code> flag provides a fast-path check before acquiring the semaphore. An atomic <code>model_transition_in_progress</code> flag prevents model unload during active transitions. Both flags use RAII guards (<code>GenerationPermit</code> and <code>TransitionGuard</code>) for automatic cleanup.</p>
+
+      <h3>SSE Streaming Format</h3>
+      <p>The <code>/v1/chat/completions</code> endpoint streams responses as Server-Sent Events in the OpenAI wire format. The event sequence is:</p>
+      <ol>
+        <li><strong>Role announcement</strong> -- <code>data: {"choices":[{"delta":{"role":"assistant"}}]}</code></li>
+        <li><strong>Token chunks</strong> (repeated) -- <code>data: {"choices":[{"delta":{"content":"token"}}]}</code></li>
+        <li><strong>Metrics event</strong> -- includes <code>total_tokens</code>, <code>time_to_first_token_ms</code>, <code>tokens_per_second</code>, <code>total_time_ms</code>, and <code>truncated</code></li>
+        <li><strong>Finish chunk</strong> -- <code>data: {"choices":[{"delta":{},"finish_reason":"stop"}]}</code></li>
+        <li><strong>Done signal</strong> -- <code>data: [DONE]</code></li>
+      </ol>
+
+      <p>Error events (such as <code>INFERENCE_GENERATION_CANCELLED</code> or <code>ENGINE_STREAM_ERROR</code>) replace the metrics event if generation fails.</p>
+
+      <h3>Error Response Format</h3>
+      <p>All errors follow a consistent shape: <code>{"error": "message"}</code>. The engine uses a small set of HTTP status codes, each with a specific meaning in the engine context.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Status Code</th>
+            <th>Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>400</td>
+            <td>Bad request (invalid input, missing fields, non-streaming request)</td>
+          </tr>
+          <tr>
+            <td>401</td>
+            <td>Unauthorised (missing or invalid token)</td>
+          </tr>
+          <tr>
+            <td>409</td>
+            <td>Conflict (startup policy mismatch with running engine)</td>
+          </tr>
+          <tr>
+            <td>429</td>
+            <td>Queue full (generation semaphore and queue both saturated)</td>
+          </tr>
+          <tr>
+            <td>500</td>
+            <td>Internal error (model load failure, FFI error)</td>
+          </tr>
+          <tr>
+            <td>502</td>
+            <td>Bad gateway (TTS sidecar returned an error)</td>
+          </tr>
+          <tr>
+            <td>503</td>
+            <td>Service unavailable (engine not ready, TTS sidecar not available)</td>
+          </tr>
+          <tr>
+            <td>504</td>
+            <td>Gateway timeout (queue wait or voice semaphore timeout)</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+
+    <!-- ================================================================== -->
+    <!-- SECTION 7: VOICE & AUDIO PIPELINE                                  -->
+    <!-- ================================================================== -->
+    <section id="voice-audio">
+      <h2>Voice and Audio Pipeline</h2>
+      <p>Voice features are part of the shared platform rather than a separate assistant mode. The same microphone and read-aloud controls are available in Code, GIMP, Blender, Writer, and Slides. This section traces the data path for both speech-to-text and text-to-speech.</p>
+
+      <h3>Speech-to-Text Path</h3>
+      <ol>
+        <li><strong>Capture</strong> -- the Tauri app captures device-native audio using <code>cpal</code> (cross-platform audio library).</li>
+        <li><strong>Resample</strong> -- <code>rubato</code> converts the captured audio to 16kHz mono, the format expected by Whisper.</li>
+        <li><strong>Transcribe</strong> -- raw f32 PCM samples are sent as a binary body to <code>POST /v1/audio/transcriptions</code>. The engine runs Whisper base.en with INT8 quantisation on OpenVINO CPU. The model is lazy-loaded on the first transcription request.</li>
+        <li><strong>Two-call buffer pattern</strong> -- the Tauri app uses a two-call buffer to smooth out partial transcriptions before inserting the final text into the composer.</li>
+        <li><strong>Compose</strong> -- the transcribed text is placed in the composer bar so the student can review and edit it before sending.</li>
+      </ol>
+
+      <h3>Text-to-Speech Path</h3>
+      <ol>
+        <li><strong>Request</strong> -- when the user presses read-aloud on an assistant message, the frontend calls <code>POST /v1/audio/speech</code> with the message text.</li>
+        <li><strong>Proxy</strong> -- the engine host proxies the request to <code>smolpc-tts-server</code> on <code>localhost:19433/synthesize</code>.</li>
+        <li><strong>Synthesise</strong> -- KittenTTS generates WAV audio.</li>
+        <li><strong>Playback</strong> -- the Tauri app plays the returned WAV data through <code>rodio</code>.</li>
+      </ol>
+
+      <h3>Why a Separate Sidecar</h3>
+      <p>The TTS server runs in its own workspace and process because of an <code>ort</code> (ONNX Runtime Rust crate) version conflict. The TTS server depends on one version of <code>ort</code>; the engine depends on another. Cargo does not allow two versions of the same crate with conflicting native library requirements in one workspace. The sidecar also provides process isolation: a TTS crash does not affect inference, and a model loading hang in the engine does not block speech synthesis.</p>
+
+      <h3>Thinking Filter</h3>
+      <p>Qwen3 models may emit chain-of-thought reasoning wrapped in <code>&lt;think&gt;...&lt;/think&gt;</code> tags, even when the <code>/nothink</code> directive is present. The <code>ThinkingFilter</code> in <code>chat.rs</code> acts as a safety net that strips these blocks from the SSE token stream before they reach the client.</p>
+      <p>The filter is a state machine that buffers incoming tokens and tracks whether it is currently inside a thinking block. It handles partial tags at token boundaries (for example, one token ending with <code>&lt;thi</code> and the next starting with <code>nk&gt;</code>) by computing the longest suffix of the buffer that could be a prefix of the target tag. At end-of-stream, any remaining buffered text outside a thinking block is flushed. This makes the filter robust against arbitrary tokenisation splits.</p>
+
+      <!-- CODESNAP: engine/crates/smolpc-engine-host/src/chat.rs:L20-L103 — ThinkingFilter -->
+      <figure class="code-figure">
+        <img src="assets/images/code/thinking-filter.png" alt="ThinkingFilter struct and its push method that strips think tags from the token stream">
+        <figcaption>Figure 16. The <code>ThinkingFilter</code> strips <code>&lt;think&gt;...&lt;/think&gt;</code> blocks from the SSE token stream. The <code>partial_tag_suffix_len</code> helper handles tags split across token boundaries.</figcaption>
+      </figure>
+
+      <h3>Graceful Degradation</h3>
+      <p>If the microphone is missing or the TTS sidecar fails to start, voice controls are disabled but text chat remains fully functional. The voice semaphore (capacity 1) serialises STT and TTS operations so that a hung transcription cannot block a concurrent speech request indefinitely -- the 30-second semaphore timeout returns a 504 and frees the resource.</p>
+    </section>
+
+
+    <!-- ================================================================== -->
+    <!-- SECTION 8: CHALLENGES & DESIGN DECISIONS                           -->
+    <!-- ================================================================== -->
+    <section id="challenges">
+      <h2>Challenges and Design Decisions</h2>
+      <p>This section documents the most significant engineering challenges encountered during development. Each is framed as a problem, what was tried, why it was hard, and how it was solved. Together they illustrate the gap between "local inference works in a demo" and "local inference works reliably on 8GB school laptops."</p>
+
+      <div class="card">
+        <h3>NPU Constraints</h3>
+        <p><strong>Problem:</strong> Intel NPU hardware imposes constraints that are not documented in the OpenVINO API and can only be discovered empirically. These constraints shaped many of the engine's design choices.</p>
+        <ul>
+          <li><strong>Fixed context crash.</strong> The NPU's <code>StaticLLMPipeline</code> throws "unknown exception" when the tokenised chat history exceeds <code>MAX_PROMPT_LEN</code>. The engine intercepts this opaque C API error in <code>humanize_generation_error()</code> and replaces it with a user-friendly message: "This conversation has gotten too long for the current inference mode."</li>
+          <li><strong>Greedy decoding only.</strong> The NPU supports only greedy decoding -- no temperature, top-k, or top-p sampling. Generation parameters are accepted by the API but silently ignored when the OpenVINO NPU backend is active.</li>
+          <li><strong>INT4 crashes.</strong> Qwen3 models crash at INT4 quantisation on the NPU. The engine requires INT8_SYM for Qwen3 and validates this before attempting a load.</li>
+          <li><strong>Template patching.</strong> Qwen3 requires a specific chat template with the <code>/nothink</code> directive to suppress chain-of-thought output. The <code>ensure_qwen3_nothink_template()</code> function patches the template on disk. If patching fails, the engine raises a hard error rather than proceeding with a template that would produce visible reasoning tags.</li>
+          <li><strong>First-run compilation (3-5 minutes).</strong> The first time a model runs on the NPU, the driver compiles it into a device-specific blob. This can take 3-5 minutes. The engine uses a <code>CACHE_DIR</code> environment variable so subsequent loads use the cached blob. Critically, preflight timeouts are classified as <code>temporary_fallback</code> and are never persisted to the backend decision store -- otherwise a single slow first-run would permanently disable NPU acceleration.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Windows Process Lifecycle</h3>
+        <p><strong>Problem:</strong> Windows does not support POSIX signals. There is no <code>SIGTERM</code> for graceful shutdown and no <code>SIGCHLD</code> for child death notification. The engine's process management had to be built from scratch.</p>
+        <ul>
+          <li><strong>No SIGTERM equivalent.</strong> Shutdown uses an HTTP request (<code>POST /engine/shutdown</code>) followed by a force-kill fallback via <code>taskkill /F /PID</code>. The 8-second outer timeout exceeds the 5-second inner HTTP timeout to prevent races.</li>
+          <li><strong>PID reuse.</strong> Windows reuses PIDs aggressively. Before killing a process by PID, the supervisor verifies the process name matches <code>smolpc-engine-host.exe</code> using <code>tasklist</code>. Without this check, a stale PID file could cause the engine to kill an unrelated process.</li>
+          <li><strong>Console flash.</strong> Spawning a console application on Windows briefly flashes a black window. The <code>CREATE_NO_WINDOW</code> flag on all <code>Command::spawn()</code> calls prevents this. The same flag is applied to <code>taskkill</code> calls.</li>
+          <li><strong>DLL search order.</strong> Windows resolves DLL dependencies using a default search path that includes the application directory, system directory, and <code>PATH</code>. A wrong-version DLL on the student's <code>PATH</code> can silently replace the bundled version. The engine uses <code>LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_SYSTEM32</code> to restrict the search, and all DLL loading is confined to a single file (<code>runtime_loading.rs</code>) with CI enforcement.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>FFI Safety and Process Isolation</h3>
+        <p><strong>Problem:</strong> The engine depends on OpenVINO and ONNX Runtime through C FFI. A segfault in the FFI layer kills the process. If that process is the Tauri app, the student loses their UI, unsaved conversation, and any in-progress work.</p>
+        <ul>
+          <li><strong>Process isolation.</strong> The engine runs as a separate detached process. An FFI crash kills the engine, not the app. The supervisor detects the crash (via PID liveness check) and auto-restarts within seconds while the UI remains responsive.</li>
+          <li><strong>RAII guards for cleanup.</strong> All <code>unsafe</code> FFI calls are isolated in wrapper modules. State flags use <code>TransitionGuard</code> and <code>GenerationPermit</code> (RAII drop guards) to ensure cleanup on all exit paths, including panics. Before these guards existed, a panic in multi-path model loading left the <code>model_transition_in_progress</code> flag permanently set, blocking all future loads.</li>
+          <li><strong>Runtime DLL loading.</strong> DLLs are loaded at runtime rather than linked at compile time. This makes the binary portable (it can run on machines without OpenVINO installed) and enables graceful degradation (if NPU DLLs are missing, the engine falls back to CPU rather than failing to start).</li>
+          <li><strong>spawn_blocking for preflights.</strong> All backend preflights use <code>tokio::task::spawn_blocking()</code> wrapped in <code>tokio::time::timeout()</code>. This moves the FFI call to a dedicated thread pool so a hanging driver does not starve the Tokio async runtime. Timeout budgets are backend-specific: 300s for OpenVINO NPU, 60s for DirectML, 30s for CPU.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Memory on 8GB Hardware</h3>
+        <p><strong>Problem:</strong> The target hardware has 8GB RAM. The LLM needs 3-6GB. The operating system and other applications need 2-3GB. The application framework budget is whatever remains.</p>
+        <ul>
+          <li><strong>RAM-based model selection.</strong> The model registry includes <code>min_ram_gb</code> and <code>estimated_runtime_ram_gb</code> for every model. The engine selects a model that fits within available memory and exposes these values through <code>/v1/models</code> so the frontend can show accurate memory requirements.</li>
+          <li><strong>Memory pressure classification.</strong> When a model load fails due to memory, the engine detects the failure pattern and returns a specific hint: "Memory pressure detected. Try switching to 'qwen2.5-1.5b-instruct' or close other heavy apps and retry." This gives the student an actionable path rather than a generic error.</li>
+          <li><strong>Tauri over Electron.</strong> Tauri uses the system WebView2 (already on Windows 11) instead of bundling Chromium. Baseline memory: approximately 50MB versus Electron's 200-400MB.</li>
+          <li><strong>Svelte over React.</strong> Svelte compiles to vanilla JavaScript with no runtime. Frontend bundle size: approximately 150KB versus React's 300KB+ baseline. Svelte's direct DOM updates also reduce CPU overhead during token streaming, where the UI updates approximately 20 times per second.</li>
+          <li><strong>Generation semaphore (capacity 1).</strong> Only one LLM generation can run at a time. Two concurrent generations on 8GB RAM causes out-of-memory kills.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Offline Constraint</h3>
+        <p><strong>Problem:</strong> The product is deployed in secondary schools where internet access may be restricted, unreliable, or forbidden by policy. The app cannot depend on cloud APIs, telemetry, update servers, or runtime package managers.</p>
+        <ul>
+          <li><strong>No network dependency.</strong> The engine binds to <code>127.0.0.1</code> only. There is no telemetry, no crash reporter, no analytics, no update check. All inference runs locally.</li>
+          <li><strong>Breadcrumb-based USB source discovery.</strong> The NSIS installer writes <code>installer-source.txt</code> to <code>%LOCALAPPDATA%\SmolPC 2.0\</code> containing the directory it was launched from. On first launch, the app reads this breadcrumb to find model archives. If the USB drive letter changed between installation and first use, the app tries the same relative path on other drive letters.</li>
+          <li><strong>Atomic model extraction.</strong> Model archives (up to 3GB) are extracted to a temporary directory (<code>.extracting</code> suffix), then atomically renamed to the final path. If extraction is interrupted (power loss, antivirus interference, user kills the app), the final path never contains partial data. SHA-256 verification before extraction ensures the archive is not corrupted.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Error Propagation Strategy</h3>
+        <p><strong>Problem:</strong> Errors originate from many layers: C FFI calls, HTTP clients, file I/O, process management, model loading, and user input validation. A single error type would be either too coarse (losing context) or too complex (unwieldy enum with dozens of variants).</p>
+        <ul>
+          <li><strong>Library crates</strong> use typed errors via <code>thiserror</code>. The <code>EngineClientError</code> enum has specific variants (<code>Message</code>, <code>EngineCrashed</code>, <code>Io</code>, <code>Http</code>, <code>Json</code>) that callers can match on, with automatic <code>From</code> conversions for common error types.</li>
+          <li><strong>Engine host</strong> uses string errors with <code>map_err(|e| format!(...))</code>. Errors from many sources (FFI, config, probing, model loading) are assembled with context prefixes, sufficient for logging and the status API.</li>
+          <li><strong>Tauri commands</strong> use <code>Result&lt;T, String&gt;</code> for IPC serialisation. Tauri's invoke mechanism serialises errors to JSON for the frontend, which displays them as message strings.</li>
+        </ul>
+        <p>This layering is intentional: type safety at the library boundary where callers need to distinguish error kinds, pragmatic strings where errors are diverse and consumed by humans, and serialisation-friendly strings at the IPC boundary.</p>
+      </div>
+    </section>
+
+
+  </main>
+
+
+  <footer>
+    <div class="footer-links">
+    <a href="https://github.com/SmolPC-2-0/smolpc-codehelper" target="_blank" rel="noopener noreferrer">GitHub</a>
+  </div>
+
+  <div class="footer-logos">
+    <a href="https://www.ucl.ac.uk/" target="_blank" rel="noopener noreferrer">
+      <img src="assets/images/ucl.png" alt="University College London">
+    </a>
+    <a href="https://www.motioninputgames.com/" target="_blank" rel="noopener noreferrer">
+      <img src="assets/images/motioninput-games.jpg" alt="MotionInput Games">
+      <span class="footer-logo-wordmark">MotionInput Games</span>
+    </a>
+    <a href="https://www.intel.com/content/www/us/en/homepage.html" target="_blank" rel="noopener noreferrer">
+      <img src="assets/images/intel.png" alt="Intel">
+    </a>
+    <a href="https://www.microsoft.com/en-gb" target="_blank" rel="noopener noreferrer">
+      <img src="assets/images/microsoft.png" alt="Microsoft">
+    </a>
+    <a href="https://www.ibm.com/uk-en" target="_blank" rel="noopener noreferrer">
+      <img src="assets/images/IBM.png" alt="IBM">
+    </a>
+    <a href="https://www.autism.org.uk/" target="_blank" rel="noopener noreferrer">
+      <img src="assets/images/nas.png" alt="National Autistic Society">
+    </a>
+  </div>
+    <p>COMP0016 Team 1 &copy; 2025-2026</p>
+  </footer>
+
+
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -13,6 +13,7 @@
     <div class="nav-item"><a href="research.html">Research</a><div class="nav-dropdown"><a href="research.html#requirements-discovery">Requirements Discovery</a><a href="research.html#related-projects">Related Projects</a><a href="research.html#technology-review">Technology Review</a><a href="research.html#summary">Summary</a><a href="research.html#consent-forms">Consent Forms</a></div></div>
     <div class="nav-item"><a href="ui.html">UI Design</a><div class="nav-dropdown"><a href="ui.html#design-principles">Design Principles</a><a href="ui.html#unified-shell">Shared Shell</a><a href="ui.html#shared-wireframe">Wireframe</a><a href="ui.html#mode-adaptations">Mode Adaptations</a><a href="ui.html#artefacts">Artefacts</a></div></div>
     <div class="nav-item"><a href="system.html">System Design</a><div class="nav-dropdown"><a href="system.html#architecture">Architecture</a><a href="system.html#sequence-diagrams">Sequence Diagrams</a><a href="system.html#data-storage">Data Storage</a><a href="system.html#design-patterns">Design Patterns</a><a href="system.html#packages-apis">Packages &amp; APIs</a></div></div>
+    <div class="nav-item"><a href="engine.html">Engine</a><div class="nav-dropdown"><a href="engine.html#overview">Overview</a><a href="engine.html#crate-architecture">Crate Architecture</a><a href="engine.html#hardware-detection">Hardware &amp; Backend Selection</a><a href="engine.html#inference-backends">Inference Backends</a><a href="engine.html#lifecycle">Engine Lifecycle</a><a href="engine.html#api">API Surface</a><a href="engine.html#voice-audio">Voice &amp; Audio</a><a href="engine.html#challenges">Challenges &amp; Decisions</a></div></div>
     <div class="nav-item"><a href="implementation.html">Implementation</a><div class="nav-dropdown"><a href="implementation.html#overview">Overview</a><a href="implementation.html#shared-infrastructure">Shared Infrastructure</a><a href="implementation.html#unified-shell">Unified Shell</a><a href="implementation.html#codehelper">CodeHelper</a><a href="implementation.html#gimp">GIMP</a><a href="implementation.html#blender">Blender</a><a href="implementation.html#libreoffice">LibreOffice</a></div></div>
     <div class="nav-item"><a href="testing.html">Testing</a><div class="nav-dropdown"><a href="testing.html#strategy">Strategy</a><a href="testing.html#unit-testing">Unit Testing</a><a href="testing.html#integration-testing">Integration Testing</a><a href="testing.html#prompt-testing">Prompt Testing</a><a href="testing.html#compatibility-testing">Compatibility</a><a href="testing.html#performance-testing">Performance</a><a href="testing.html#uat">User Acceptance</a></div></div>
     <div class="nav-item"><a href="evaluation.html">Evaluation</a><div class="nav-dropdown"><a href="evaluation.html#achievements">Achievements</a><a href="evaluation.html#bugs">Known Bugs</a><a href="evaluation.html#critical-evaluation">Critical Evaluation</a><a href="evaluation.html#contributions">Contributions</a><a href="evaluation.html#future-work">Future Work</a></div></div>
@@ -40,7 +41,7 @@
 
       <div class="card">
         <h3>Shared SmolPC Engine</h3>
-        <p>The shared engine is split into <code>smolpc-engine-core</code>, <code>smolpc-engine-host</code>, and <code>smolpc-engine-client</code>. It owns startup lifecycle, health checks, backend selection, model readiness, generation, cancellation, and the localhost API contract. The same engine now also exposes the local audio endpoints used for speech-to-text and text-to-speech.</p>
+        <p>The engine is a standalone local inference server spanning five Rust crates. It owns hardware detection, backend selection across three inference paths (DirectML GPU, OpenVINO NPU, llama.cpp CPU), model lifecycle, generation with SSE streaming, and audio endpoints. It runs as an independent process on <code>localhost:19432</code>, isolated from the app so that C FFI crashes are contained and the engine can survive app restarts. For the full architecture and implementation deep-dive, see the dedicated <a href="engine.html">Engine page</a>.</p>
       </div>
 
       <div class="card">
@@ -55,7 +56,7 @@
 
       <div class="card">
         <h3>Supervisor and Setup Layer</h3>
-        <p>The engine lifecycle is managed by an EngineSupervisor task that owns spawning, health monitoring, restart-on-crash behaviour, and desired-model restoration through message passing. Setup logic in the app backend checks runtime resources, bundled Python, local models, and host-app availability so the UI can gate modes and guide the user instead of failing silently.</p>
+        <p>The EngineSupervisor is a Tokio background task that owns spawning, health monitoring, crash recovery with bounded retry, and model restoration through message passing and watch channels. The full engine lifecycle — including the state machine, PID management, spawn locks, idle timeout, and graceful shutdown — is documented on the <a href="engine.html">Engine page</a>.</p>
       </div>
 
       <div class="card">
