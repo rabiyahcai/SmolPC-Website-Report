@@ -246,7 +246,18 @@ nav a.active {
   backdrop-filter: blur(16px);
 }
 
-.nav-item:hover .nav-dropdown {
+.nav-dropdown::before {
+  content: '';
+  position: absolute;
+  top: -0.5rem;
+  left: 0;
+  right: 0;
+  height: 0.5rem;
+}
+
+.nav-item:hover .nav-dropdown,
+.nav-item:focus-within .nav-dropdown,
+.nav-item.open .nav-dropdown {
   display: block;
 }
 
@@ -1205,6 +1216,13 @@ footer {
   margin-bottom: 1.45rem;
 }
 
+.footer-logos a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
 .footer-logos img {
   height: 42px;
   width: auto;
@@ -1224,6 +1242,13 @@ footer {
 .footer-logos img:hover {
   opacity: 1;
   filter: saturate(1) contrast(1.05) brightness(1);
+}
+
+.footer-logos .footer-logo-wordmark {
+  color: #57afe6;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
 footer p {
