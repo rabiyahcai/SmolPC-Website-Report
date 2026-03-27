@@ -28,14 +28,14 @@
       <p>This manual is intended for testers and assessors using the current SmolPC 2.0 unified desktop shell. The steps below describe the user-facing flow after the application has been installed or started from source. The Deployment Manual later in this appendix covers the developer or tester setup path in more detail.</p>
 
       <h3>Installation</h3>
-      <p>For a packaged Windows build, install SmolPC Code Helper through the provided NSIS installer or offline bundle. The installer places the application in the normal local programs area and the current packaging direction keeps shared models under <code>%LOCALAPPDATA%\SmolPC\models\</code>. If you are running from source for assessment or development, follow the Deployment Manual below instead of these end-user packaging steps.</p>
+      <p>For a packaged Windows build, install SmolPC 2.0 through the provided NSIS installer or offline bundle. The installer places the application in the normal local programs area and keeps shared models under <code>%LOCALAPPDATA%\SmolPC 2.0\models\</code>. If you are running from source for assessment or development, follow the Deployment Manual below instead of these end-user packaging steps.</p>
       <div class="card">
         <h3>Representative Screen</h3>
-        <p>A packaged-build capture for this stage would show a standard Windows installer flow for SmolPC Code Helper, followed by the application appearing in the local programs list with its runtime assets stored under <code>%LOCALAPPDATA%\SmolPC\models\</code>.</p>
+        <p>A packaged-build capture for this stage would show a standard Windows installer flow for SmolPC 2.0, followed by the application appearing in the local programs list with its runtime assets stored under <code>%LOCALAPPDATA%\SmolPC 2.0\models\</code>.</p>
       </div>
 
       <h3>Getting Started</h3>
-      <p>On first launch, the unified shell checks local models, runtime resources, and the availability of supported host applications. If no models are available yet, the setup flow can guide the user through local provisioning from an offline bundle or a download path. Once the engine is ready, the interface transitions into the normal chat workspace.</p>
+      <p>On first launch, the unified shell checks local models, runtime resources, and the availability of supported host applications. If no models are available yet, the setup flow can guide the user through local provisioning from an offline bundle or another detected local source. Once the engine is ready, the interface transitions into the normal chat workspace.</p>
       <div class="card">
         <h3>Representative Screen</h3>
         <p>The first-launch view combines startup checks, model and runtime availability, and the transition into the shared chat workspace. This is the point where users first see whether setup is complete or whether local provisioning is still needed.</p>
@@ -202,15 +202,16 @@ cargo test -p smolpc-engine-core -p smolpc-engine-client -p smolpc-engine-host</
       <p>
         The codebase also includes offline-bundle and Windows-local packaging scripts. These are part of
         the move toward a single-install local deployment path rather than requiring users to operate a
-        separate model server manually. The documented direction is an online installer, an offline USB
-        bundle with prebuilt model archives, and a portable-style path for more locked-down machines.
+        separate model server manually. The documented packaging paths are a packaged NSIS installer, an
+        offline USB bundle with prebuilt model archives, and a portable-style path for more locked-down
+        machines.
       </p>
       <pre><code>cd app
 npm run package:offline
 npm run package:offline:bundle</code></pre>
 
       <h3>Launch The Installed Application</h3>
-      <p>For development or testing from source, run the unified app from the repository root after the setup commands above have completed. For a packaged Windows build, launch the installed SmolPC Code Helper shortcut and let the startup flow finish before using a mode.</p>
+      <p>For development or testing from source, run the unified app from the repository root after the setup commands above have completed. For a packaged Windows build, launch the installed SmolPC 2.0 shortcut and let the startup flow finish before using a mode.</p>
       <pre><code>npm run tauri:dev</code></pre>
       <div class="card">
         <h3>Representative Screen</h3>
