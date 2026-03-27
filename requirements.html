@@ -127,24 +127,34 @@ IBM forms part of the wider partner context around the project, but it was not a
       </p>
     </section>
 
-    <!-- personas -->
-    <section id="personas">
-      <h2>Personas</h2>
-      <p>Based on the information we've collected, we constructed the following personas:</p>
+<section id="personas">
+  <h2>Personas</h2>
+  <p>Based on the information we've collected, we constructed the following personas:</p>
 
-      <div class="card">
-        <h3>Persona of a Student</h3>
-        <img src="assets/images/persona1.jpg" alt="Persona 1 photo">
-        <p>A secondary-school student who uses a school or personal laptop for programming, coursework, presentations, and creative assignments. They are comfortable asking questions in plain English, but not configuring local AI tooling or debugging installation problems. They need a tool that feels approachable, keeps their work private, and helps across more than one subject area.</p>
+  <div class="cards-outer">
+    <div class="cards-header">
+      <div class="nav-btns">
+        <button class="nav-btn" id="personas-prev">&#8592;</button>
+        <button class="nav-btn" id="personas-next">&#8594;</button>
       </div>
-
-      <div class="card">
-        <h3>Persona of a Teacher</h3>
-        <img src="assets/images/persona2.jpg" alt="Persona 2 photo">
-        <p>A teacher or teaching assistant who prepares lesson material, supports students in computing and digital media work, and values predictable deployment. They want useful AI support for classroom tasks, but cannot depend on cloud services, paid subscriptions, or setup steps that would be difficult to repeat across many student devices.</p>
+    </div>
+    <div class="cards-track-wrap">
+      <div class="cards-track" id="personas-track">
+        <div class="card persona-card">
+          <h3>Persona of a Student</h3>
+          <img src="assets/images/persona1.jpg" alt="Persona 1 photo">
+          <p>A secondary-school student who uses a school or personal laptop for programming, coursework, presentations, and creative assignments. They are comfortable asking questions in plain English, but not configuring local AI tooling or debugging installation problems. They need a tool that feels approachable, keeps their work private, and helps across more than one subject area.</p>
+        </div>
+        <div class="card persona-card">
+          <h3>Persona of a Teacher</h3>
+          <img src="assets/images/persona2.jpg" alt="Persona 2 photo">
+          <p>A teacher or teaching assistant who prepares lesson material, supports students in computing and digital media work, and values predictable deployment. They want useful AI support for classroom tasks, but cannot depend on cloud services, paid subscriptions, or setup steps that would be difficult to repeat across many student devices.</p>
+        </div>
       </div>
-
-    </section>
+    </div>
+    <div class="dots" id="personas-dots"></div>
+  </div>
+</section>
 
     <!-- use cases -->
     <section id="use-case-diagram">
