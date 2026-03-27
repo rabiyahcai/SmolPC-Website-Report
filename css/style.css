@@ -226,7 +226,7 @@ nav a.active {
 }
 
 .nav-item > a::after {
-  content: '▾';
+  content: '\25BE';
   font-size: 0.7rem;
   opacity: 0.6;
 }
