@@ -304,6 +304,40 @@
         </tbody>
       </table>
 
+      <h3>Model Capabilities and Limitations</h3>
+      <p>This summary is based only on official public model cards and upstream Qwen family documentation, not on SmolPC-specific benchmarking. It is intended as a conservative reader-facing guide to what the currently referenced models are generally best suited to, together with the main cautions the upstream sources already highlight [14]-[18].</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Best suited to</th>
+            <th>Official cautions / less-suited cases</th>
+            <th>Source basis</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>qwen3-4b</code></td>
+            <td>Reasoning-heavy prompts, coding and maths help, multilingual interaction, and workflows that may benefit from tool or agent-style use. The official materials also emphasise its ability to switch between thinking and non-thinking modes depending on task difficulty.</td>
+            <td>The official model card warns that poor decoding settings, especially greedy decoding, can lead to degraded output quality and endless repetition. Its strengths are described at the family and model-card level, so this should be read as an upstream capability summary rather than a claim that it is always the best fit for every local deployment.</td>
+            <td>Official model card [15]; upstream family overview [17]</td>
+          </tr>
+          <tr>
+            <td><code>qwen2.5-1.5b-instruct</code></td>
+            <td>General instruction following, lighter coding and maths assistance, long-form responses, structured data understanding, and JSON-like structured output in more constrained local settings.</td>
+            <td>The official sources highlight improvements in these areas, but they do not publish a strong task-by-task limitation matrix for this 1.5B instruct checkpoint. For now, the cautious interpretation is that it is a smaller, lighter general model whose strengths are described more conservatively than the more heavily emphasised Qwen3 family reasoning story.</td>
+            <td>Official model card [14]; upstream family overview [16]</td>
+          </tr>
+          <tr>
+            <td><code>whisper-base.en</code></td>
+            <td>English speech recognition, including longer audio when used with chunking, where a compact local ASR model is more important than full multilingual coverage.</td>
+            <td>This checkpoint is English-only, may hallucinate text that was not actually spoken, can behave unevenly across accents, dialects, or lower-resource settings, and is explicitly not recommended for subjective classification or high-risk decision contexts.</td>
+            <td>Official model card [18]</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><strong>Note:</strong> these are upstream claims and cautions only. Project-specific benchmarking, runtime validation, and SmolPC mode-by-mode recommendations should be added separately once the team has completed its own testing.</p>
+
       <h3>Voice Interaction and Accessibility</h3>
       <p>As the unified shell matured, voice interaction became a practical accessibility improvement for SmolPC 2.0 as a whole, especially for users who may find typing difficult or prefer dictation. The key research question was not whether speech APIs existed, but how to add dictation and read-aloud without breaking the project&apos;s offline and single-product goals. The chosen direction keeps both speech-to-text and text-to-speech local, and exposes them through the same shared engine surface as the rest of the assistant platform [13].</p>
       <table>
@@ -545,6 +579,11 @@
         <li>[11] Model Context Protocol, &ldquo;What is the Model Context Protocol (MCP)?,&rdquo; 2026. [Online]. Available: <a href="https://modelcontextprotocol.io/docs/getting-started/intro" target="_blank" rel="noopener noreferrer">https://modelcontextprotocol.io/docs/getting-started/intro</a>. [Accessed: 23-Mar-2026].</li>
         <li>[12] SmolPC-2.0, &ldquo;Shared Engine Integration Notes,&rdquo; GitHub, 2026. [Online]. Available: <a href="https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/SMOLPC_SUITE_INTEGRATION.md" target="_blank" rel="noopener noreferrer">https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/SMOLPC_SUITE_INTEGRATION.md</a>. [Accessed: 23-Mar-2026].</li>
         <li>[13] SmolPC-2.0, &ldquo;Voice I/O: Whisper STT + KittenTTS,&rdquo; GitHub, 2026. [Online]. Available: <a href="https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/superpowers/specs/2026-03-24-voice-io-design.md" target="_blank" rel="noopener noreferrer">https://github.com/SmolPC-2-0/smolpc-codehelper/blob/main/docs/superpowers/specs/2026-03-24-voice-io-design.md</a>. [Accessed: 24-Mar-2026].</li>
+        <li>[14] Qwen, &ldquo;Qwen2.5-1.5B-Instruct,&rdquo; Hugging Face, 2026. [Online]. Available: <a href="https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct" target="_blank" rel="noopener noreferrer">https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct</a>. [Accessed: 27-Mar-2026].</li>
+        <li>[15] Qwen, &ldquo;Qwen3-4B,&rdquo; Hugging Face, 2026. [Online]. Available: <a href="https://huggingface.co/Qwen/Qwen3-4B" target="_blank" rel="noopener noreferrer">https://huggingface.co/Qwen/Qwen3-4B</a>. [Accessed: 27-Mar-2026].</li>
+        <li>[16] Qwen Team, &ldquo;Qwen2.5: A Party of Foundation Models!,&rdquo; 19-Sep-2024. [Online]. Available: <a href="https://qwenlm.github.io/blog/qwen2.5/" target="_blank" rel="noopener noreferrer">https://qwenlm.github.io/blog/qwen2.5/</a>. [Accessed: 27-Mar-2026].</li>
+        <li>[17] Qwen Team, &ldquo;Qwen3: Think Deeper, Act Faster,&rdquo; 29-Apr-2025. [Online]. Available: <a href="https://qwenlm.github.io/blog/qwen3/" target="_blank" rel="noopener noreferrer">https://qwenlm.github.io/blog/qwen3/</a>. [Accessed: 27-Mar-2026].</li>
+        <li>[18] OpenAI, &ldquo;whisper-base.en,&rdquo; Hugging Face, 2026. [Online]. Available: <a href="https://huggingface.co/openai/whisper-base.en" target="_blank" rel="noopener noreferrer">https://huggingface.co/openai/whisper-base.en</a>. [Accessed: 27-Mar-2026].</li>
       </ol>
     </section>
 
