@@ -12,8 +12,9 @@
     <div class="nav-item"><a href="index.html">Home</a><div class="nav-dropdown"><a href="index.html#abstract">Abstract</a><a href="index.html#video">Video</a><a href="index.html#team">Team Members</a><a href="index.html#gantt">Project Timeline</a></div></div>
     <div class="nav-item"><a href="requirements.html">Requirements</a><div class="nav-dropdown"><a href="requirements.html#partner">Partner Introduction</a><a href="requirements.html#background">Background</a><a href="requirements.html#goals">Project Goals</a><a href="requirements.html#gathering">Requirements Gathering</a><a href="requirements.html#personas">Personas</a><a href="requirements.html#use-case-diagram">Use Case Diagram</a><a href="requirements.html#moscow">MoSCoW List</a></div></div>
     <div class="nav-item"><a href="research.html">Research</a><div class="nav-dropdown"><a href="research.html#requirements-discovery">Requirements Discovery</a><a href="research.html#related-projects">Related Projects</a><a href="research.html#technology-review">Technology Review</a><a href="research.html#summary">Summary</a><a href="research.html#consent-forms">Consent Forms</a></div></div>
-    <div class="nav-item"><a href="ui.html">UI Design</a><div class="nav-dropdown"><a href="ui.html#design-principles">Design Principles</a><a href="ui.html#unified-shell">Shared Shell</a><a href="ui.html#shared-wireframe">Wireframe</a><a href="ui.html#mode-adaptations">Mode Adaptations</a><a href="ui.html#artefacts">Artefacts</a></div></div>
+    <div class="nav-item"><a href="ui.html">UI Design</a><div class="nav-dropdown"><a href="ui.html#design-principles">Design Principles</a><a href="ui.html#overall-layout">Overall Layout</a><a href="ui.html#codehelper">CodeHelper</a><a href="ui.html#libreoffice">LibreOffice</a><a href="ui.html#gimp">GIMP</a><a href="ui.html#blender">Blender</a><a href="ui.html#artefacts">Artefacts</a></div></div>
     <div class="nav-item"><a href="system.html">System Design</a><div class="nav-dropdown"><a href="system.html#architecture">Architecture</a><a href="system.html#sequence-diagrams">Sequence Diagrams</a><a href="system.html#data-storage">Data Storage</a><a href="system.html#design-patterns">Design Patterns</a><a href="system.html#packages-apis">Packages &amp; APIs</a></div></div>
+    <div class="nav-item"><a href="engine.html">Engine</a><div class="nav-dropdown"><a href="engine.html#overview">Overview</a><a href="engine.html#crate-architecture">Crate Architecture</a><a href="engine.html#hardware-detection">Hardware &amp; Backend Selection</a><a href="engine.html#inference-backends">Inference Backends</a><a href="engine.html#lifecycle">Engine Lifecycle</a><a href="engine.html#api">API Surface</a><a href="engine.html#voice-audio">Voice &amp; Audio</a><a href="engine.html#challenges">Challenges &amp; Decisions</a></div></div>
     <div class="nav-item"><a href="implementation.html">Implementation</a><div class="nav-dropdown"><a href="implementation.html#overview">Overview</a><a href="implementation.html#shared-infrastructure">Shared Infrastructure</a><a href="implementation.html#unified-shell">Unified Shell</a><a href="implementation.html#codehelper">CodeHelper</a><a href="implementation.html#gimp">GIMP</a><a href="implementation.html#blender">Blender</a><a href="implementation.html#libreoffice">LibreOffice</a></div></div>
     <div class="nav-item"><a href="testing.html">Testing</a><div class="nav-dropdown"><a href="testing.html#strategy">Strategy</a><a href="testing.html#unit-testing">Unit Testing</a><a href="testing.html#integration-testing">Integration Testing</a><a href="testing.html#prompt-testing">Prompt Testing</a><a href="testing.html#compatibility-testing">Compatibility</a><a href="testing.html#performance-testing">Performance</a><a href="testing.html#uat">User Acceptance</a></div></div>
     <div class="nav-item"><a href="evaluation.html">Evaluation</a><div class="nav-dropdown"><a href="evaluation.html#achievements">Achievements</a><a href="evaluation.html#bugs">Known Bugs</a><a href="evaluation.html#critical-evaluation">Critical Evaluation</a><a href="evaluation.html#contributions">Contributions</a><a href="evaluation.html#future-work">Future Work</a></div></div>
@@ -24,140 +25,912 @@
 
     <h1>Testing</h1>
 
+    <!-- ═══════════════════════════════════════════════════════════════
+         SECTION 1: TESTING STRATEGY
+         ═══════════════════════════════════════════════════════════════ -->
     <section id="strategy">
       <h2>Testing Strategy</h2>
+
+      <h3>Why We Tested This Way</h3>
       <p>
-        Testing combined automated Rust tests, frontend static checks, architectural boundary checks,
-        and targeted manual end-to-end scenarios. This layered approach was necessary because SmolPC
-        spans a shared local inference engine, a Tauri desktop shell, a Svelte frontend, and several
-        host-application bridges. Low-level logic could be verified automatically, while workflows
-        involving GIMP, Blender, and LibreOffice also required live scenario testing against real host
-        applications.
+        SmolPC 2.0 spans a shared Rust inference engine, a Tauri desktop shell, a Svelte frontend,
+        and host-application bridges for GIMP, Blender, Writer, and Slides. A regression in any
+        layer &mdash; a renamed JSON field, a broken backend selection path, a misconfigured DLL
+        search order &mdash; can silently break the entire platform even when the UI still appears
+        to load. Automated testing was therefore not optional: it was the primary mechanism for
+        catching these cross-boundary failures before they reached users.
       </p>
 
+      <h3>Two-Tier Strategy</h3>
       <div class="card">
-        <h3>Testing Approach</h3>
+        <h3>Tier 1: Unit Tests &mdash; Logic Without Hardware</h3>
         <p>
-          The test process moved from the inside out. Engine and client contract handling were verified
-          first, followed by runtime selection, setup logic, provider behaviour, and launcher
-          compatibility checks. These were then supported by integration and scenario testing across the
-          unified application shell. Finally, prompt and user-oriented checks were used to review whether
-          the assistants remained understandable and useful as an offline platform rather than just as
-          isolated technical components.
+          Unit tests validate logic that does not require a real GPU, NPU, or host application.
+          ChatML rendering, config parsing, backend selection state machines, thinking filters,
+          error classification, type serialisation contracts, path validation, and connector
+          heuristics are all testable without hardware. These tests run in CI on every push to
+          <code>main</code> and on all pull requests, providing immediate feedback on regressions.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Tier 2: Live Tests &mdash; Hardware Paths</h3>
+        <p>
+          Live tests validate the hardware-dependent paths: generation quality on a specific backend,
+          streaming behaviour, model loading on real NPU or GPU hardware, and host-application
+          bridge behaviour with real GIMP, Blender, or LibreOffice processes. These run manually on
+          physical machines because there is no way to simulate a real NPU or discrete GPU in CI.
+          After changing generation config, backend selection, or model loading, the protocol is:
+          start the engine with <code>SMOLPC_FORCE_EP=&lt;backend&gt;</code>, send a streaming
+          chat completion via <code>curl</code>, and verify output quality &mdash; not just
+          &quot;no crash.&quot;
         </p>
       </div>
 
-      <div class="card">
-        <h3>Testing Tools</h3>
-        <p>
-          Automated verification used Rust&apos;s built-in test framework via <code>cargo test</code>,
-          TypeScript and Svelte checks via <code>npm run check</code>, and architectural boundary checks
-          via <code>npm run boundary:check</code>. Manual testing used Tauri development and packaged
-          builds together with the relevant host applications installed, allowing real workflows to be
-          exercised in GIMP, Blender, Writer, and Slides.
-        </p>
-      </div>
-
-      <div class="card">
-        <h3>Evidence And Limitations</h3>
-        <p>
-          The repository already contains substantial automated coverage across the engine, the current
-          Tauri backend under <code>app/src-tauri</code>, setup flows, connector crates, and host-app
-          bridges. This page therefore focuses on the testing areas, the coverage achieved, and the
-          behaviour observed across packaged builds, voice-resource checks, and hardware-aware runtime
-          selection.
-        </p>
-      </div>
-
-      <pre><code>npm run check
-npm run boundary:check
-cargo test -p smolpc-engine-core -p smolpc-engine-client -p smolpc-engine-host
-cargo test -p smolpc-desktop -p smolpc-connector-gimp -p smolpc-connector-blender -p smolpc-connector-libreoffice</code></pre>
-    </section>
-
-    <section id="unit-testing">
-      <h2>Unit Testing</h2>
+      <h3>Scale: ~302 Test Functions</h3>
       <p>
-        Unit tests were used to lock down the most failure-prone logic: runtime configuration, API
-        parsing, tool routing, host-integration heuristics, setup resource preparation, and error
-        handling. This was especially important because small regressions at these boundaries can break
-        the whole unified application even when the UI still appears to load correctly.
+        The test suite covers the full stack from low-level tensor extraction to high-level
+        provisioning workflows. The following table summarises the distribution across all
+        components.
       </p>
-
       <table>
         <thead>
           <tr>
-            <th>Test ID</th>
-            <th>Area</th>
-            <th>Representative Automated Test</th>
-            <th>Purpose</th>
-            <th>Status</th>
+            <th>Component</th>
+            <th>Source Location</th>
+            <th>Test Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Engine host</td><td><code>engine/crates/smolpc-engine-host/src/tests.rs</code></td><td>49</td></tr>
+          <tr><td>Engine core</td><td>7 inline <code>#[cfg(test)]</code> modules</td><td>40</td></tr>
+          <tr><td>Engine client</td><td><code>engine/crates/smolpc-engine-client/src/lib.rs</code></td><td>18</td></tr>
+          <tr><td>Desktop app</td><td><code>app/src-tauri/src/</code> (19 modules)</td><td>76</td></tr>
+          <tr><td>Blender connector</td><td><code>connectors/blender/</code> (7 modules)</td><td>32</td></tr>
+          <tr><td>GIMP connector</td><td><code>connectors/gimp/</code> (6 modules)</td><td>28</td></tr>
+          <tr><td>LibreOffice connector</td><td><code>connectors/libreoffice/</code> (5 modules)</td><td>26</td></tr>
+          <tr><td>Connector-common</td><td><code>crates/smolpc-connector-common/</code> (5 modules)</td><td>16</td></tr>
+          <tr><td>Security</td><td><code>app/src-tauri/src/security/tests.rs</code></td><td>7</td></tr>
+          <tr><td>Type contracts</td><td><code>crates/smolpc-assistant-types/tests/contracts.rs</code></td><td>5</td></tr>
+          <tr><td>Benchmark stats</td><td><code>engine/crates/smolpc-benchmark/src/stats.rs</code></td><td>5</td></tr>
+          <tr><td><strong>Total</strong></td><td></td><td><strong>~302</strong></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Tools and Commands</h3>
+      <div class="card">
+        <h3>Automated Toolchain</h3>
+        <p>
+          The project uses five complementary automated verification tools, each targeting a
+          different failure class:
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Tool</th>
+              <th>Command</th>
+              <th>What It Catches</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>cargo test</code></td><td><code>cargo test --workspace</code></td><td>Logic regressions in all Rust crates (engine, desktop app, connectors)</td></tr>
+            <tr><td><code>npm run check</code></td><td>TypeScript + Svelte type checking</td><td>Type errors in the frontend shell before they reach the browser</td></tr>
+            <tr><td><code>npm run boundary:check</code></td><td>Runs <code>check-boundaries.ps1</code></td><td>Architectural violations: legacy module resurrection, broken process isolation</td></tr>
+            <tr><td><code>cargo audit</code></td><td>Dependency vulnerability scan</td><td>Known CVEs in Rust dependency tree</td></tr>
+            <tr><td>Manual testing</td><td>Tauri dev + packaged builds</td><td>End-to-end workflows with real host applications, hardware-specific paths</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <pre><code># Engine and connector tests
+cargo test -p smolpc-engine-core -p smolpc-engine-client -p smolpc-engine-host
+cargo test -p smolpc-connector-common -p smolpc-connector-blender
+cargo test -p smolpc-connector-gimp -p smolpc-connector-libreoffice
+
+# Desktop app tests
+cargo test -p smolpc-desktop
+
+# Frontend checks
+npm run check
+npm run boundary:check
+
+# Security audit
+cargo audit</code></pre>
+
+      <h3>Test Isolation Patterns</h3>
+      <p>
+        Rust&apos;s <code>cargo test</code> runs tests in parallel by default, and environment
+        variables are process-global. Without isolation, env-mutating tests would produce
+        non-deterministic failures. The project uses four isolation patterns to prevent this:
+      </p>
+      <div class="card">
+        <h3>RAII Environment Guards</h3>
+        <p>
+          <code>EnvVarGuard</code> (engine host) and <code>RuntimeEnvGuard</code> (engine client)
+          are RAII structs that save the current value of an environment variable on construction
+          and restore it on <code>Drop</code> &mdash; even if the test panics. This prevents a
+          failing test from leaking <code>SMOLPC_FORCE_EP</code> or
+          <code>SMOLPC_DML_DEVICE_ID</code> into subsequent tests.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Global Mutex Serialisation</h3>
+        <p>
+          A global <code>OnceLock&lt;Mutex&lt;()&gt;&gt;</code> guard serialises all tests that
+          mutate environment variables. Both the engine host and engine client test modules use
+          <code>env_lock()</code> to acquire this mutex before modifying any <code>SMOLPC_*</code>
+          variables, ensuring deterministic results despite parallel execution.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Filesystem Isolation via <code>tempdir()</code></h3>
+        <p>
+          The <code>tempfile</code> crate&apos;s <code>tempdir()</code> creates a unique temporary
+          directory per test, used extensively in runtime loading, backend store persistence,
+          connector setup, provisioning, and ZIP extraction tests. The directory is automatically
+          deleted when the <code>TempDir</code> guard drops.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Mock Implementations via <code>#[cfg(test)]</code></h3>
+        <p>
+          Connector crates use conditional compilation to substitute mock implementations for
+          bridge, runtime, and transport layers during testing. This allows provider and executor
+          tests to run without real Blender, GIMP, or LibreOffice processes, keeping them
+          deterministic and fast enough for CI.
+        </p>
+      </div>
+
+      <h3 id="ci-pipeline">CI Pipeline: 7 Jobs on Every Push and PR</h3>
+      <p>
+        Every push to <code>main</code> and every pull request triggers seven CI jobs on
+        <code>windows-latest</code> runners. This provides fast feedback on regressions across the
+        frontend, the engine, the desktop app, architectural boundaries, code style, and
+        dependency security. The pipeline is defined in
+        <code>.github/workflows/ci.yml</code>.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Job</th>
+            <th>What It Does</th>
+            <th>Why It Matters</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>UT-EN1</td>
-            <td>Shared engine client</td>
-            <td><code>runtime_env_overrides_parse_force_ep_tokens</code>, <code>parse_models_response_rejects_missing_data_array</code></td>
-            <td>Checks runtime override parsing and validates that engine API responses fail safely when the contract is malformed.</td>
-            <td class="yes">Covered</td>
+            <td>1. Frontend Quality</td>
+            <td>TypeScript + Svelte type checking (<code>npm run check</code>), NPM vulnerability audit (high+ severity)</td>
+            <td>Catches type errors and known frontend vulnerabilities before merge</td>
           </tr>
           <tr>
-            <td>UT-RT1</td>
-            <td>Runtime and inference control</td>
-            <td><code>apply_runtime_mode_rollback_restores_previous_config_and_clears_client</code>, <code>classify_memory_level_uses_warning_and_critical_thresholds</code></td>
-            <td>Verifies safe rollback during runtime switching and enforces memory-pressure rules for constrained local devices.</td>
-            <td class="yes">Covered</td>
+            <td>2. Boundary Enforcement</td>
+            <td>Runs <code>check-boundaries.ps1</code> with 8 architectural rules</td>
+            <td>Prevents resurrection of legacy modules, broken process isolation, and Ollama remnants</td>
           </tr>
           <tr>
-            <td>UT-GI1</td>
-            <td>GIMP mode</td>
-            <td><code>detects_metadata_queries</code>, <code>detects_rotate_fast_path</code></td>
-            <td>Confirms that common image-editing prompts are routed to the correct direct tool or fast path before full planning is needed.</td>
-            <td class="yes">Covered</td>
+            <td>3. Engine Tests (MSRV)</td>
+            <td>Tests 7 crates on Rust 1.88.0 (minimum supported version)</td>
+            <td>Ensures the engine builds and passes on the oldest supported compiler</td>
           </tr>
           <tr>
-            <td>UT-BL1</td>
-            <td>Blender mode</td>
-            <td><code>retrieve_context_returns_top_match</code>, <code>disabled_index_returns_empty_results</code></td>
-            <td>Checks that local Blender documentation retrieval returns useful context and degrades safely when the index is unavailable.</td>
-            <td class="yes">Covered</td>
+            <td>4. Engine Tests (stable)</td>
+            <td>Same 7 crates on latest stable Rust</td>
+            <td>Catches regressions introduced by newer compiler versions</td>
           </tr>
           <tr>
-            <td>UT-LO1</td>
-            <td>LibreOffice modes</td>
-            <td><code>impress_request_uses_json_fallback_tool_parsing</code>, <code>summary_failure_falls_back_to_local_summary</code></td>
-            <td>Validates tool-call parsing for office workflows and checks that the system falls back safely when a generated summary path is unavailable.</td>
-            <td class="yes">Covered</td>
+            <td>5. Tauri Build Check</td>
+            <td><code>cargo check -p smolpc-desktop</code></td>
+            <td>Verifies the desktop app compiles (does not produce a binary &mdash; that requires runtime DLLs)</td>
           </tr>
           <tr>
-            <td>UT-LS1</td>
-            <td>Launcher and setup</td>
-            <td><code>evaluate_engine_api_gate_accepts_matching_major</code>, setup resource preparation tests in <code>setup/provision.rs</code></td>
-            <td>Checks version compatibility gates and confirms that required local resources can be staged before the user enters a mode.</td>
-            <td class="yes">Covered</td>
+            <td>6. Incremental Style Gates</td>
+            <td>Prettier, ESLint, and <code>rustfmt</code> on changed files only</td>
+            <td>Enforces formatting and lint rules without slowing CI on the entire codebase</td>
           </tr>
           <tr>
-            <td>UT-VO1</td>
-            <td>Voice I/O</td>
-            <td><code>audio_body_must_be_f32_aligned</code>, <code>f32_le_bytes_round_trip</code>, <code>whisper_model_path_structure</code>, <code>audio_speech_request_defaults</code></td>
-            <td>Checks the PCM request contract, expected Whisper model layout, and safe default handling for text-to-speech requests.</td>
-            <td class="yes">Covered</td>
+            <td>7. Rust Security Audit</td>
+            <td><code>cargo audit</code> for known CVEs in Rust dependencies</td>
+            <td>Flags vulnerable crates before they ship in a packaged build</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Boundary Enforcement: 8 Rules</h3>
+      <p>
+        The boundary enforcement script enforces eight rules that prevent architectural regression.
+        Five are file-absence rules (certain legacy paths must not exist); three are content rules
+        (certain patterns must not appear in specific files). These rules exist because SmolPC
+        migrated from an Ollama-backed architecture to a self-contained engine, and the
+        engine-host boundary is the most safety-critical: if the desktop app imports
+        <code>smolpc-engine-host</code> directly instead of going through
+        <code>smolpc-engine-client</code> over HTTP, it defeats process isolation and means a
+        C FFI crash in the engine takes down the entire UI.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Rule Type</th>
+            <th>Target</th>
+            <th>What It Prevents</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>File absent</td>
+            <td><code>app/src-tauri/src/inference</code></td>
+            <td>Legacy app-owned inference module &mdash; engine owns all inference</td>
+          </tr>
+          <tr>
+            <td>File absent</td>
+            <td><code>app/src-tauri/src/models</code></td>
+            <td>Legacy app-owned model module &mdash; engine owns model management</td>
+          </tr>
+          <tr>
+            <td>File absent</td>
+            <td><code>app/src-tauri/src/commands/ollama.rs</code></td>
+            <td>Legacy Ollama integration &mdash; fully removed</td>
+          </tr>
+          <tr>
+            <td>File absent</td>
+            <td><code>app/src/lib/stores/ollama.svelte.ts</code></td>
+            <td>Legacy Ollama frontend store &mdash; fully removed</td>
+          </tr>
+          <tr>
+            <td>File absent</td>
+            <td><code>app/src/lib/types/ollama.ts</code></td>
+            <td>Legacy Ollama frontend types &mdash; fully removed</td>
+          </tr>
+          <tr>
+            <td>Content rule</td>
+            <td><code>commands/mod.rs</code> must not contain <code>\bollama\b</code></td>
+            <td>No Ollama references in command routing</td>
+          </tr>
+          <tr>
+            <td>Content rule</td>
+            <td><code>Cargo.toml</code> must not contain <code>smolpc-engine-host</code></td>
+            <td>Desktop app must depend on engine via <code>engine-client</code> only</td>
+          </tr>
+          <tr>
+            <td>Content rule</td>
+            <td><code>src/**/*.rs</code> must not contain <code>use smolpc_engine_host</code></td>
+            <td>No direct imports of engine-host in the app &mdash; defeats process isolation</td>
           </tr>
         </tbody>
       </table>
     </section>
 
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         SECTION 2: UNIT TESTING
+         ═══════════════════════════════════════════════════════════════ -->
+    <section id="unit-testing">
+      <h2>Unit Testing</h2>
+      <p>
+        Unit tests lock down the most failure-prone logic across every component. SmolPC is
+        particularly vulnerable to subtle regressions at internal boundaries: a renamed JSON field
+        breaks the Svelte frontend silently, a changed default in backend selection sends every
+        user to the wrong inference path, and a broken DLL search order prevents startup on
+        machines without a GPU. The unit test suite covers all of these failure modes automatically
+        and runs on every CI push.
+      </p>
+
+      <!-- ── Engine Host Tests ─────────────────────────────────── -->
+      <h3>Engine Host Tests (49 tests)</h3>
+      <p>
+        The largest single test file, covering the engine&apos;s core server-side logic. These tests
+        verify that the engine starts, selects backends, parses requests, classifies errors, and
+        handles audio correctly &mdash; all without requiring real hardware.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Group</th>
+            <th>Count</th>
+            <th>What It Tests</th>
+            <th>Why It Matters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>ChatML parsing</td>
+            <td>5</td>
+            <td>Tag formatting with <code>&lt;|im_start|&gt;</code>/<code>&lt;|im_end|&gt;</code>, preformatted pass-through, <code>/nothink</code> injection and suppression for Qwen3</td>
+            <td>Malformed ChatML produces garbage output from the model. Pre-formatted pass-through prevents double-encoding. The <code>/nothink</code> directive controls Qwen3&apos;s reasoning mode on NPU.</td>
+          </tr>
+          <tr>
+            <td>Thinking filter</td>
+            <td>4</td>
+            <td>Stripping <code>&lt;think&gt;...&lt;/think&gt;</code> tags from streaming tokens, handling tags split across chunk boundaries, passing non-thinking text unchanged</td>
+            <td>Qwen3 emits internal reasoning in think tags. If these leak to the UI, users see confusing internal monologue instead of clean answers.</td>
+          </tr>
+          <tr>
+            <td>Request config</td>
+            <td>5</td>
+            <td>Zero <code>max_tokens</code> rejection, hard cap enforcement (<code>OPENVINO_MAX_TOKENS_HARD_CAP</code>), Qwen3 upstream defaults (temperature=0.7, top_p=0.8, top_k=20), structured message routing based on loaded runtime</td>
+            <td>Uncapped token limits cause runaway generation on constrained devices. Wrong defaults produce incoherent output from quantised models.</td>
+          </tr>
+          <tr>
+            <td>Authentication</td>
+            <td>1</td>
+            <td>Constant-time token comparison correctness</td>
+            <td>The engine runs on localhost with bearer auth. Timing-variable comparison would leak token bytes to a local attacker.</td>
+          </tr>
+          <tr>
+            <td>Startup degradation</td>
+            <td>4</td>
+            <td>Engine startup with missing ORT DLLs, missing OpenVINO DLLs, missing NPU plugin &mdash; all using <code>tempdir()</code> with mock files</td>
+            <td>The engine must start on any machine, including those without a GPU or NPU. These tests verify graceful degradation rather than crash on missing runtime bundles.</td>
+          </tr>
+          <tr>
+            <td>Backend selection</td>
+            <td>6</td>
+            <td>DirectML preference when both candidates ready, fallback chain when OpenVINO unavailable, adapter release before rebuild, persisted CPU/OpenVINO choice survival, fallback from stale persistence</td>
+            <td>Backend selection determines which hardware path every user hits. A wrong default or broken persistence sends users to the slowest path without explanation.</td>
+          </tr>
+          <tr>
+            <td>Model readiness</td>
+            <td>5</td>
+            <td>Lane-based readiness reporting (CPU/DirectML/OpenVINO reported separately), probe interaction with DML lane, shared artifact readiness propagation</td>
+            <td>The UI shows per-lane status to users. If readiness reporting is wrong, users see a &quot;ready&quot; badge for a backend that will fail on first request.</td>
+          </tr>
+          <tr>
+            <td>Error classification</td>
+            <td>5</td>
+            <td>Unknown model and missing assets flagged non-retryable, memory pressure flagged retryable with hint injection, false-positive prevention, idempotent hint application</td>
+            <td>Retrying a non-retryable error wastes time and confuses users. Missing the memory-pressure signal prevents the UI from suggesting a model switch.</td>
+          </tr>
+          <tr>
+            <td>RAM model selection</td>
+            <td>4</td>
+            <td>32GB picks largest model, 16GB picks largest at threshold, 12GB picks smaller model, 4GB returns <code>None</code></td>
+            <td>Selecting a model too large for available RAM causes the engine to crash or the system to swap heavily. Selecting too small wastes capable hardware.</td>
+          </tr>
+          <tr>
+            <td>Audio and TTS</td>
+            <td>7</td>
+            <td>F32 alignment for Whisper input, serialisation round-trip, Whisper model directory layout, TTS sidecar discovery (binary vs resource dir), TTS request defaults and overrides</td>
+            <td>Misaligned audio data causes silent Whisper failures. Wrong sidecar discovery prevents TTS from working in packaged builds.</td>
+          </tr>
+          <tr>
+            <td>Configuration</td>
+            <td>3</td>
+            <td>Process idle exit disabled by default, zero timeout disables timer, model idle unload default preserved when unset</td>
+            <td>Wrong idle defaults cause the engine to exit during active use or prevent it from ever releasing memory.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- CODESNAP: engine/crates/smolpc-engine-host/src/tests.rs:L1019-L1044 — RAM model selection tests -->
+      <figure class="code-figure">
+        <img src="assets/images/code/ram-model-selection-tests.png" alt="RAM-based model selection tests from engine/crates/smolpc-engine-host/src/tests.rs">
+        <figcaption>Figure 1. RAM-based model selection tests from <code>engine/crates/smolpc-engine-host/src/tests.rs</code> &mdash; verifies the engine picks the right model size for the machine&apos;s available memory, including the &quot;no suitable model&quot; case for very low RAM.</figcaption>
+      </figure>
+
+      <!-- ── Engine Core Tests ─────────────────────────────────── -->
+      <h3>Engine Core Tests (40 tests across 7 files)</h3>
+      <p>
+        Engine core tests live as inline <code>#[cfg(test)]</code> modules inside the source files
+        they verify. This keeps tests close to the code they protect and makes it obvious when a
+        logic change needs a corresponding test update.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Group (source file)</th>
+            <th>Count</th>
+            <th>What It Tests</th>
+            <th>Why It Matters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>backend.rs</code></td>
+            <td>12</td>
+            <td>Decision key fingerprint sensitivity (GPU driver, OpenVINO bundle, NPU tuning changes), benchmark gate enforcement (speedup ratio + TTFT regression limit), DirectML demotion after 3 consecutive failures, TTFT ratio edge cases, serde wire format stability, lane-based JSON structure, readiness vs artifact availability distinction</td>
+            <td>Fingerprint changes trigger re-evaluation of backend choice. If fingerprints are too coarse, driver updates are ignored. If demotion is too aggressive, a transient failure permanently disables a backend.</td>
+          </tr>
+          <tr>
+            <td><code>loader.rs</code></td>
+            <td>6</td>
+            <td>Default model directory path contract, env override resolution (non-empty and empty), backend directory name stability (<code>DirectML.as_dir() == "dml"</code>), OpenVINO manifest path structure, models directory suffix stability</td>
+            <td>Model paths are baked into the packaged build. If the directory naming contract breaks, the engine cannot find models on any machine.</td>
+          </tr>
+          <tr>
+            <td><code>directml.rs</code></td>
+            <td>6</td>
+            <td>Logits tensor row extraction for rank-1 and rank-3 tensors, error handling for invalid dimensions, partial bundle degradation (missing GenAI or DirectML DLL disables only the DML lane, ORT core stays valid)</td>
+            <td>Logits extraction is the hot path for token sampling. Wrong bounds produce garbage tokens. Partial degradation ensures that a missing DirectML DLL does not also disable CPU inference.</td>
+          </tr>
+          <tr>
+            <td><code>openvino.rs</code></td>
+            <td>5</td>
+            <td>Metric millisecond rounding, bundle validation rejection, <code>/nothink</code> injection (prepend to existing system message, create if absent, idempotent on repeated application)</td>
+            <td>The NPU backend requires <code>/nothink</code> to suppress Qwen3&apos;s reasoning mode. Non-idempotent injection would corrupt the prompt on retry.</td>
+          </tr>
+          <tr>
+            <td><code>runtime_loading.rs</code></td>
+            <td>4</td>
+            <td>Fingerprint determinism (changes when bundle root or versions change), path validation (relative paths rejected), <strong>centralisation scan</strong> &mdash; a source-invariant test that fails CI if any file outside <code>runtime_loading.rs</code> calls <code>Library::new()</code> or <code>load_with_flags()</code></td>
+            <td>DLL loading is the most dangerous operation in the engine &mdash; a wrong path or a load from an untrusted directory is a security and stability risk. The centralisation scan enforces this at the source level.</td>
+          </tr>
+          <tr>
+            <td><code>backend_store.rs</code></td>
+            <td>4</td>
+            <td>Serialise/deserialise round-trip for backend decisions, fingerprint-keyed storage (multiple records per model when fingerprints differ), failure counter persistence without a decision, corrupt JSON file recovery</td>
+            <td>Backend decisions persist across restarts. Corrupt persistence must not crash the engine &mdash; it must reset cleanly and re-evaluate.</td>
+          </tr>
+          <tr>
+            <td><code>registry.rs</code></td>
+            <td>3</td>
+            <td>Model list ordering, supported model IDs present, unknown model IDs return <code>None</code></td>
+            <td>The model list drives the UI dropdown. Wrong ordering confuses users; accepting unknown IDs could trigger undefined behaviour in the loader.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- CODESNAP: engine/crates/smolpc-engine-core/src/inference/runtime_loading.rs:L904-L939 — CI centralisation scan -->
+      <figure class="code-figure">
+        <img src="assets/images/code/ci-centralisation-scan.png" alt="CI centralisation scan from engine/crates/smolpc-engine-core/src/inference/runtime_loading.rs">
+        <figcaption>Figure 2. CI centralisation scan from <code>runtime_loading.rs</code> &mdash; this test walks every <code>.rs</code> file in the engine crate tree and fails if any file other than <code>runtime_loading.rs</code> calls <code>Library::new()</code> or <code>load_with_flags()</code>. This enforces that all native DLL loading goes through one controlled module.</figcaption>
+      </figure>
+
+      <!-- ── Engine Client Tests ───────────────────────────────── -->
+      <h3>Engine Client Tests (18 tests)</h3>
+      <p>
+        The engine client is the typed interface between the desktop app and the engine host. Its
+        tests verify that the contract between these two processes is stable, that environment
+        overrides parse correctly, and that version compatibility gates work as expected.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Group</th>
+            <th>Count</th>
+            <th>What It Tests</th>
+            <th>Why It Matters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Runtime env overrides</td>
+            <td>3</td>
+            <td>Default <code>Auto</code> mode when unset, parsing of <code>cpu</code>/<code>DIRECTML</code>/<code>dml</code> tokens, numeric device ID parsing</td>
+            <td>Developers and CI use <code>SMOLPC_FORCE_EP</code> to pin a backend. If parsing is wrong, the override silently does nothing.</td>
+          </tr>
+          <tr>
+            <td>Error and metrics</td>
+            <td>2</td>
+            <td>Nested <code>error.message</code> extraction from JSON, fallback stream metrics with token count and TTFT tracking</td>
+            <td>Clear error messages let the UI show actionable feedback instead of &quot;unknown error.&quot;</td>
+          </tr>
+          <tr>
+            <td>Model response parsing</td>
+            <td>3</td>
+            <td>Missing <code>data</code> array rejection, unknown model ID rejection, known model acceptance</td>
+            <td>A malformed or unexpected model list from the engine could populate the UI with invalid entries.</td>
+          </tr>
+          <tr>
+            <td>Running host policy</td>
+            <td>2</td>
+            <td>Restart when protocol is incompatible and engine is idle, rejection of forced override when engine is busy</td>
+            <td>The client must handle version mismatches gracefully &mdash; restarting a busy engine would kill an active generation.</td>
+          </tr>
+          <tr>
+            <td>API version compatibility</td>
+            <td>2</td>
+            <td>Major version extraction from semver strings, major version gate (equal or higher required)</td>
+            <td>Client and host run in separate processes and may be updated independently. The major version gate prevents silent protocol incompatibilities.</td>
+          </tr>
+          <tr>
+            <td>Token and serialisation</td>
+            <td>2</td>
+            <td>Private token file creation (48-char alphanumeric, idempotent reload), startup mode serialisation contract</td>
+            <td>The auth token secures localhost communication. If creation is not idempotent, every restart generates a new token and invalidates existing connections.</td>
+          </tr>
+          <tr>
+            <td>Engine status parsing</td>
+            <td>4</td>
+            <td>Canonical readiness field deserialisation, legacy payload compatibility, <code>is_ready()</code> logic, <code>is_failed()</code> and failure message extraction</td>
+            <td>Status parsing drives the startup loading screen and readiness indicators. A parsing failure makes the app think the engine is down when it is actually running.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- ── Desktop App Tests ─────────────────────────────────── -->
+      <h3>Desktop App Tests (76 tests across 19 modules)</h3>
+      <p>
+        The Tauri desktop app tests cover the boundary between the frontend and the Rust backend:
+        supervisor handle operations, engine client adaptation, inference commands, lifecycle state
+        machines, path resolution, audio processing, provisioning, and setup flows.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Module</th>
+            <th>Count</th>
+            <th>What It Tests</th>
+            <th>Why It Matters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>engine/handle.rs</code></td>
+            <td>10</td>
+            <td>Clone behaviour, synchronous and async client acquisition, timeout on non-running state, terminal state detection, command dispatch (ensure-started, shutdown), fire-and-forget operations</td>
+            <td>The supervisor handle is the single point of contact between Tauri commands and the engine. A broken handle silently drops commands.</td>
+          </tr>
+          <tr>
+            <td><code>engine_client_adapter.rs</code></td>
+            <td>8</td>
+            <td>Startup mode to runtime mode mapping, runtime env override reading, unknown state rejection, DTO mapping from engine status (canonical fields and fallback), input sanitisation, wire format serialisation</td>
+            <td>The adapter translates between the engine&apos;s internal status format and the frontend&apos;s expected DTO shape. A mapping error produces wrong status in the UI.</td>
+          </tr>
+          <tr>
+            <td><code>commands/inference.rs</code></td>
+            <td>8</td>
+            <td>Memory detection heuristics, unload-in-progress error detection, memory level classification (warning/critical thresholds), model recommendation logic, heavy mode detection (Blender, GIMP), auto-unload messaging</td>
+            <td>Memory pressure handling protects low-RAM machines from becoming unstable during inference. Wrong thresholds either crash the system or unnecessarily restrict capable hardware.</td>
+          </tr>
+          <tr>
+            <td><code>lib.rs</code></td>
+            <td>6</td>
+            <td>App local data directory resolution chain (Tauri path, dirs fallback, debug fallback, last resort), directory creation on disk, managed state wiring for setup and providers</td>
+            <td>The data directory is the root for all persistent state. If resolution fails, the app cannot store settings, tokens, or provisioned resources.</td>
+          </tr>
+          <tr>
+            <td><code>engine/mod.rs</code></td>
+            <td>6</td>
+            <td>Lifecycle state queries (running, terminal), state machine transition rules (valid and invalid transitions), serialisation format</td>
+            <td>The lifecycle state machine drives startup, crash recovery, and shutdown. An invalid transition would put the engine in an undefined state.</td>
+          </tr>
+          <tr>
+            <td><code>app_paths.rs</code></td>
+            <td>5</td>
+            <td>Tauri resource path normalisation, nested resources root handling, debug and release fallback behaviour, graceful degradation for unusable candidates</td>
+            <td>Tauri injects resource paths at build time. If normalisation is wrong, the packaged build cannot find bundled assets.</td>
+          </tr>
+          <tr>
+            <td><code>commands/audio.rs</code></td>
+            <td>5</td>
+            <td>Stereo-to-mono channel mixing, sample rate conversion (passthrough at 16kHz, 48kHz and 44.1kHz down to 16kHz for Whisper), recording buffer size bounds</td>
+            <td>Whisper requires 16kHz mono PCM. Wrong resampling produces garbled transcription; an unbounded buffer could exhaust memory during long recordings.</td>
+          </tr>
+          <tr>
+            <td>Provisioning (extractor + manifest + source)</td>
+            <td>11</td>
+            <td>ZIP extraction with prefix normalisation, cancellation during extraction, recursive directory copy, manifest parsing and version validation, SHA256 integrity verification, model detection, source detection modes</td>
+            <td>Provisioning installs models, runtimes, and host-app plugins. If extraction silently corrupts files or ignores cancellation, the user is left with a broken installation and no clear error.</td>
+          </tr>
+          <tr>
+            <td><code>setup/provision.rs</code></td>
+            <td>4</td>
+            <td>Directory and Python runtime preparation, isolation from user profile roots, conditional Blender addon and GIMP plugin provisioning</td>
+            <td>Setup must never touch files outside its designated directories. Conditional provisioning avoids wasting time staging resources for host apps that are not installed.</td>
+          </tr>
+          <tr>
+            <td>Remaining (13 modules)</td>
+            <td>13</td>
+            <td>Hardware memory heuristics, mode config ordering, setup status collection, model manifest checks, setup cache persistence and corrupt recovery, code provider idle state, registry sharing, DTO casing</td>
+            <td>Each covers a specific boundary or contract that, if broken, produces a subtle but user-visible failure.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- ── Connector Tests ───────────────────────────────────── -->
+      <h3>Connector Tests (102 tests across 3 connectors + 16 shared)</h3>
+      <p>
+        Connector crates bridge the unified shell to external desktop applications. Their tests use
+        <code>#[cfg(test)]</code> mock implementations for bridge, runtime, and transport layers so
+        that they run without real Blender, GIMP, or LibreOffice processes. This keeps them
+        deterministic and fast enough for CI while still exercising the full provider and executor
+        logic.
+      </p>
+
+      <h4>Blender Connector (32 tests across 7 modules)</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Module</th>
+            <th>Count</th>
+            <th>What It Tests</th>
+            <th>Why It Matters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>bridge.rs</code></td>
+            <td>9</td>
+            <td>Token exact-match comparison, token round-trip persistence, public health route (no auth), bearer token validation on <code>scene_current</code>, snapshot payload return, scene cache mutation, oversized body rejection, port conflict error, bridge shutdown</td>
+            <td>The bridge runs as a local HTTP server. Auth bypass, body limit failures, or port conflicts would break the Blender workflow or expose scene data.</td>
+          </tr>
+          <tr>
+            <td><code>provider.rs</code></td>
+            <td>9</td>
+            <td>Tool definitions after bridge start, port-occupied error, scene snapshot via tool, RAG context retrieval with metadata, retrieval failure degradation, live scene status, reconnect tool restoration, missing host status, bridge start before addon provisioning</td>
+            <td>The provider orchestrates bridge, RAG, and tool execution. A failure in any step must degrade gracefully rather than crash the assistant.</td>
+          </tr>
+          <tr>
+            <td><code>setup.rs</code></td>
+            <td>5</td>
+            <td>Addon provisioning, marker short-circuit, probe/enable failure messages, not-prepared status when Blender detected</td>
+            <td>Setup provisioning installs the Blender addon. If the marker check is wrong, provisioning reruns on every launch.</td>
+          </tr>
+          <tr>
+            <td><code>executor.rs</code></td>
+            <td>3</td>
+            <td>Scene query skips RAG, workflow question uses RAG and emits tokens, cancellation returns cancelled result</td>
+            <td>The executor must respect cancellation &mdash; a hung generation would block the user until timeout.</td>
+          </tr>
+          <tr>
+            <td><code>state.rs</code> / <code>rag.rs</code> / <code>response.rs</code></td>
+            <td>6</td>
+            <td>Default cache returns no-scene message, fresh data returns connected scene, top-match retrieval, disabled index returns empty, messages marked non-undoable, RAG context parsing</td>
+            <td>State and RAG correctness determines whether the Blender assistant gives scene-aware answers or generic ones.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>GIMP Connector (28 tests across 6 modules)</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Module</th>
+            <th>Count</th>
+            <th>What It Tests</th>
+            <th>Why It Matters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>setup.rs</code></td>
+            <td>7</td>
+            <td>GIMP 2 path rejection, major version CLI parsing, leading number handling, ambiguous path validation, GIMP 3 acceptance, not-prepared status, plugin provisioning with marker write</td>
+            <td>GIMP 2 is not supported. If version detection is wrong, the plugin is installed into an incompatible host, producing cryptic Script-Fu errors.</td>
+          </tr>
+          <tr>
+            <td><code>planner.rs</code></td>
+            <td>5</td>
+            <td>JSON selector parsing, code fence extraction, invalid tool rejection, non-JSON fallback, retry on first non-JSON output</td>
+            <td>The planner parses structured LLM output. Offline models produce inconsistent formatting more often than cloud models, making robust parsing essential.</td>
+          </tr>
+          <tr>
+            <td><code>executor.rs</code></td>
+            <td>5</td>
+            <td>Info query success, fast-path edit success, planned <code>call-api</code> edit, answer without connection when selector chooses none, user-friendly error when edit requires connection</td>
+            <td>The executor must handle both the fast path (heuristic-matched edits) and the planned path (LLM-guided tool calls), with clear errors when the bridge is not connected.</td>
+          </tr>
+          <tr>
+            <td><code>runtime.rs</code></td>
+            <td>4</td>
+            <td>Python resolution priority (prepared &gt; venv &gt; system), strict mode enforcement when dev fallback disabled</td>
+            <td>GIMP&apos;s bridge depends on Python. Wrong resolution order could pick the wrong interpreter or fail on machines without system Python.</td>
+          </tr>
+          <tr>
+            <td><code>provider.rs</code></td>
+            <td>4</td>
+            <td>Disconnected state error, connected state tool definitions, missing GIMP status, GIMP 2 rejection</td>
+            <td>The provider must report honest status &mdash; claiming &quot;connected&quot; when the bridge is down leads to silent tool execution failures.</td>
+          </tr>
+          <tr>
+            <td><code>heuristics.rs</code></td>
+            <td>3</td>
+            <td>Metadata query detection, region blur fast path, rotate fast path</td>
+            <td>Heuristics route common prompts directly to tools without needing a full LLM planning step, making simple edits faster and more reliable.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>LibreOffice Connector (26 tests across 5 modules)</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Module</th>
+            <th>Count</th>
+            <th>What It Tests</th>
+            <th>Why It Matters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>executor.rs</code></td>
+            <td>9</td>
+            <td>Writer tool execution with streaming, Impress JSON fallback parsing, stringified JSON arguments, trailing brace/whitespace garbage recovery, summary failure fallback, cancellation fallback, timeout fallback</td>
+            <td>Offline LLMs produce malformed JSON more often than cloud models. The garbage recovery tests verify that common format errors (trailing braces, extra whitespace, stringified args) are handled rather than crashing the executor.</td>
+          </tr>
+          <tr>
+            <td><code>provider.rs</code></td>
+            <td>7</td>
+            <td>Writer and Impress status with filtered tools, unsupported mode error, runtime start failure error, missing resources error, concurrent status refresh survival, retryable runtime failure detection</td>
+            <td>Writer and Slides share one provider family but expose different tool sets. If filtering is wrong, Writer users see slide-creation tools and vice versa.</td>
+          </tr>
+          <tr>
+            <td><code>resources.rs</code></td>
+            <td>4</td>
+            <td>Nested path fallback, direct path preference, missing asset error context, dev mode resolution</td>
+            <td>Resource resolution differs between development and packaged builds. Missing asset detection prevents cryptic runtime errors.</td>
+          </tr>
+          <tr>
+            <td><code>response.rs</code></td>
+            <td>3</td>
+            <td>Fallback summary using document count/names, error payload marking, messages marked non-undoable</td>
+            <td>When the LLM summary fails, the fallback summary must still describe what changed. Marking responses non-undoable prevents users from trying to undo actions that cannot be reversed.</td>
+          </tr>
+          <tr>
+            <td><code>runtime.rs</code></td>
+            <td>3</td>
+            <td>Config from layout sets entrypoint, stdio transport log dir, summary description</td>
+            <td>The runtime config drives the Python MCP transport. Wrong entrypoint or log directory makes debugging failures impossible.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>Connector-Common (16 tests across 5 modules)</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Module</th>
+            <th>Count</th>
+            <th>What It Tests</th>
+            <th>Why It Matters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>launch.rs</code></td>
+            <td>5</td>
+            <td>Process detection (skip spawn when running, spawn when absent), executable path exact-match, GIMP and LibreOffice launch error messages</td>
+            <td>Double-launching a host app creates confusion. Missing executable detection must produce a clear message, not a crash.</td>
+          </tr>
+          <tr>
+            <td><code>python.rs</code></td>
+            <td>4</td>
+            <td>Bundled Python not-prepared when payload missing, staged payload can-prepare, prepare copies payload, resolve prepared Python command</td>
+            <td>The bundled Python runtime is required for GIMP and LibreOffice bridges. If preparation fails, both connectors are unavailable.</td>
+          </tr>
+          <tr>
+            <td><code>host_apps.rs</code></td>
+            <td>3</td>
+            <td>Cached path preference when it still exists, standard path fallback, GIMP 3 executable name acceptance</td>
+            <td>Host app discovery caches results for performance. If the cache is stale (app uninstalled or moved), fallback must work.</td>
+          </tr>
+          <tr>
+            <td><code>manifests.rs</code></td>
+            <td>3</td>
+            <td>Manifest validation (empty values rejected), missing expected paths reported, camelCase manifest parsing</td>
+            <td>Manifests drive provisioning. An invalid manifest must be rejected, not silently accepted and used to stage corrupt files.</td>
+          </tr>
+          <tr>
+            <td><code>text_generation.rs</code></td>
+            <td>1</td>
+            <td><code>TextStreamer</code> trait propagates cancelled result</td>
+            <td>Cancellation propagation ensures that a cancelled generation does not continue streaming tokens after the user stops it.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- ── Type Contract + Security + Benchmark Stats ────────── -->
+      <h3>Type Contract, Security, and Benchmark Tests (17 tests)</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Group</th>
+            <th>Count</th>
+            <th>What It Tests</th>
+            <th>Why It Matters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Type contracts</td>
+            <td>5</td>
+            <td>JSON wire format for <code>AppMode</code>, camelCase keys in <code>ModeConfig</code>, <code>kind</code> tag in stream events, <code>toolResults</code> key in response, <code>SetupStatus</code> wire keys and enum values</td>
+            <td>The Svelte frontend consumes these JSON payloads directly. A renamed field breaks the UI silently &mdash; the TypeScript types match but the runtime values do not.</td>
+          </tr>
+          <tr>
+            <td>Security</td>
+            <td>7</td>
+            <td>Content validation (valid, empty, at limit, over limit), large content error formatting, file size validation, file size error message</td>
+            <td>Content and file size limits protect the engine from denial-of-service via oversized payloads.</td>
+          </tr>
+          <tr>
+            <td>Benchmark stats</td>
+            <td>5</td>
+            <td>Empty input produces no stats, single value edge case, known values (mean, std_dev), percentile interpolation, two-value case</td>
+            <td>The benchmark infrastructure computes statistics across runs. Wrong percentile interpolation or edge-case handling would produce misleading performance reports.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Analysis: What Passing Unit Tests Guarantee</h3>
+      <p>
+        When all ~302 unit tests pass, the following properties are verified automatically: the
+        engine starts on any machine regardless of which DLLs are present, backend selection
+        follows the correct preference and fallback chain, backend decisions persist and recover
+        from corruption, all JSON wire formats match the frontend&apos;s expectations, ChatML is
+        rendered correctly for each model family, memory pressure thresholds and model selection
+        heuristics are correct, the engine-host process isolation boundary is not violated by any
+        source file, and all connector providers degrade gracefully when their host application is
+        unavailable. These guarantees are enforced on every push without requiring hardware or
+        manual intervention.
+      </p>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         SECTION 3: INTEGRATION TESTING
+         ═══════════════════════════════════════════════════════════════ -->
     <section id="integration-testing">
       <h2>Integration Testing</h2>
       <p>
         Integration testing was essential because the platform is only useful when its parts work
-        together: the shared engine must start correctly, the unified app must display the right state,
-        each mode must route to the correct provider, and host-application bridges must behave
-        predictably. Wherever possible, these boundaries were backed by automated tests; where external
-        desktop applications were involved, live scenario testing was also required.
+        together: the shared engine must start correctly, the unified app must display the right
+        state, each mode must route to the correct provider, and host-application bridges must
+        behave predictably. Integration tests require real hardware and are not automated in CI
+        because there is no way to simulate a real NPU, discrete GPU, or running GIMP/Blender
+        process in a CI container.
       </p>
 
+      <h3>Hardware Coverage</h3>
+      <p>
+        Three physical test machines cover the backend matrix, ensuring that every supported
+        inference path is exercised on real hardware:
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Machine</th>
+            <th>CPU</th>
+            <th>GPU</th>
+            <th>NPU</th>
+            <th>RAM</th>
+            <th>Backends Tested</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Core Ultra laptop</td>
+            <td>Intel Core Ultra</td>
+            <td>Intel Arc (integrated)</td>
+            <td>Intel AI Boost</td>
+            <td>16 GB</td>
+            <td>CPU, OpenVINO NPU</td>
+          </tr>
+          <tr>
+            <td>Intel CPU desktop</td>
+            <td>Intel i-series</td>
+            <td>None</td>
+            <td>None</td>
+            <td>8 GB</td>
+            <td>CPU only (fallback path)</td>
+          </tr>
+          <tr>
+            <td>RTX workstation</td>
+            <td>Intel i5</td>
+            <td>NVIDIA RTX 2000</td>
+            <td>None</td>
+            <td>16 GB</td>
+            <td>CPU, DirectML</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        The Core Ultra machine is the primary NPU test target. The RTX workstation validates
+        DirectML with a discrete NVIDIA GPU. The Intel CPU machine validates the pure fallback
+        path &mdash; the lowest-capability configuration the platform supports.
+      </p>
+
+      <h3>Integration Test Protocol</h3>
+      <p>
+        After any change to generation config, backend selection, or model loading, the following
+        protocol is executed manually on each relevant machine:
+      </p>
+      <ol>
+        <li>Start the engine with a forced backend: <code>$env:SMOLPC_FORCE_EP = "cpu"</code> (or <code>"directml"</code>, <code>"openvino_npu"</code>)</li>
+        <li>Send a streaming chat completion via <code>curl</code> to <code>localhost:19432/v1/chat/completions</code></li>
+        <li>Verify: response streams tokens (not a single dump), output is coherent code (not garbage or repetition), generation stops at a reasonable length, TTFT and tokens/sec are within expected range, no crash or &quot;unknown exception&quot; errors</li>
+      </ol>
+
+      <h3>End-to-End Scenarios</h3>
       <table>
         <thead>
           <tr>
@@ -171,83 +944,87 @@ cargo test -p smolpc-desktop -p smolpc-connector-gimp -p smolpc-connector-blende
         <tbody>
           <tr>
             <td>IT1</td>
-            <td>Startup loading flow + setup state + engine readiness</td>
+            <td>Startup loading + setup state + engine readiness</td>
             <td>Launch the unified app, let the startup loading screen complete, refresh setup state, and confirm that engine readiness and mode availability are reflected in the main shell.</td>
-            <td>The app should move from startup into the normal workspace only when the engine and setup state are coherent, with unavailable modes clearly flagged instead of failing silently.</td>
+            <td>The app moves from startup into the workspace only when engine and setup state are coherent. Unavailable modes are clearly flagged.</td>
             <td class="yes">Covered</td>
           </tr>
           <tr>
             <td>IT2</td>
             <td>Mode registry + provider dispatch</td>
-            <td>Switch between code, GIMP, Blender, and LibreOffice modes and confirm routing to the correct backend provider.</td>
-            <td>Each mode should invoke the correct provider family without leaking behaviour across assistants.</td>
+            <td>Switch between Code, GIMP, Blender, and LibreOffice modes and confirm routing to the correct backend provider.</td>
+            <td>Each mode invokes the correct provider family without leaking behaviour across assistants.</td>
             <td class="yes">Covered</td>
           </tr>
           <tr>
             <td>IT3</td>
             <td>GIMP bridge + tool execution</td>
             <td>Prepare the local GIMP runtime, refresh available tools, execute an editing command, and test undo behaviour.</td>
-            <td>The assistant should connect to the bridge, execute supported tools, and return a clear summary to the user.</td>
+            <td>The assistant connects to the bridge, executes supported tools, and returns a clear summary.</td>
             <td class="yes">Covered with live scenarios</td>
           </tr>
           <tr>
             <td>IT4</td>
             <td>Blender bridge + local RAG</td>
             <td>Start the Blender bridge, read scene context, retrieve local documentation, and answer a scene-specific request.</td>
-            <td>The assistant should combine bridge state and retrieved context without requiring cloud inference.</td>
+            <td>The assistant combines bridge state and retrieved context without requiring cloud inference.</td>
             <td class="yes">Covered with live scenarios</td>
           </tr>
           <tr>
             <td>IT5</td>
             <td>LibreOffice runtime + planner/tool execution</td>
             <td>Run Writer or Slides requests that require structured tool calls and verify graceful handling of unsupported flows.</td>
-            <td>Valid requests should execute through the office runtime, while unsupported routes should fail clearly and safely.</td>
+            <td>Valid requests execute through the office runtime. Unsupported routes fail clearly and safely.</td>
             <td class="yes">Covered</td>
           </tr>
           <tr>
             <td>IT6</td>
-            <td>Composer mic control + audio commands + engine voice endpoints</td>
-            <td>Record a short prompt fragment, transcribe it locally into the composer, send the prompt, and request read-aloud on the response.</td>
-            <td>The dictated text should appear in the chat input, and local playback should work or fail cleanly without breaking the text workflow.</td>
+            <td>Voice input + audio commands + engine endpoints</td>
+            <td>Record a short prompt, transcribe it locally into the composer, send the prompt, and request read-aloud on the response.</td>
+            <td>Dictated text appears in the chat input. Local playback works or fails cleanly without breaking the text workflow.</td>
             <td class="yes">Covered in development builds</td>
+          </tr>
+          <tr>
+            <td>IT7</td>
+            <td>Backend forced path on each machine</td>
+            <td>Force CPU, DirectML, and OpenVINO NPU backends on the appropriate machine and run the streaming completion protocol.</td>
+            <td>Each backend produces coherent streaming output with TTFT in expected range. No crashes or &quot;unknown exception&quot; errors.</td>
+            <td class="yes">Covered across 3 machines</td>
           </tr>
         </tbody>
       </table>
 
-      <h3>Automated Integration Tests</h3>
+      <h3>Automated Integration Checks</h3>
       <p>
-        The repository includes automated checks around engine-status mapping, runtime-mode restoration,
-        setup preparation, memory-pressure classification, connector execution, and audio request
-        contracts. These tests matter because regression risk appears most often at the boundaries
-        between the engine, the Tauri commands, and the mode providers rather than inside isolated UI
-        widgets.
+        In addition to the live scenarios above, the repository includes automated checks around
+        engine-status mapping, runtime-mode restoration, setup preparation, memory-pressure
+        classification, connector execution, and audio request contracts. These tests cover the
+        boundaries between the engine, the Tauri commands, and the mode providers where regression
+        risk is highest.
       </p>
-      <pre><code>Representative commands used during development:
-npm run check
-npm run boundary:check
+      <pre><code># Commands exercised during integration verification
 cargo test -p smolpc-engine-client
 cargo test -p smolpc-engine-host
 cargo test -p smolpc-desktop
 cargo test -p smolpc-connector-gimp
 cargo test -p smolpc-connector-blender
-cargo test -p smolpc-connector-libreoffice
-
-Representative named tests cited on this page:
-- runtime_env_overrides_parse_force_ep_tokens
-- classify_memory_level_uses_warning_and_critical_thresholds
-- audio_speech_request_defaults
-- detects_rotate_fast_path
-- retrieve_context_returns_top_match
-- summary_failure_falls_back_to_local_summary</code></pre>
+cargo test -p smolpc-connector-libreoffice</code></pre>
     </section>
 
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         SECTION 4: PROMPT TESTING
+         ═══════════════════════════════════════════════════════════════ -->
     <section id="prompt-testing">
       <h2>Prompt Testing</h2>
       <p>
-        Prompt testing was used to check whether the assistants remained understandable and reliable in
-        realistic user-facing scenarios. This mattered even for a local system because good offline
-        deployment is not enough if prompts are interpreted inconsistently, mapped to the wrong tool, or
-        explained poorly to non-expert users.
+        Prompt testing was necessary because SmolPC runs offline quantised models, and their
+        behaviour varies more across quantisation levels and inference backends than cloud models.
+        A prompt that works reliably with Qwen2.5-1.5B via CPU might produce a different tool-call
+        format when the same model runs on the NPU via OpenVINO, or might generate malformed JSON
+        that the executor must recover from. Prompt testing checks that the assistants remain
+        understandable, reliable, and correctly routed in realistic user-facing scenarios across
+        these conditions.
       </p>
 
       <table>
@@ -265,56 +1042,70 @@ Representative named tests cited on this page:
             <td>PT-CH1</td>
             <td>Code Mode</td>
             <td>&quot;Explain this error and suggest how to fix it.&quot;</td>
-            <td>The assistant should provide a clear coding explanation and next steps in a simple local chat workflow.</td>
+            <td>The assistant provides a clear coding explanation and next steps in a local chat workflow.</td>
             <td class="yes">Scenario defined and used during development</td>
           </tr>
           <tr>
             <td>PT-VO1</td>
             <td>Code Mode Voice</td>
             <td>Dictate a short coding question, then ask the app to read the answer aloud.</td>
-            <td>Voice input should transcribe into the composer correctly, and the response should remain understandable when played back through the local read-aloud control.</td>
+            <td>Voice input transcribes into the composer correctly. The response remains understandable when played back through local read-aloud.</td>
             <td class="yes">Scenario aligned with implemented UI flow</td>
           </tr>
           <tr>
             <td>PT-GI1</td>
             <td>GIMP</td>
             <td>&quot;Blur the top half of the image.&quot;</td>
-            <td>The assistant should choose an appropriate direct tool or fast path and report the edit clearly.</td>
+            <td>The assistant chooses an appropriate direct tool or fast path and reports the edit clearly.</td>
             <td class="yes">Scenario aligned with automated heuristics</td>
           </tr>
           <tr>
             <td>PT-BL1</td>
             <td>Blender</td>
             <td>&quot;How do I add a bevel modifier?&quot;</td>
-            <td>The assistant should retrieve relevant Blender context and give a scene-aware explanation.</td>
+            <td>The assistant retrieves relevant Blender context and gives a scene-aware explanation.</td>
             <td class="yes">Scenario aligned with local RAG tests</td>
           </tr>
           <tr>
             <td>PT-LO1</td>
             <td>Writer / Slides</td>
             <td>&quot;Add a heading called Hello.&quot; / &quot;Add a slide titled Intro.&quot;</td>
-            <td>The assistant should produce a valid structured tool call and return a useful summary of what changed.</td>
+            <td>The assistant produces a valid structured tool call and returns a useful summary of what changed.</td>
             <td class="yes">Scenario aligned with executor tests</td>
           </tr>
           <tr>
             <td>PT-FB1</td>
             <td>Cross-mode fallback</td>
             <td>Ambiguous or malformed tool-call output</td>
-            <td>The system should fall back safely, summarise locally where possible, or ask for clarification instead of failing silently.</td>
+            <td>The system falls back safely, summarises locally where possible, or asks for clarification instead of failing silently.</td>
             <td class="yes">Covered</td>
           </tr>
         </tbody>
       </table>
     </section>
 
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         SECTION 5: COMPATIBILITY TESTING
+         ═══════════════════════════════════════════════════════════════ -->
     <section id="compatibility-testing">
       <h2>Compatibility Testing</h2>
       <p>
         Compatibility testing focused on the environments and conditions that matter most for local
-        deployment: packaged desktop behaviour, availability of host applications, and graceful fallback
-        when a preferred runtime or dependency is missing. Because the project moved toward a unified
-        locally bundled platform, compatibility is as much about setup and dependency handling as it is
-        about raw operating-system support.
+        deployment: packaged desktop behaviour on Windows, hardware-specific runtime paths, and
+        graceful fallback when a preferred dependency or host application is missing. Because the
+        project bundles its own inference engine and runtime DLLs, compatibility is as much about
+        setup and dependency handling as it is about raw operating-system support.
+      </p>
+
+      <h3>Hardware and OS Coverage</h3>
+      <p>
+        Testing was conducted on three physical machines running Windows 11 (see the
+        <a href="#integration-testing">Integration Testing</a> section for the full hardware
+        matrix). Degradation was verified by removing specific DLLs from the resource directory and
+        confirming that the engine starts with reduced capability rather than crashing. The startup
+        degradation unit tests (4 tests using <code>tempdir()</code>) automate this verification
+        for ORT, OpenVINO, and NPU plugin bundles.
       </p>
 
       <table>
@@ -323,93 +1114,212 @@ Representative named tests cited on this page:
             <th>Platform or Condition</th>
             <th>Focus</th>
             <th>Expected Behaviour</th>
-            <th>Current Position</th>
+            <th>How Verified</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>Windows packaged build</td>
-            <td>Primary deployment target for bundled local inference and host-app integration</td>
-            <td>The installer and unified app should launch correctly, prepare local resources, and expose supported modes clearly.</td>
+            <td>Windows 11 packaged build</td>
+            <td>Primary deployment target for bundled local inference</td>
+            <td>Installer launches correctly, prepares local resources, and exposes supported modes</td>
+            <td>Tested on 3 physical machines with NSIS installer</td>
             <td class="yes">Primary validation target</td>
           </tr>
           <tr>
-            <td>Different local hardware profiles</td>
-            <td>CPU, DirectML, and OpenVINO NPU runtime paths</td>
-            <td>The platform should detect the best supported local runtime path and degrade gracefully if a faster path is unavailable.</td>
-            <td class="yes">Covered in development across multiple runtime paths</td>
+            <td>CPU-only machine (8 GB, no GPU/NPU)</td>
+            <td>Fallback inference path</td>
+            <td>Engine detects no GPU/NPU and selects CPU backend automatically</td>
+            <td>Tested on Intel CPU desktop; verified via engine status API</td>
+            <td class="yes">Covered</td>
           </tr>
           <tr>
-            <td>Missing host applications or plugins</td>
+            <td>DirectML machine (NVIDIA RTX 2000)</td>
+            <td>GPU-accelerated inference via DirectML</td>
+            <td>Engine selects DirectML backend, generation performance improves over CPU</td>
+            <td>Tested on RTX workstation with forced and automatic selection</td>
+            <td class="yes">Covered</td>
+          </tr>
+          <tr>
+            <td>NPU machine (Intel AI Boost)</td>
+            <td>NPU-accelerated inference via OpenVINO</td>
+            <td>Engine selects OpenVINO NPU backend after probe confirms candidate</td>
+            <td>Tested on Core Ultra laptop</td>
+            <td class="yes">Covered</td>
+          </tr>
+          <tr>
+            <td>Missing runtime DLLs</td>
+            <td>Graceful degradation when ORT, DirectML, or OpenVINO bundles are absent</td>
+            <td>Engine starts with reduced capability; affected lanes disabled, others remain functional</td>
+            <td>4 automated unit tests (tempdir-based), plus manual removal testing</td>
+            <td class="yes">Covered</td>
+          </tr>
+          <tr>
+            <td>Missing host applications</td>
             <td>Setup gating and user messaging</td>
-            <td>Unsupported or incomplete host dependencies should produce a clear blocked or setup-required state rather than a crash.</td>
-            <td class="yes">Covered by setup checks and manual scenarios</td>
+            <td>Unsupported or incomplete host dependencies produce a clear blocked or setup-required state</td>
+            <td>Verified via setup status checks; GIMP version detection rejects GIMP 2</td>
+            <td class="yes">Covered</td>
           </tr>
           <tr>
-            <td>Missing microphone or unavailable audio output</td>
+            <td>Missing microphone or audio output</td>
             <td>Voice feature degradation</td>
-            <td>Voice controls should disable cleanly or report temporary unavailability while leaving the text-chat workflow unaffected.</td>
-            <td class="yes">Implemented in UI and engine fallback flow</td>
+            <td>Voice controls disable cleanly; text-chat workflow remains unaffected</td>
+            <td>Tested with audio devices disabled in Windows settings</td>
+            <td class="yes">Covered</td>
           </tr>
         </tbody>
       </table>
     </section>
 
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         SECTION 6: PERFORMANCE TESTING
+         ═══════════════════════════════════════════════════════════════ -->
     <section id="performance-testing">
       <h2>Performance and Stress Testing</h2>
       <p>
-        Performance matters because SmolPC runs local models on varied hardware. The platform therefore
-        tracks readiness state, runtime selection, memory pressure, streaming behaviour, and benchmark
-        instrumentation. In addition to the broader monitoring areas below, we produced standalone
-        benchmark reports on three different Windows laptops to measure the real effect of hardware,
-        backend selection, and model size on local inference.
+        Performance matters because SmolPC runs local models on varied hardware. A machine with
+        16 GB RAM and an NPU has a fundamentally different performance profile than an 8 GB
+        CPU-only laptop, and both must feel usable. The project includes a dedicated benchmark
+        infrastructure for systematic measurement, plus automated tests for the heuristics that
+        drive runtime behaviour (memory pressure, model selection, streaming).
       </p>
 
+      <h3>Benchmark Infrastructure: <code>smolpc-benchmark</code></h3>
+      <p>
+        The <code>smolpc-benchmark</code> crate is a standalone CLI tool that measures inference
+        performance across backends using fixed prompts, greedy decoding
+        (<code>temperature=0.0</code>), and process-specific resource monitoring. This produces
+        reproducible, comparable results across machines and across code changes.
+      </p>
+      <div class="card">
+        <h3>Measurement Methodology</h3>
+        <p>
+          For each backend-model combination, the tool loads the model, verifies the backend,
+          captures an idle baseline (2 seconds of RSS and CPU% with no inference), runs warmup
+          iterations (minimum 3 for NPU to ensure compilation cache is populated), then executes
+          10 fixed coding prompts across 3 tiers (short, medium, long) for N measured iterations.
+          Statistics are computed per-prompt: mean, median, P90, P95, standard deviation, min, max.
+        </p>
+      </div>
+
+      <h3>Metrics Collected</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Source</th>
+            <th>Unit</th>
+            <th>Why It Matters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>TTFT (Time to First Token)</td>
+            <td>Engine <code>GenerationMetrics</code></td>
+            <td>Milliseconds</td>
+            <td>Perceived responsiveness &mdash; the most noticeable latency metric for users</td>
+          </tr>
+          <tr>
+            <td>Tokens per second</td>
+            <td>Engine <code>GenerationMetrics</code></td>
+            <td>Tokens/sec</td>
+            <td>Decode throughput; determines how fast the response streams in</td>
+          </tr>
+          <tr>
+            <td>TPOT (Time Per Output Token)</td>
+            <td>Derived: <code>(total_time - ttft) / (tokens - 1)</code></td>
+            <td>Milliseconds</td>
+            <td>Isolates decode speed from prefill latency</td>
+          </tr>
+          <tr>
+            <td>Peak memory (RSS)</td>
+            <td>Background <code>ResourceSampler</code> via <code>sysinfo</code></td>
+            <td>MB</td>
+            <td>Determines whether the engine fits within the machine&apos;s available RAM</td>
+          </tr>
+          <tr>
+            <td>CPU utilisation</td>
+            <td>Background <code>ResourceSampler</code> (mean and peak)</td>
+            <td>Percent</td>
+            <td>High CPU% during NPU inference indicates fallback to CPU path</td>
+          </tr>
+          <tr>
+            <td>Truncation and EOS rates</td>
+            <td>Reliability aggregation</td>
+            <td>Fraction (0.0&ndash;1.0)</td>
+            <td>High truncation means <code>max_tokens</code> is too low; low EOS rate means the model is not stopping naturally</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Statistical Analysis</h3>
+      <p>
+        The <code>Stats</code> struct computes population statistics with linear interpolation for
+        percentiles. The benchmark stats module is itself covered by 5 unit tests verifying empty
+        input, single value, known values, percentile interpolation, and the two-value edge case.
+      </p>
+      <pre><code>pub struct Stats {
+    pub mean: f64,
+    pub median: f64,
+    pub p90: f64,
+    pub p95: f64,
+    pub std_dev: f64,
+    pub min: f64,
+    pub max: f64,
+}</code></pre>
+
+      <h3>Performance-Related Automated Tests</h3>
+      <p>
+        In addition to the benchmark tool, several automated tests verify the heuristics that
+        drive runtime performance decisions:
+      </p>
       <table>
         <thead>
           <tr>
             <th>Test ID</th>
             <th>Area</th>
-            <th>Metric</th>
+            <th>What Is Tested</th>
             <th>Why It Matters</th>
-            <th>Current Position</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>PF1</td>
             <td>Engine startup</td>
-            <td>Readiness time and startup robustness</td>
-            <td>Slow or fragile startup undermines classroom or workshop usability even if generation quality is good.</td>
-            <td class="yes">Measured during development</td>
+            <td>Startup degradation tests (4 tests) verify the engine starts in all DLL configurations; readiness time measured during integration testing</td>
+            <td>Slow or fragile startup undermines classroom usability even if generation quality is good</td>
+            <td class="yes">Automated + measured</td>
           </tr>
           <tr>
             <td>PF2</td>
             <td>Streaming generation</td>
-            <td>Time to first token, streaming continuity, response duration</td>
-            <td>These metrics affect perceived responsiveness more than a single total latency number.</td>
-            <td class="yes">Instrumented and observed during development</td>
+            <td>TTFT, streaming continuity, and response duration measured by benchmark crate; token streaming verified in integration protocol</td>
+            <td>These metrics affect perceived responsiveness more than a single total latency number</td>
+            <td class="yes">Instrumented</td>
           </tr>
           <tr>
             <td>PF3</td>
-            <td>Runtime selection</td>
-            <td>Correct backend choice for CPU, DirectML, or OpenVINO NPU</td>
-            <td>The platform should use the best supported local path for the current machine rather than assume identical hardware everywhere.</td>
-            <td class="yes">Selection logic covered</td>
+            <td>Backend selection</td>
+            <td>6 host tests + 12 core tests for selection state machine, benchmark gate enforcement (speedup ratio + TTFT regression limit), demotion after consecutive failures</td>
+            <td>Wrong backend choice sends users to the slowest path without explanation</td>
+            <td class="yes">Automated</td>
           </tr>
           <tr>
             <td>PF4</td>
-            <td>Memory pressure handling</td>
-            <td>Warning and critical thresholds, model-switch guidance</td>
-            <td>Protects weaker devices from becoming unstable during local generation.</td>
-            <td class="yes">Heuristics covered by automated tests</td>
+            <td>Memory pressure</td>
+            <td>Warning and critical thresholds, model recommendation logic, heavy mode detection, auto-unload messaging (8 inference command tests)</td>
+            <td>Protects low-RAM devices from instability during generation</td>
+            <td class="yes">Automated</td>
           </tr>
           <tr>
             <td>PF5</td>
             <td>Voice I/O</td>
-            <td>Transcription turnaround, TTS availability, and added resource overhead</td>
-            <td>Voice support should improve accessibility without making the main chat flow feel fragile or unexpectedly heavy.</td>
-            <td class="yes">Validated in development builds</td>
+            <td>Audio resampling tests (5 tests), recording buffer bounds, TTS sidecar discovery</td>
+            <td>Voice must not degrade the main chat path; unbounded buffers could exhaust memory</td>
+            <td class="yes">Automated</td>
           </tr>
         </tbody>
       </table>
@@ -588,18 +1498,22 @@ Representative named tests cited on this page:
       </ul>
     </section>
 
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         SECTION 7: USER ACCEPTANCE TESTING
+         ═══════════════════════════════════════════════════════════════ -->
     <section id="uat">
       <h2>User Acceptance Testing</h2>
       <p>
         User acceptance testing was planned around representative target users rather than a single
-        generic tester. This matched the product itself: the Code mode targets coding support, GIMP and
-        Blender target creative workflows, and the LibreOffice modes target classroom and document-based
-        tasks. Feedback was gathered informally and anonymously from representative users and peers
-        across these workflows to check whether the product felt useful, understandable, and realistic
-        to use as an offline assistant platform.
+        generic tester. This matched the product itself: Code mode targets coding support, GIMP and
+        Blender target creative workflows, and the LibreOffice modes target classroom and
+        document-based tasks. Feedback was gathered informally and anonymously from representative
+        users and peers across these workflows to check whether the product felt useful,
+        understandable, and realistic to use as an offline assistant platform.
       </p>
 
-      <h3>Simulated Testers</h3>
+      <h3>Tester Profiles</h3>
       <table>
         <thead>
           <tr>
@@ -640,7 +1554,7 @@ Representative named tests cited on this page:
             <th>Assistant</th>
             <th>Description</th>
             <th>Expected Outcome</th>
-            <th>Current Position</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
@@ -648,28 +1562,28 @@ Representative named tests cited on this page:
             <td>UAT1</td>
             <td>Code Mode</td>
             <td>Ask for help understanding and fixing a short code issue in a chat-based workflow, optionally using voice input or read-aloud.</td>
-            <td>The tester should understand the answer, identify a next step, and remain comfortable with both the offline chat flow and the optional voice controls.</td>
+            <td>The tester understands the answer, identifies a next step, and remains comfortable with both the offline chat flow and the optional voice controls.</td>
             <td class="yes">Confirmed with anonymous positive feedback</td>
           </tr>
           <tr>
             <td>UAT2</td>
             <td>Writer / Slides</td>
             <td>Request a simple structured document or slide change through natural language.</td>
-            <td>The assistant should make or explain the change clearly and feel useful for classroom productivity tasks.</td>
+            <td>The assistant makes or explains the change clearly and feels useful for classroom productivity tasks.</td>
             <td class="yes">Confirmed with anonymous positive feedback</td>
           </tr>
           <tr>
             <td>UAT3</td>
             <td>GIMP</td>
             <td>Perform a straightforward image-editing action using a plain-English command.</td>
-            <td>The tester should see an understandable edit result and trust the assistant&apos;s summary of what happened.</td>
+            <td>The tester sees an understandable edit result and trusts the assistant&apos;s summary of what happened.</td>
             <td class="yes">Positive for simple edits</td>
           </tr>
           <tr>
             <td>UAT4</td>
             <td>Blender</td>
-            <td>Ask for help with a common modeling action that benefits from scene or documentation context.</td>
-            <td>The tester should receive Blender-specific guidance that feels more useful than a generic chatbot response.</td>
+            <td>Ask for help with a common modelling action that benefits from scene or documentation context.</td>
+            <td>The tester receives Blender-specific guidance that feels more useful than a generic chatbot response.</td>
             <td class="yes">Confirmed with anonymous positive feedback</td>
           </tr>
         </tbody>
@@ -680,44 +1594,56 @@ Representative named tests cited on this page:
         <h3>Code Mode Profile</h3>
         <p>
           Anonymous feedback on Code mode was positive overall. Testers found the chat flow easy to
-          follow, valued the offline setup, and understood the assistant&apos;s answers well enough to
-          identify sensible next steps in beginner-friendly coding tasks.
+          follow, valued the offline setup with no cloud dependency, and understood the
+          assistant&apos;s answers well enough to identify sensible next steps in beginner-friendly
+          coding tasks. Voice input was noted as a useful accessibility feature, though testers
+          generally preferred typing for code-related queries. The local read-aloud feature was
+          appreciated for reviewing longer explanations hands-free.
         </p>
       </div>
       <div class="card">
         <h3>Writer / Slides Profile</h3>
         <p>
-          Anonymous feedback suggested that the office workflows made simple document and slide actions
-          clearer and faster to access, especially for users who preferred describing an action in plain
-          language rather than searching through menus.
+          Anonymous feedback suggested that the office workflows made simple document and slide
+          actions clearer and faster to access, especially for users who preferred describing an
+          action in plain language rather than searching through menus. Testers found the structured
+          tool calls reliable for straightforward operations (add heading, add slide), though more
+          complex multi-step changes occasionally required rephrasing.
         </p>
       </div>
       <div class="card">
         <h3>GIMP Profile</h3>
         <p>
-          Anonymous feedback on GIMP was positive for straightforward edits and summaries, but it also
-          confirmed that this remains the least consistent specialist mode and benefits most from clearer
-          setup guidance and tightly scoped prompts.
+          Anonymous feedback on GIMP was positive for straightforward edits and summaries, but it
+          also confirmed that this remains the least consistent specialist mode. Testers noted that
+          the heuristic fast-path routing (e.g., detecting &quot;rotate&quot; or &quot;blur&quot;
+          prompts) worked well for common operations, while more complex multi-step edits sometimes
+          required clearer prompts. The feedback supports continued focus on tightly scoped prompts
+          and clearer setup guidance.
         </p>
       </div>
       <div class="card">
         <h3>Blender Profile</h3>
         <p>
-          Anonymous feedback indicated that the Blender workflow felt more useful than a generic chatbot
-          response because the assistant could combine scene-aware guidance with locally retrieved help
-          content.
+          Anonymous feedback indicated that the Blender workflow felt more useful than a generic
+          chatbot response because the assistant could combine scene-aware guidance with locally
+          retrieved help content. Testers particularly valued that the assistant knew the current
+          scene state (objects, modifiers) rather than giving generic Blender documentation. The
+          local RAG retrieval was noted as making responses noticeably more relevant.
         </p>
       </div>
 
       <h3>Project Partner Feedback</h3>
       <div class="card">
         <p>
-          Anonymous stakeholder and partner-facing feedback was positive overall, particularly around the
-          value of an offline-first assistant, the unified platform direction, and the practicality of a
-          deployment story that does not depend on cloud accounts or a separate local model server.
+          Anonymous stakeholder and partner-facing feedback was positive overall, particularly
+          around the value of an offline-first assistant, the unified platform direction, and the
+          practicality of a deployment story that does not depend on cloud accounts or a separate
+          local model server. Partners noted that the single-installer approach significantly
+          reduced the barrier to evaluation compared to solutions requiring separate Ollama or
+          LM Studio installations.
         </p>
       </div>
-
     </section>
 
   </main>

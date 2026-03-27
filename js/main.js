@@ -5,7 +5,7 @@ const observer = new IntersectionObserver((entries) => {
       entry.target.classList.add('visible');
     }
   });
-}, { threshold: 0.1 });
+}, { threshold: 0.01 });
 
 // observe all sections and cards
 document.querySelectorAll('section, .card, .team-member').forEach(el => {
