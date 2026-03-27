@@ -297,6 +297,19 @@ section {
   scroll-margin-top: 6.5rem;
 }
 
+body:not(.home-page) section > p,
+body:not(.home-page) section > ol,
+body:not(.home-page) section > ul,
+body:not(.home-page) section > pre,
+body:not(.home-page) section > .card,
+body:not(.home-page) section > .comparison-caption,
+body:not(.home-page) section > .cards-outer,
+body:not(.home-page) section > .flow-diagram {
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 h1,
 h2,
 h3 {
@@ -1129,6 +1142,21 @@ td.no {
   font-size: 0.92rem;
 }
 
+.manual-screenshot {
+  display: block;
+  width: min(100%, 880px);
+  margin: 0.9rem auto 0;
+  border-radius: 18px;
+  border: 1px solid var(--outline-strong);
+  box-shadow: var(--shadow-strong), var(--glow-subtle);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.manual-screenshot + .comparison-caption {
+  max-width: 880px;
+  margin: 0.85rem auto 0;
+}
+
 .uc-block {
   margin-bottom: 1.8rem;
 }
@@ -1453,7 +1481,7 @@ footer p {
 .cards-header { display: flex; align-items: center; justify-content: flex-end; margin-bottom: 1rem; }
 .cards-track-wrap { overflow: hidden; }
 .cards-track { display: flex; gap: 16px; transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-.cards-track .card { min-width: 0; width: 90vw; flex-shrink: 0; box-sizing: border-box; }
+.cards-track .card { min-width: 260px; width: min(90vw, 760px); flex-shrink: 0; box-sizing: border-box; }
 .nav-btn:disabled { opacity: 0.3; cursor: default; }
 .dots { display: flex; gap: 6px; justify-content: center; margin-top: 1rem; }
 .dot { width: 6px; height: 6px; border-radius: 50%; cursor: pointer; transition: width 0.2s; }
