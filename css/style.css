@@ -1264,73 +1264,44 @@ main img {
 
 .demo-poster {
   display: flex;
+  flex-direction: column;
   align-items: stretch;
+  gap: 0.75rem;
 }
 
-.demo-poster-screen {
+.demo-video-frame {
   position: relative;
   width: 100%;
-  min-height: 220px;
-  padding: 1.55rem;
+  aspect-ratio: 16 / 9;
   border: 1px solid rgba(255, 255, 255, 0.24);
   border-radius: 22px;
   overflow: hidden;
-  background:
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.14), transparent 36%),
-    linear-gradient(155deg, #2f468a 0%, #5569b8 52%, #8ea4da 100%);
   box-shadow: 0 28px 54px -32px rgba(36, 61, 130, 0.58);
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
+  background: #111826;
 }
 
-.demo-poster-screen::before {
-  content: '';
-  position: absolute;
-  top: 1.35rem;
-  left: 1.45rem;
-  width: 3.5rem;
-  height: 3.5rem;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.14);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
-}
-
-.demo-poster-screen::after {
-  content: '';
-  position: absolute;
-  top: 2.25rem;
-  left: 2.55rem;
-  width: 0;
-  height: 0;
-  border-top: 0.56rem solid transparent;
-  border-bottom: 0.56rem solid transparent;
-  border-left: 0.95rem solid rgba(255, 255, 255, 0.94);
-}
-
-.demo-poster-screen span {
-  display: inline-block;
-  margin-bottom: 0.35rem;
-  font-family: var(--font-code);
-  font-size: 0.76rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  opacity: 0.88;
-}
-
-.demo-poster-screen strong {
+.demo-video-player {
+  width: 100%;
+  height: 100%;
+  border: 0;
   display: block;
-  margin-bottom: 0.35rem;
-  color: #fff;
-  font-size: 1.55rem;
-  line-height: 1.15;
+  background: #111826;
 }
 
-.demo-poster-screen p {
-  margin-bottom: 0;
-  color: rgba(255, 255, 255, 0.84);
+.demo-link {
+  margin: 0;
+  font-size: 0.94rem;
+  color: var(--text-muted);
+}
+
+.demo-link a {
+  color: var(--accent-strong);
+  text-decoration: none;
+}
+
+.demo-link a:hover,
+.demo-link a:focus-visible {
+  text-decoration: underline;
 }
 
 .team-section-intro {
